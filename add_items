@@ -3,12 +3,15 @@ name = input("Please enter the name: ")
 date = input("Please enter the date: ")
 source = input("Please enter the URL to the original page: ")
 description = input("Please enter a short description of the item: ")
+key_words = ("Please write keywords (seperated by a comma) for quick reseach: ")
 
 item_record = {
 "name" : name,
 "date": date,
 "source": source,
 "description": description
+#put in array, and each elements are seperated by a comma
+"key_words" : [key.strip() for word in key_words.split(",") if key.strip()]
 }
 #library for all the records
 item_record_collection = []

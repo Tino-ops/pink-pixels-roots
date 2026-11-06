@@ -1,0 +1,16 @@
+#this code asks user to enter name, date and source of the info tehy would like to add to the library
+name = input("Please enter the name: ")
+date = input("Please enter the date: ")
+source = input("Please enter the URL to the original page: ")
+description = input("Please enter a short description of the item: ")
+
+item_record = {
+"name" : name,
+"date": date,
+"source": source,
+"description": description
+}
+#library for all the records
+item_record_collection = []
+#add the entries to the library
+library.append(item_record_collection)

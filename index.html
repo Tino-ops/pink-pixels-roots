@@ -202,7 +202,7 @@ window.ROOTS_UI = (() => {
 // Deduplicate by the record's own ID, not the archive collection URL.
 // Multiple independent historical stories may share one institutional source.
 const seenRecordIds = new Set();
-const records = (Array.isArray(window.ROOTS_DATA) ? window.ROOTS_DATA : []).filter(item => {
+let records = (Array.isArray(window.ROOTS_DATA) ? window.ROOTS_DATA : []).filter(item => {
   const id = String(item.id || '').trim().toLowerCase();
   if (!id || seenRecordIds.has(id)) return false;
   seenRecordIds.add(id);
@@ -210,12 +210,50 @@ const records = (Array.isArray(window.ROOTS_DATA) ? window.ROOTS_DATA : []).filt
 });
 const UI = window.ROOTS_UI;
 const root = document.getElementById('app');
-const categories = ['All stories', ...new Set(records.map(r => r.category).filter(Boolean))];
+let categories = ['All stories', ...new Set(records.map(r => r.category).filter(Boolean))];
 const state = { query:'', category:'All stories', sort:'featured' };
 const e = UI.escapeHTML;
 const featured = records[0] || null;
 const firstMapped = records.find(r => Array.isArray(r.coordinates) && r.coordinates.length === 2) || null;
 
+// Benita metadata bridge: import a reviewed JSON export without requiring a server.
+// This is client-side metadata import, NOT an API or a verified institutional feed.
+function normalizeImportedRecord(item,index){
+  if(!item||typeof item!=='object')return null;
+  const title=String(item.title||item.name||'').trim();
+  const sourceURL=String(item.sourceURL||item.source||item.url||'').trim();
+  const institution=String(item.institution||item.sourceInstitution||item.organization||'').trim();
+  if(!title||!institution||!/^https?:\/\//i.test(sourceURL))return null;
+  try{const u=new URL(sourceURL);if(!['http:','https:'].includes(u.protocol))return null;}catch{return null;}
+  const year=Number(item.year||item.date)||null;
+  const location=String(item.location||item.place||'Location not specified');
+  const description=String(item.description||item.summary||'No description supplied.');
+  const id=String(item.id||('import-'+index+'-'+title.toLowerCase().replace(/[^a-z0-9]+/g,'-'))).slice(0,120);
+  const coords=Array.isArray(item.coordinates)&&item.coordinates.length===2&&item.coordinates.every(x=>Number.isFinite(Number(x)))?item.coordinates.map(Number):null;
+  return {id,title,category:String(item.category||item.subject||'Other'),year,period:String(item.period||item.date||'Not specified'),location,coordinates:coords,institution,type:String(item.type||item.resourceType||'Historical resource'),image:String(item.image||''),imageAlt:String(item.imageAlt||title),imageCredit:String(item.imageCredit||'Image rights not supplied'),description,body:String(item.body||description),sourceURL,sourceNote:String(item.sourceNote||'Imported metadata. Confirm the original institution and item-level source before treating this record as verified.'),keywords:Array.isArray(item.keywords)?item.keywords.map(String):[],imported:true};
+}
+function metadataImportUI(){return `<details class="metadata-import" style="margin:18px 0;padding:15px;border:1px solid #d4d4cc;border-radius:10px"><summary style="cursor:pointer;font-weight:700">Import institution metadata (JSON)</summary><p>For team demonstrations: choose a local JSON file containing an array of records. Required: title/name, institution, and sourceURL/source. Imported records stay in this browser session; they are not automatically verified or published.</p><label for="metadata-json">Select JSON file</label> <input id="metadata-json" type="file" accept=".json,application/json"><p id="metadata-status" role="status" aria-live="polite"></p></details>`;}
+function bindMetadataImport(){
+ const input=document.getElementById('metadata-json');if(!input)return;
+ input.addEventListener('change',async()=>{
+  const status=document.getElementById('metadata-status');const file=input.files&&input.files[0];if(!file)return;
+  if(file.size>2000000){status.textContent='File too large (2 MB maximum).';return;}
+  try{
+   const raw=JSON.parse(await file.text());const rows=Array.isArray(raw)?raw:(Array.isArray(raw.records)?raw.records:null);
+   if(!rows)throw Error('Expected a JSON array or an object containing a records array.');
+   const normalized=rows.map(normalizeImportedRecord).filter(Boolean);
+   const ids=new Set(records.map(x=>String(x.id).toLowerCase()));
+   let added=0;
+   normalized.forEach(item=>{if(!ids.has(item.id.toLowerCase())){records.push(item);ids.add(item.id.toLowerCase());added++;}});
+   categories=['All stories',...new Set(records.map(x=>x.category).filter(Boolean))];
+   status.textContent=added+' records imported; '+(rows.length-normalized.length)+' skipped due to missing title, institution or valid source URL. These are unverified metadata until reviewed.';
+   const chips=document.querySelector('.filter-chips');if(chips)chips.outerHTML=categoryNav(state.category);
+   const results=document.getElementById('search-results');if(results)results.innerHTML=renderSearchResults();
+   bindCategoryChips();
+  }catch(err){status.textContent='Could not import: '+err.message;}
+ });
+}
+function bindCategoryChips(){document.querySelectorAll('[data-category]').forEach(btn=>{if(btn.dataset.metadataBound)return;btn.dataset.metadataBound='yes';btn.addEventListener('click',()=>{state.category=btn.dataset.category;document.querySelectorAll('[data-category]').forEach(b=>{b.classList.toggle('selected',b.dataset.category===state.category);b.setAttribute('aria-pressed',String(b.dataset.category===state.category));});const target=document.getElementById('search-results')||document.getElementById('browse-results');if(target)target.innerHTML=document.getElementById('search-results')?renderSearchResults():renderBrowseResults();});});}
 const heroSearch = (placeholder='Search people, places, stories...') => `<form id="hero-search" class="hero-search" role="search"><span class="search-symbol" aria-hidden="true">⌕</span><input name="search" type="search" placeholder="${placeholder}" aria-label="Search stories" required><button type="submit">Explore stories <span aria-hidden="true">→</span></button></form>`;
 const categoryNav = (active='All stories') => `<div class="filter-chips" aria-label="Filter stories">${categories.map(c=>`<button class="chip ${active===c?'selected':''}" data-category="${e(c)}" aria-pressed="${active===c}">${e(c)}</button>`).join('')}</div>`;
 function home(){
@@ -261,8 +299,8 @@ function renderBrowseResults(){
   const items=records.filter(r=>(state.category==='All stories'||r.category===state.category)&&matchesInterest(r,activeInterest));
   return `<div class="results-meta"><strong>${items.length} matching demonstration ${items.length===1?'story':'stories'}${activeInterest?' for '+e(activeInterest):''}</strong><span>Source links and record-level verification vary</span></div>${UI.cards(items)}`;
 }
-function searchPage(){const params=new URLSearchParams(location.hash.split('?')[1]||''); if(params.has('q'))state.query=params.get('q');return `${UI.pageIntro('SEARCH ROOTS','What are you <em>looking for?</em>','Search for a person, community, place or historical moment.')}<section class="content search-page"><form class="large-search" id="results-search" role="search"><span class="search-symbol">⌕</span><input id="search-input" aria-label="Search all stories" placeholder="Try Africville, Viola Desmond, music..." value="${e(state.query)}"><button type="submit">Search ↗</button></form><div class="browse-toolbar search-toolbar">${categoryNav(state.category)}<label class="sort-label">Sort by <select id="sort-order"><option value="featured">Featured</option><option value="oldest" ${state.sort==='oldest'?'selected':''}>Oldest first</option><option value="newest" ${state.sort==='newest'?'selected':''}>Newest first</option></select></label></div><div id="search-results">${renderSearchResults()}</div></section>`;}
-function renderSearchResults(){const q=state.query.toLowerCase().trim();let matches=records.filter(r=>(state.category==='All stories'||r.category===state.category)&&(!q||[r.title,r.description,r.location,r.institution,r.period,r.category,...(Array.isArray(r.keywords) ? r.keywords : [])].join(' ').toLowerCase().includes(q)));if(state.sort==='oldest')matches.sort((a,b)=>(Number(a.year)||0)-(Number(b.year)||0));if(state.sort==='newest')matches.sort((a,b)=>(Number(b.year)||0)-(Number(a.year)||0));return `<div class="results-meta"><strong>${matches.length} result${matches.length===1?'':'s'}${q?' for “'+e(state.query)+'”':''}</strong><span>Sample topics, not verified archival records</span></div>${UI.cards(matches)}`;}
+function searchPage(){const params=new URLSearchParams(location.hash.split('?')[1]||''); if(params.has('q'))state.query=params.get('q');return `${UI.pageIntro('SEARCH ROOTS','What are you <em>looking for?</em>','Search for a person, community, place or historical moment.')}<section class="content search-page"><form class="large-search" id="results-search" role="search"><span class="search-symbol">⌕</span><input id="search-input" aria-label="Search all stories" placeholder="Try Africville, Viola Desmond, music..." value="${e(state.query)}"><button type="submit">Search ↗</button></form><div class="browse-toolbar search-toolbar">${categoryNav(state.category)}<label class="sort-label">Sort by <select id="sort-order"><option value="featured">Featured</option><option value="oldest" ${state.sort==='oldest'?'selected':''}>Oldest first</option><option value="newest" ${state.sort==='newest'?'selected':''}>Newest first</option></select></label></div>${metadataImportUI()}<div id="search-results">${renderSearchResults()}</div></section>`;}
+function renderSearchResults(){const q=state.query.toLowerCase().trim();let matches=records.filter(r=>(state.category==='All stories'||r.category===state.category)&&(!q||[r.title,r.description,r.location,r.institution,r.period,r.category,r.type,r.sourceNote,...(Array.isArray(r.keywords) ? r.keywords : [])].join(' ').toLowerCase().includes(q)));if(state.sort==='oldest')matches.sort((a,b)=>(Number(a.year)||0)-(Number(b.year)||0));if(state.sort==='newest')matches.sort((a,b)=>(Number(b.year)||0)-(Number(a.year)||0));return `<div class="results-meta"><strong>${matches.length} result${matches.length===1?'':'s'}${q?' for “'+e(state.query)+'”':''}</strong><span>Demo topics and imported metadata; verify original sources</span></div>${UI.cards(matches)}`;}
 // Ale: deterministic recommendations; never generates new historical facts.
 function getRelatedRecords(current){
   const currentTags=new Set((current.keywords||[]).map(x=>String(x).toLowerCase()));
@@ -291,7 +329,7 @@ function about(){return `${UI.pageIntro('ABOUT THE PROJECT','Made to make histor
 function notFound(){return `${UI.pageIntro('404','This story isn’t here.','We couldn’t find that page.')}<section class="content section"><a class="btn btn-dark" href="#/">Go home</a></section>`;}
 function bind(){window.ROOTS_CONTRIBUTIONS.bind();const hero=document.getElementById('hero-search');if(hero)hero.addEventListener('submit',ev=>{ev.preventDefault();location.hash='#/search?q='+encodeURIComponent(new FormData(hero).get('search').trim());state.category='All stories';});document.querySelectorAll('[data-category]').forEach(btn=>btn.addEventListener('click',()=>{state.category=btn.dataset.category;document.querySelectorAll('[data-category]').forEach(b=>{b.classList.toggle('selected',b.dataset.category===state.category);b.setAttribute('aria-pressed',String(b.dataset.category===state.category));});const target=document.getElementById('search-results')||document.getElementById('browse-results');if(target)target.innerHTML=document.getElementById('search-results')?renderSearchResults():renderBrowseResults();}));const search=document.getElementById('results-search');if(search)search.addEventListener('submit',ev=>{ev.preventDefault();state.query=document.getElementById('search-input').value;history.replaceState(null,'','#/search?q='+encodeURIComponent(state.query));document.getElementById('search-results').innerHTML=renderSearchResults();});const sort=document.getElementById('sort-order');if(sort)sort.addEventListener('change',()=>{state.sort=sort.value;document.getElementById('search-results').innerHTML=renderSearchResults();});document.querySelectorAll('[data-place]').forEach(btn=>btn.addEventListener('click',()=>{const r=records.find(x=>x.id===btn.dataset.place);document.querySelectorAll('[data-place]').forEach(b=>b.classList.toggle('active',b===btn));document.getElementById('location-map').src=mapURL(r.coordinates);document.getElementById('map-caption').innerHTML=`<strong>${e(r.title)}</strong><span>${e(r.location)}</span><a href="#/record/${e(r.id)}">View story ↗</a>`;}));}
 // Ale: attach discovery controls after Shanella's existing page handlers.
-function bindAleDiscovery(){
+function bindAleDiscovery(){bindMetadataImport();
   document.querySelectorAll('[data-interest]').forEach(btn=>btn.addEventListener('click',()=>{
     activeInterest=activeInterest===btn.dataset.interest?'':btn.dataset.interest;
     document.querySelectorAll('[data-interest]').forEach(b=>{const selected=b.dataset.interest===activeInterest;b.classList.toggle('active',selected);b.setAttribute('aria-pressed',String(selected));});

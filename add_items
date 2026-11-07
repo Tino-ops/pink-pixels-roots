@@ -54,3 +54,27 @@ files.download("item_records.json")
     #saved_records = json.load(file)
 
 #print(saved_records)
+
+#open file to read it
+with open("item_records.json", "r", encoding="utf-8") as file:
+    records = json.load(file)
+
+keyword = input("Enter one keyword for research: ").strip().lower()
+
+found = False
+
+if keyword:
+    for record in records:
+        description = record.get("description", "")
+
+        if keyword in description.lower():
+            print("Name:", record.get("name", "No name provided"))
+            print("source URL:", record.get("source", "No URL provided"))
+            print()
+
+            found = True
+
+    if not found:
+        print("No matching records found.")
+else:
+    print("Please enter a keyword.")

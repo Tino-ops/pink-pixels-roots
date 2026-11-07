@@ -1,9 +1,17 @@
 #this code asks user to enter name, date and source of the info tehy would like to add to the library
 
 import json
+#list of all the records
+item_record_collection = []
 
 #metadata structure
-name = input("Please enter the name: ")
+#loop to add elements to the list
+while True:
+  name = input("Please enter the name of the record or type 'stop' to finish: ").strip()
+  if name.lower() == "stop":
+    #exit the loop
+    break
+
 date = input("Please enter the date: ")
 source = input("Please enter the URL to the original page: ")
 description = input("Please enter a short description of the item: ")
@@ -17,8 +25,7 @@ item_record = {
 #put in array, and each elements are seperated by a comma
 "key_words" : [key.strip() for key in key_words.split(",") if key.strip()]
 }
-#library for all the records
-item_record_collection = []
+
 #add the entries to the library
 item_record_collection.append(item_record)
 

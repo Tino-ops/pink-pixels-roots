@@ -316,7 +316,22 @@ function initDiscoveryMap(){
   }
   if(rootsMap){rootsMap.remove();rootsMap=null;}
   rootsMap=L.map(container,{scrollWheelZoom:false}).setView([55,-102],4);
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap contributors'}).addTo(rootsMap);
+  // Use a map provider intended for browser demos rather than OSM's volunteer tile servers.
+  // If remote tiles fail, hide broken tiles and keep the location markers usable.
+  const tiles=L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+    subdomains:'abcd',maxZoom:18,
+    attribution:'&copy; OpenStreetMap contributors &copy; CARTO'
+  }).addTo(rootsMap);
+  let tileErrors=0;
+  tiles.on('tileerror',()=>{
+    tileErrors++;
+    if(tileErrors>=3 && rootsMap && rootsMap.hasLayer(tiles)){
+      rootsMap.removeLayer(tiles);
+      container.style.background='linear-gradient(145deg,#d8e8e0,#b8d4cf)';
+      const msg=document.getElementById('map-message');
+      if(msg)msg.textContent='Map background unavailable; location markers and story links still work.';
+    }
+  });
   const markers=new Map();
   const positions=[];
   mappedRecords().forEach(r=>{

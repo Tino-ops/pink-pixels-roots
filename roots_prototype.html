@@ -30,9 +30,9 @@
           <div style="margin-bottom: 18px;">
               <label style="font-weight: 700; font-size: 14px; color: #192720;">Institutional Trust Authentication Profile</label>
               <select id="m-tier" style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; background: white;">
-                  <option value="Tier 3">Tier 3: Grassroots Submitter (Requires Sandbox Staging Verification)</option>
-                  <option value="Tier 2">Tier 2: Verified Regional Museum / Archive (Automated Peer Clearance)</option>
-                  <option value="Tier 1">Tier 1: Consolidated National Anchor / BCCNS Network (Instant Autonomous Publish Bypass)</option>
+                  <option value="Tier 3">Tier 3: Community Contributor — Review Required</option>
+<option value="Tier 2">Tier 2: Regional Institution — Review Required</option>
+<option value="Tier 1">Tier 1: National Institution — Review Required</option>
               </select>
           </div>
 
@@ -62,6 +62,17 @@
                   <input type="checkbox" id="m-no-url" onchange="toggleUrlRequirement(this)" style="transform: scale(1.1);"> This record belongs to a localized collection and does not have an active web archive hyperlink.
               </label>
           </div>
+        <div style="margin-bottom: 18px;">
+  <label style="font-weight:700; font-size:14px;">
+    Original Source / Catalogue Reference *
+  </label>
+
+  <input id="m-original-source" required
+    placeholder="Archive name, collection title, catalogue number or reference"
+    style="width:100%; padding:14px; margin-top:6px;
+    border:1px solid #ddd8cc; border-radius:10px;
+    font-size:15px; box-sizing:border-box;">
+</div>
 
           <div style="background: #ffffff; padding: 16px; border-radius: 12px; border: 1px solid #ddd8cc; margin-bottom: 18px;">
               <label style="font-weight:700; font-size:14px; display:block; margin-bottom:6px; color: #192720;">Public Discoverability & Rights Access Tier *</label>
@@ -91,10 +102,11 @@
                   <option value="Civil Rights">Civil Rights</option>
               </select>
           </div>
+<label style="font-weight: 700; font-size: 14px; color: #192720;">Contributing Institution Name *</label>
 
+<input id="m-institution" required placeholder="Organization or institution name" style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; box-sizing: border-box;">
           <div style="margin-bottom: 18px;">
-              <label style="font-weight: 700; font-size: 14px; color: #192720;">Contributing Institution Name</label>
-              <input id="m-institution" placeholder="Organization or institution name" style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; box-sizing: border-box;">
+              
           </div>
 
           <div style="margin-bottom: 18px;">
@@ -135,137 +147,484 @@
       </div>
       <button type="button" onclick="executeBatchCsvImportSim()" class="primary" style="background: #e6b85c; border: 0; border-radius: 10px; padding: 14px 24px; font-weight: 800; color: #26311f; cursor: pointer; width: 100%; font-size: 16px;">Process Batch Import Stream Ingestion</button>
   </div>
+<div id="pending-review-section"
+     style="margin-top:35px; padding:22px;
+     background:#fbf8f1; border-radius:12px;">
 
+  <h3 style="color:#183e32;">Submission Review Queue</h3>
+
+  <p style="font-size:13px; color:#6b756f;">
+    New submissions remain private until a reviewer approves them.
+  </p>
+
+  <div id="pending-review-list"></div>
+
+</div>
   <p id="hubFeedbackResponse" role="status" style="font-weight: 800; color: #183e32; margin-top: 20px; text-align: center; font-size: 15px;"></p>
 </section>
 
 <script>
+/* ROOTS CONTRIBUTION AND REVIEW SYSTEM
+   New records remain pending until approved.
+   Prototype storage uses browser localStorage.
+*/
+
+const ROOTS_PENDING_KEY = "roots_pending_submissions";
+const ROOTS_APPROVED_KEY = "roots_approved_submissions";
+
+let rootsPending = JSON.parse(
+  localStorage.getItem(ROOTS_PENDING_KEY) || "[]"
+);
+
+let rootsApproved = JSON.parse(
+  localStorage.getItem(ROOTS_APPROVED_KEY) || "[]"
+);
+
+function saveRootsSubmissions() {
+  localStorage.setItem(ROOTS_PENDING_KEY, JSON.stringify(rootsPending));
+  localStorage.setItem(ROOTS_APPROVED_KEY, JSON.stringify(rootsApproved));
+}
+
+function rootsEscape(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+/* Switch between manual and bulk contribution tabs. */
 function switchContributionTab(mode) {
-  var btnManual = document.getElementById('tab-manual');
-  var btnBulk = document.getElementById('tab-bulk');
-  var viewManual = document.getElementById('panel-manual');
-  var viewBulk = document.getElementById('panel-bulk');
-  if (mode === 'manual') {
-    btnManual.style.background = '#e6b85c';
-    btnManual.style.border = '0';
-    btnManual.style.color = '#26311f';
-    btnBulk.style.background = 'white';
-    btnBulk.style.border = '1px solid #ddd8cc';
-    btnBulk.style.color = '#192720';
-    viewManual.style.display = 'block';
-    viewBulk.style.display = 'none';
-  } else {
-    btnBulk.style.background = '#e6b85c';
-    btnBulk.style.border = '0';
-    btnBulk.style.color = '#26311f';
-    btnManual.style.background = 'white';
-    btnManual.style.border = '1px solid #ddd8cc';
-    btnManual.style.color = '#192720';
-    viewManual.style.display = 'none';
-    viewBulk.style.display = 'block';
-  }
+  document.getElementById("panel-manual").style.display =
+    mode === "manual" ? "block" : "none";
+
+  document.getElementById("panel-bulk").style.display =
+    mode === "bulk" ? "block" : "none";
+
+  document.getElementById("tab-manual").style.background =
+    mode === "manual" ? "#e6b85c" : "white";
+
+  document.getElementById("tab-bulk").style.background =
+    mode === "bulk" ? "#e6b85c" : "white";
 }
+
+/* Image preview. */
 let systemBase64AssetHash = "";
+
 function previewImageSource(event) {
-  var targetFile = event.target.files;
-  if (targetFile) {
-    var fileStreamEngine = new FileReader();
-    fileStreamEngine.onload = function(e) {
-      document.getElementById('imagePreviewContainer').style.display = 'block';
-      document.getElementById('layoutThumbnail').src = e.target.result;
-      systemBase64AssetHash = e.target.result;
-    }
-    fileStreamEngine.readAsDataURL(targetFile);
-  }
+  const targetFile = event.target.files[0];
+
+  if (!targetFile) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    document.getElementById("imagePreviewContainer").style.display = "block";
+    document.getElementById("layoutThumbnail").src = e.target.result;
+    systemBase64AssetHash = e.target.result;
+  };
+
+  reader.readAsDataURL(targetFile);
 }
+
+/* Allow physical collections to be submitted without a URL. */
 function toggleUrlRequirement(checkboxElement) {
-  var linkInputField = document.getElementById('m-url');
+  const urlField = document.getElementById("m-url");
+
+  urlField.disabled = checkboxElement.checked;
+
   if (checkboxElement.checked) {
-    linkInputField.value = "";
-    linkInputField.disabled = true;
-    linkInputField.style.background = "#f0ede5";
-    linkInputField.removeAttribute('required');
-  } else {
-    linkInputField.disabled = false;
-    linkInputField.style.background = "#ffffff";
+    urlField.value = "";
   }
 }
+
+/* Create a record using ROOTS metadata fields. */
+function createRootsRecord(values) {
+  return {
+    id: Date.now() + Math.floor(Math.random() * 1000),
+    title: values.title,
+    category: values.category,
+    type: values.source_type || "Historical record",
+    institution: values.institution,
+    location: values.location || "Not specified",
+    date: values.date_period,
+    emoji: values.emoji || "📚",
+    desc: values.description,
+    keywords: Array.isArray(values.keywords)
+      ? values.keywords
+      : String(values.keywords || "")
+          .split(",")
+          .map(word => word.trim())
+          .filter(Boolean),
+    source: values.source_url || "",
+    original_source: values.original_source,
+    access_rights: values.access_rights,
+    rights_statement: values.rights_statement,
+    trust_tier: values.trust_tier,
+    contributor_email: values.contributor_email,
+    image_asset: values.image_asset || "",
+    status: "pending_review",
+    submitted_at: new Date().toISOString()
+  };
+}
+
+/* Validate individual records. */
+function validateRootsRecord(record) {
+  const errors = [];
+
+  if (!record || typeof record !== "object" || Array.isArray(record)) {
+    return ["Record must be a JSON object."];
+  }
+
+  if (!String(record.title || "").trim()) {
+    errors.push("Missing title.");
+  }
+
+  if (!String(record.date_period || record.date || "").trim()) {
+    errors.push("Missing date_period.");
+  }
+
+  if (!String(record.description || record.desc || "").trim()) {
+    errors.push("Missing description.");
+  }
+
+  if (!String(record.institution || "").trim()) {
+    errors.push("Missing institution.");
+  }
+
+  if (!String(record.original_source || "").trim()) {
+    errors.push("Missing original_source.");
+  }
+
+  if (!String(record.category || "").trim()) {
+    errors.push("Missing category.");
+  }
+
+  if (
+    !String(record.keywords || "").trim() &&
+    !(Array.isArray(record.keywords) && record.keywords.length)
+  ) {
+    errors.push("Missing keywords.");
+  }
+
+  const offline = ["physical", "oral", "offline"].includes(
+    String(record.source_type || "").toLowerCase()
+  );
+
+  if (!offline && record.source_url &&
+      !/^https?:\/\//i.test(record.source_url)) {
+    errors.push("source_url must be a valid HTTP or HTTPS URL.");
+  }
+
+  if (!record.source_url && !offline && !record.source) {
+    errors.push("Provide a source URL or identify the record as physical/offline.");
+  }
+
+  return errors;
+}
+
+/* Add accepted submissions to the private review queue. */
+function addToRootsPending(record) {
+  record.status = "pending_review";
+  rootsPending.push(record);
+  saveRootsSubmissions();
+  renderRootsReviewQueue();
+}
+
+/* Handle manual submissions. */
 function handleManualSubmission(event) {
   event.preventDefault();
-  var title = document.getElementById('m-title').value.trim();
-  var desc = document.getElementById('m-desc').value.trim();
-  var keywords = document.getElementById('m-keywords').value.trim();
-  var conditionUrlChecked = document.getElementById('m-no-url').checked;
-  var activeUrlContent = document.getElementById('m-url').value.trim();
-  if (title.length < 3 || desc.length < 15) {
-    alert("❌ Automated Security Filter: Entry title or description length is incomplete. Ingestion rejected.");
+
+  const offline = document.getElementById("m-no-url").checked;
+  const url = document.getElementById("m-url").value.trim();
+
+  if (!offline && !url) {
+    alert("Please enter a source URL or select the physical/offline collection option.");
     return;
   }
-  if (!conditionUrlChecked && activeUrlContent !== "" && !activeUrlContent.startsWith("https://")) {
-    alert("❌ Automated Verification Filter: Source links must use secure HTTPS protocols. Upload blocked.");
-    return;
-  }
-  var dataPackagePayload = {
-    recordId: "ROOTS-MANUAL-" + Date.now(),
-    trustTier: document.getElementById('m-tier').value,
-    title: title,
-    datePeriod: document.getElementById('m-date').value,
-    sourceUrl: conditionUrlChecked ? "N/A (Localized Asset)" : activeUrlContent,
-    accessRightsClass: document.getElementById('m-access').value,
-    description: desc,
-    keywords: keywords.split(',').map(s => s.trim()),
-    category: document.getElementById('m-category').value,
-    institutionName: document.getElementById('m-institution').value || "Local Submission Group",
-    contributorEmail: document.getElementById('m-email').value || "Anonymous Entry",
-    rightsStatement: document.getElementById('m-rights').value || "Pending Verification",
-    base64VisualStream: systemBase64AssetHash ? "[Visual Schema Verification Verified]" : "None",
-    pipelineStatus: "Ingested",
-    submissionTimestamp: new Date().toISOString()
+
+  const values = {
+    title: document.getElementById("m-title").value.trim(),
+    date_period: document.getElementById("m-date").value.trim(),
+    description: document.getElementById("m-desc").value.trim(),
+    keywords: document.getElementById("m-keywords").value
+      .split(",").map(word => word.trim()).filter(Boolean),
+    category: document.getElementById("m-category").value,
+    institution: document.getElementById("m-institution").value.trim(),
+    original_source: document.getElementById("m-original-source").value.trim(),
+    source_url: offline ? "" : url,
+    source_type: offline ? "physical" : "online",
+    access_rights: document.getElementById("m-access").value,
+    trust_tier: document.getElementById("m-tier").value,
+    contributor_email: document.getElementById("m-email").value.trim(),
+    rights_statement: document.getElementById("m-rights").value.trim(),
+    image_asset: systemBase64AssetHash
   };
-  executeClientSideDataPacketDownload(dataPackagePayload, `metadata_record_${dataPackagePayload.recordId}.json`);
-  document.getElementById('hubFeedbackResponse').textContent = `✔ Metadata package parsed successfully! Status: Verified (${dataPackagePayload.trustTier} Channel).`;
+
+  const record = createRootsRecord(values);
+
+  const errors = validateRootsRecord({
+    ...record,
+    date_period: values.date_period,
+    description: values.description,
+    source_url: values.source_url,
+    source_type: values.source_type,
+    original_source: values.original_source
+  });
+
+  if (errors.length) {
+    alert("Please correct the following:\n\n" + errors.join("\n"));
+    return;
+  }
+
+  addToRootsPending(record);
+
+  document.getElementById("hubFeedbackResponse").textContent =
+    "Submission received. Status: Pending Review. It has not been published.";
+
+  document.getElementById("manualRootsForm").reset();
+
+  systemBase64AssetHash = "";
+  document.getElementById("imagePreviewContainer").style.display = "none";
+  document.getElementById("layoutThumbnail").src = "#";
+
+  toggleUrlRequirement(document.getElementById("m-no-url"));
 }
-function executeBatchCsvImportSim() {
-  var parsingTargetFile = document.getElementById('bulkCsvFile');
-  var jsonInputArea = document.getElementById('bulkJsonInput').value.trim();
-  var metaTitle = "";
-  var metaSize = "";
-  if (parsingTargetFile.files && parsingTargetFile.files.length > 0) {
-    metaTitle = parsingTargetFile.files.name;
-    metaSize = parsingTargetFile.files.size + " data-bytes";
-  } else if (jsonInputArea !== "") {
-    try {
-      var parsed = JSON.parse(jsonInputArea);
-      metaTitle = "Inline Native JSON Array Block";
-      metaSize = (Array.isArray(parsed) ? parsed.length : 1) + " structural array nodes";
-    } catch (e) {
-      alert("❌ Automated Guard Flag: Corrupted JSON Array format. Verify brackets.");
+
+/* Read CSV files, including quoted values and commas. */
+function parseRootsCSV(text) {
+  const rows = [];
+  let row = [];
+  let value = "";
+  let insideQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    const next = text[i + 1];
+
+    if (char === '"' && insideQuotes && next === '"') {
+      value += '"';
+      i++;
+    } else if (char === '"') {
+      insideQuotes = !insideQuotes;
+    } else if (char === "," && !insideQuotes) {
+      row.push(value.trim());
+      value = "";
+    } else if ((char === "\n" || char === "\r") && !insideQuotes) {
+      if (char === "\r" && next === "\n") i++;
+      row.push(value.trim());
+
+      if (row.some(cell => cell !== "")) rows.push(row);
+
+      row = [];
+      value = "";
+    } else {
+      value += char;
+    }
+  }
+
+  row.push(value.trim());
+
+  if (row.some(cell => cell !== "")) rows.push(row);
+
+  if (insideQuotes) {
+    throw new Error("CSV contains an unclosed quotation mark.");
+  }
+
+  if (rows.length < 2) {
+    throw new Error("CSV must contain a header row and at least one record.");
+  }
+
+  const headers = rows[0].map(header => header.trim());
+
+  return rows.slice(1).map(cells => {
+    const record = {};
+
+    headers.forEach((header, index) => {
+      record[header] = cells[index] || "";
+    });
+
+    return record;
+  });
+}
+
+/* Standardize imported CSV and JSON records. */
+function normalizeImportedRecord(record) {
+  return {
+    title: record.title || "",
+    date_period: record.date_period || record.date || "",
+    description: record.description || record.desc || "",
+    keywords: record.keywords || "",
+    category: record.category || "",
+    institution: record.institution || "",
+    original_source: record.original_source || "",
+    source_url: record.source_url || record.source || "",
+    source_type: record.source_type ||
+      (record.source_url || record.source ? "online" : ""),
+    access_rights: record.access_rights || "",
+    trust_tier: record.trust_tier || "Tier 3",
+    rights_statement: record.rights_statement || "",
+    contributor_email: record.contributor_email || "",
+    location: record.location || "Not specified",
+    type: record.type || "Historical record",
+    emoji: record.emoji || "📚"
+  };
+}
+
+/* Process and validate CSV or JSON imports. */
+async function executeBatchCsvImportSim() {
+  const fileInput = document.getElementById("bulkCsvFile");
+  const jsonText = document.getElementById("bulkJsonInput").value.trim();
+
+  let records = [];
+
+  try {
+    if (fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      const csvText = await file.text();
+      records = parseRootsCSV(csvText);
+
+    } else if (jsonText) {
+      const parsed = JSON.parse(jsonText);
+
+      if (!Array.isArray(parsed)) {
+        throw new Error("JSON input must be an array of record objects.");
+      }
+
+      records = parsed;
+
+    } else {
+      throw new Error("Please select a CSV file or enter a JSON array.");
+    }
+
+  } catch (error) {
+    document.getElementById("hubFeedbackResponse").textContent =
+      "Import could not be processed: " + error.message;
+    return;
+  }
+
+  let successful = 0;
+  const failures = [];
+
+  records.forEach((rawRecord, index) => {
+    const normalized = normalizeImportedRecord(rawRecord);
+    const errors = validateRootsRecord(normalized);
+
+    if (errors.length) {
+      failures.push({
+        row: index + 1,
+        errors: errors
+      });
       return;
     }
-  } else {
-    alert("❌ Automated Ingestion Guard: No spreadsheet or text nodes loaded.");
+
+    const newRecord = createRootsRecord(normalized);
+    addToRootsPending(newRecord);
+    successful++;
+  });
+
+  let report =
+    `Import complete: ${successful} accepted; ${failures.length} rejected.`;
+
+  if (failures.length) {
+    report += "\n\nErrors:\n" + failures.map(item =>
+      "Record " + item.row + ": " + item.errors.join(", ")
+    ).join("\n");
+  }
+
+  document.getElementById("hubFeedbackResponse").textContent = report;
+}
+
+/* Display submissions awaiting review. */
+function renderRootsReviewQueue() {
+  const container = document.getElementById("pending-review-list");
+
+  if (!container) return;
+
+  if (!rootsPending.length) {
+    container.innerHTML =
+      "<p>No submissions are currently awaiting review.</p>";
     return;
   }
-  var batchExecutionLogTicket = {
-    batchId: "ROOTS-BATCH-" + Date.now(),
-    ingestedSource: metaTitle,
-    payloadDensity: metaSize,
-    validationStatus: "Clean Ledger Matrix Verified",
-    processingTimestamp: new Date().toISOString()
-  };
-  executeClientSideDataPacketDownload(batchExecutionLogTicket, `batch_receipt_${batchExecutionLogTicket.batchId}.json`);
-  document.getElementById('hubFeedbackResponse').textContent = `✔ Batch arrays filtered successfully! Density: ${metaSize}.`;
+
+  container.innerHTML = rootsPending.map(record => `
+    <div style="background:white; border:1px solid #e3ded2;
+      border-radius:10px; padding:16px; margin-bottom:12px;">
+
+      <strong>${rootsEscape(record.title)}</strong>
+
+      <p style="font-size:13px; color:#6b756f;">
+        ${rootsEscape(record.institution)} ·
+        ${rootsEscape(record.date)}
+      </p>
+
+      <p style="font-size:12px;">
+        Status: <strong>Pending Review</strong>
+      </p>
+
+      <button type="button"
+        onclick="approveRootsSubmission(${Number(record.id)})"
+        style="background:#183e32; color:white; border:0;
+        border-radius:7px; padding:9px 14px; cursor:pointer;">
+        Approve
+      </button>
+
+      <button type="button"
+        onclick="rejectRootsSubmission(${Number(record.id)})"
+        style="background:#eee; color:#192720; border:0;
+        border-radius:7px; padding:9px 14px; cursor:pointer;">
+        Reject
+      </button>
+    </div>
+  `).join("");
 }
-function executeClientSideDataPacketDownload(payloadObject, designatedFileName) {
-  var rawDataString = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(payloadObject, null, 2));
-  var hiddenDownloadAnchorNode = document.createElement('a');
-  hiddenDownloadAnchorNode.setAttribute("href", rawDataString);
-  hiddenDownloadAnchorNode.setAttribute("download", designatedFileName);
-  document.body.appendChild(hiddenDownloadAnchorNode);
-  hiddenDownloadAnchorNode.click();
-  hiddenDownloadAnchorNode.remove();
+
+/* Approve a record and add it to ROOTS discovery. */
+function approveRootsSubmission(id) {
+  const index = rootsPending.findIndex(
+    record => Number(record.id) === id
+  );
+
+  if (index === -1) return;
+
+  const record = rootsPending.splice(index, 1)[0];
+
+  record.status = "approved";
+
+  data.push(record);
+  rootsApproved.push(record);
+
+  saveRootsSubmissions();
+  renderRootsReviewQueue();
+  render();
+
+  document.getElementById("hubFeedbackResponse").textContent =
+    "Record approved and added to the discovery section.";
 }
+
+/* Reject a submission. */
+function rejectRootsSubmission(id) {
+  const index = rootsPending.findIndex(
+    record => Number(record.id) === id
+  );
+
+  if (index === -1) return;
+
+  rootsPending.splice(index, 1);
+
+  saveRootsSubmissions();
+  renderRootsReviewQueue();
+
+  document.getElementById("hubFeedbackResponse").textContent =
+    "Submission rejected and removed from the pending queue.";
+}
+
+renderRootsReviewQueue();
 </script>
+
+
 
 
 
@@ -280,5 +639,13 @@ const data=[
 {id:6,title:'People Who Shaped Black Canadian History',category:'People',type:'Biographical topic',institution:'Library and Archives Canada',location:'Canada',date:'Various periods',emoji:'👥',desc:'Begin exploring notable figures and the records that document their contributions.',keywords:['people','leaders','biography','history','activism'],source:'https://library-archives.canada.ca/'},
 {id:7,title:'Historic Communities and Migration',category:'Communities',type:'Community history',institution:'Nova Scotia Archives',location:'Nova Scotia',date:'Various periods',emoji:'🗺️',desc:'Explore settlement, migration and community connections across generations.',keywords:['migration','settlement','communities','history'],source:'https://archives.novascotia.ca/african-heritage/'},
 {id:8,title:'Civil Rights and Community Leadership',category:'Civil Rights',type:'Historical topic',institution:'Black Cultural Centre for Nova Scotia',location:'Nova Scotia',date:'20th century',emoji:'✊🏾',desc:'Explore stories of advocacy, resilience and leadership in Black communities.',keywords:['rights','activism','leaders','community'],source:'https://bccns.com/'}];
-const categories=[['Music','🎷','Jazz, gospel & artists'],['Communities','🏘️','Places & heritage'],['Civil Rights','✊🏾','Movements & milestones'],['People','👥','Leaders & pioneers']];let category='',search='';const $=id=>document.getElementById(id);function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function renderCategories(){$('categories').innerHTML=categories.map(([name,emoji,subtitle])=>`<button class="category ${category===name?'active':''}" data-cat="${esc(name)}"><div class="emoji">${emoji}</div><h3>${esc(name)}</h3><p>${esc(subtitle)}</p></button>`).join('');document.querySelectorAll('.category').forEach(b=>b.onclick=()=>{category=category===b.dataset.cat?'':b.dataset.cat;renderCategories();render();$('records').scrollIntoView({behavior:'smooth'})})}function render(){let matches=data.filter(r=>(!category||r.category===category)&&(!$('institution').value||r.institution===$('institution').value)&&(!$('type').value||r.type===$('type').value)&&(!search||[r.title,r.desc,r.category,r.institution,r.location,...r.keywords].join(' ').toLowerCase().includes(search)));$('count').textContent=`${matches.length} demonstration topic${matches.length===1?'':'s'} found${search?' for “'+search+'”':''}.`;$('results').innerHTML=matches.length?matches.map(r=>`<article class="record"><div class="art" aria-hidden="true">${r.emoji}</div><div class="record-content"><div class="tag">${esc(r.category)} · ${esc(r.type)}</div><h3>${esc(r.title)}</h3><p>${esc(r.desc)}</p><div class="meta">📍 ${esc(r.location)}<br>Potential source: ${esc(r.institution)}</div><button data-id="${r.id}">Explore topic →</button></div></article>`).join(''):'<div class="empty">No topics match these filters. Try another keyword or clear filters.</div>';document.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>openRecord(Number(b.dataset.id)))}function openRecord(id){let r=data.find(x=>x.id===id);$('modalContent').innerHTML=`<div class="tag">${esc(r.category)} · ${esc(r.type)}</div><h2 id="modalTitle">${esc(r.title)}</h2><p>${esc(r.desc)}</p><p><strong>Location:</strong> ${esc(r.location)}<br><strong>Period:</strong> ${esc(r.date)}</p><div class="source"><strong>Potential institution to explore:</strong><br>${esc(r.institution)}<p style="font-size:13px">This is an institutional starting point, not a verified source record for this topic.</p><a href="${esc(r.source)}" target="_blank" rel="noopener noreferrer">Visit institution website ↗</a></div><strong>Related topics</strong><p>${r.keywords.map(x=>`<span style="display:inline-block;background:#eee;padding:7px 10px;margin:4px;border-radius:20px;font-size:12px">${esc(x)}</span>`).join('')}</p>`;$('overlay').classList.add('show')};$('close').onclick=()=>$('overlay').classList.remove('show');$('overlay').onclick=e=>{if(e.target===$('overlay'))$('overlay').classList.remove('show')};document.addEventListener('keydown',e=>{if(e.key==='Escape')$('overlay').classList.remove('show')});$('searchForm').onsubmit=e=>{e.preventDefault();search=$('query').value.trim().toLowerCase();render();$('records').scrollIntoView({behavior:'smooth'})};$('institution').onchange=render;$('type').onchange=render;$('reset').onclick=()=>{category='';search='';$('query').value='';$('institution').value='';$('type').value='';renderCategories();render()};for(let key of ['institution','type']){let vals=[...new Set(data.map(r=>r[key]))].sort();$(key).innerHTML+=[...vals].map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}renderCategories();render();
+const categories=[['Music','🎷','Jazz, gospel & artists'],['Communities','🏘️','Places & heritage'],['Civil Rights','✊🏾','Movements & milestones'],['People','👥','Leaders & pioneers']];let category='',search='';const $=id=>document.getElementById(id);function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function renderCategories(){$('categories').innerHTML=categories.map(([name,emoji,subtitle])=>`<button class="category ${category===name?'active':''}" data-cat="${esc(name)}"><div class="emoji">${emoji}</div><h3>${esc(name)}</h3><p>${esc(subtitle)}</p></button>`).join('');document.querySelectorAll('.category').forEach(b=>b.onclick=()=>{category=category===b.dataset.cat?'':b.dataset.cat;renderCategories();render();$('records').scrollIntoView({behavior:'smooth'})})}function render(){let matches=data.filter(r=>(!category||r.category===category)&&(!$('institution').value||r.institution===$('institution').value)&&(!$('type').value||r.type===$('type').value)&&(!search||[r.title,r.desc,r.category,r.institution,r.location,...r.keywords].join(' ').toLowerCase().includes(search)));$('count').textContent=`${matches.length} demonstration topic${matches.length===1?'':'s'} found${search?' for “'+search+'”':''}.`;$('results').innerHTML=matches.length?matches.map(r=>`<article class="record"><div class="art" aria-hidden="true">${r.emoji}</div><div class="record-content"><div class="tag">${esc(r.category)} · ${esc(r.type)}</div><h3>${esc(r.title)}</h3><p>${esc(r.desc)}</p><div class="meta">📍 ${esc(r.location)}<br>Potential source: ${esc(r.institution)}</div><button data-id="${r.id}">Explore topic →</button></div></article>`).join(''):'<div class="empty">No topics match these filters. Try another keyword or clear filters.</div>';document.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>openRecord(Number(b.dataset.id)))}function openRecord(id){let r=data.find(x=>x.id===id);$('modalContent').innerHTML=`<div class="tag">${esc(r.category)} · ${esc(r.type)}</div><h2 id="modalTitle">${esc(r.title)}</h2><p>${esc(r.desc)}</p><p><strong>Location:</strong> ${esc(r.location)}<br><strong>Period:</strong> ${esc(r.date)}</p><div class="source"><strong>Potential institution to explore:</strong><br>${esc(r.institution)}<p style="font-size:13px">This is an institutional starting point, not a verified source record for this topic.</p><a href="${esc(r.source)}" target="_blank" rel="noopener noreferrer">Visit institution website ↗</a></div><strong>Related topics</strong><p>${r.keywords.map(x=>`<span style="display:inline-block;background:#eee;padding:7px 10px;margin:4px;border-radius:20px;font-size:12px">${esc(x)}</span>`).join('')}</p>`;$('overlay').classList.add('show')};$('close').onclick=()=>$('overlay').classList.remove('show');$('overlay').onclick=e=>{if(e.target===$('overlay'))$('overlay').classList.remove('show')};document.addEventListener('keydown',e=>{if(e.key==='Escape')$('overlay').classList.remove('show')});$('searchForm').onsubmit=e=>{e.preventDefault();search=$('query').value.trim().toLowerCase();render();$('records').scrollIntoView({behavior:'smooth'})};$('institution').onchange=render;$('type').onchange=render;$('reset').onclick=()=>{category='';search='';$('query').value='';$('institution').value='';$('type').value='';renderCategories();render()};for(let key of ['institution','type']){let vals=[...new Set(data.map(r=>r[key]))].sort();$(key).innerHTML+=[...vals].map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}rootsApproved.forEach(record => {
+  if (!data.some(existing => Number(existing.id) === Number(record.id))) {
+    data.push(record);
+  }
+});
+
+renderCategories();
+render();
+renderRootsReviewQueue();
 </script></body></html>

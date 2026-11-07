@@ -56,7 +56,7 @@ files.download("item_records.json")
 #print(saved_records)
 
 #open file to read it
-with open("item_records.json", "r", encoding="utf-8") as file:
+with open("record_collection_file.json", "r", encoding="utf-8") as file:
     records = json.load(file)
 
 
@@ -89,3 +89,4 @@ while True:
 
     if not found:
         print("No matching records found.\n")
+

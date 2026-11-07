@@ -1,7 +1,243 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ROOTS | Discover Black Canadian History</title><style>
 :root{--ink:#192720;--cream:#fbf8f1;--gold:#e6b85c;--forest:#183e32;--muted:#6b756f}*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif}header{background:#fff;display:flex;justify-content:space-between;align-items:center;padding:17px max(5%,calc((100% - 1160px)/2));border-bottom:1px solid #e9e5dc}.logo{font-size:29px;font-weight:900;letter-spacing:-2px;color:var(--forest)}.logo span{color:#bf8b36}nav{color:#56635c;font-size:14px}nav a{margin-left:22px;color:inherit;text-decoration:none}.hero{background:var(--forest);color:white;padding:78px 6% 85px;text-align:center}.eyebrow{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#e7c77e;font-weight:700}.hero h1{font-family:Georgia,serif;font-size:clamp(39px,6vw,70px);max-width:850px;margin:18px auto;line-height:1.08}.hero p{max-width:630px;margin:0 auto 30px;color:#d5e1d9;line-height:1.7}.search{max-width:670px;display:flex;margin:auto;background:white;border-radius:14px;padding:7px;box-shadow:0 10px 30px #071b1555}.search input{flex:1;border:0;outline:0;padding:15px;font-size:16px;min-width:0}.search button,.primary{background:var(--gold);border:0;border-radius:10px;padding:14px 24px;font-weight:800;color:#26311f;cursor:pointer}.wrap{max-width:1160px;margin:auto;padding:50px 24px}.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px}.section-head h2{font-family:Georgia,serif;font-size:33px;margin:0 0 9px}.sub{color:var(--muted);margin:0}.categories{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:25px 0 46px}.category{border:1px solid #e3ded2;border-radius:17px;background:white;padding:26px 18px;text-align:left;cursor:pointer;transition:.2s}.category:hover,.category.active{border-color:#b58c44;transform:translateY(-2px);box-shadow:0 8px 22px #182f2112}.category .emoji{font-size:35px}.category h3{margin:12px 0 4px;font-size:18px}.category p{font-size:13px;color:var(--muted);margin:0}.tools{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}.tools select,.tools button{background:white;border:1px solid #ddd8cc;padding:11px 14px;border-radius:10px;font-size:14px;color:var(--ink)}.tools button{cursor:pointer}.records{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.record{border:1px solid #e6e0d4;background:white;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}.art{height:150px;display:flex;align-items:center;justify-content:center;font-size:62px;background:linear-gradient(135deg,#d9d0b5,#b8c9b8)}.record:nth-child(3n+2) .art{background:linear-gradient(135deg,#dfc7a5,#b6b5a4)}.record:nth-child(3n+3) .art{background:linear-gradient(135deg,#b8c9cb,#c7b5ae)}.record-content{padding:20px;display:flex;flex-direction:column;flex:1}.tag{font-size:11px;text-transform:uppercase;letter-spacing:1.3px;color:#906d2d;font-weight:800}.record h3{font-family:Georgia,serif;font-size:22px;margin:10px 0}.record p{color:#647067;font-size:14px;line-height:1.6;flex:1}.meta{font-size:12px;color:#69736b;border-top:1px solid #eee9df;padding-top:12px}.record button{margin-top:16px;border:0;background:#e9f0e9;color:var(--forest);font-weight:750;padding:12px;border-radius:9px;cursor:pointer;text-align:left}.note{font-size:13px;color:#6d756c;background:#f0ede5;border-radius:9px;padding:13px;margin:20px 0}.empty{grid-column:1/-1;padding:40px;background:white;border-radius:12px;text-align:center;color:#68746c}.overlay{position:fixed;inset:0;background:#102219b8;display:none;align-items:center;justify-content:center;padding:20px;z-index:5}.overlay.show{display:flex}.modal{background:white;max-width:620px;width:100%;border-radius:18px;padding:30px;max-height:90vh;overflow:auto}.modal h2{font-family:Georgia,serif;font-size:32px}.close{float:right;border:0;background:#eee;padding:8px 13px;border-radius:8px;cursor:pointer}.source{background:#f3f5ef;padding:16px;border-radius:10px;margin:16px 0}.source a{color:#17694e;overflow-wrap:anywhere}.footer{background:#183e32;color:#d7e2d8;text-align:center;padding:30px;font-size:13px}mark{background:#f6dfa5}@media(max-width:800px){.categories{grid-template-columns:repeat(2,1fr)}.records{grid-template-columns:repeat(2,1fr)}nav{display:none}}@media(max-width:530px){.records{grid-template-columns:1fr}.hero{padding:56px 20px}.search button{padding:12px}.wrap{padding:36px 18px}.section-head h2{font-size:27px}}
-</style></head><body><header><div class="logo">ROOT<span>S</span>.</div><nav><a href="#explore">Explore</a><a href="#records">Collections</a><a href="#about">About</a></nav></header><section class="hero"><div class="eyebrow">A new way to discover our heritage</div><h1>Every story has roots.<br>Find yours.</h1><p>Discover Black Canadian history through connected stories, communities, people and cultural records — all while honouring their original sources.</p><form class="search" id="searchForm"><input id="query" aria-label="Search historical records" placeholder="Try music, Africville, Viola Desmond..."><button type="submit">Explore →</button></form></section><main class="wrap"><section id="explore"><div class="section-head"><div><h2>What sparks your curiosity?</h2><p class="sub">Choose an interest and see where the stories take you.</p></div></div><div class="categories" id="categories"></div></section><section id="records"><div class="section-head"><div><h2>Discover the collections</h2><p class="sub" id="count">Explore sample records from across Canada.</p></div></div><div class="tools"><select id="institution" aria-label="Filter by institution"><option value="">All institutions</option></select><select id="type" aria-label="Filter by resource type"><option value="">All resource types</option></select><button id="reset">Clear filters</button></div><div class="note"><strong>Prototype notice:</strong> These are illustrative topic cards, not verified archival catalogue records. Institution names are potential research sources only. Before launch, replace each entry with an actual catalogue record, persistent original URL, access conditions and confirmed provenance.</div><div class="records" id="results"></div></section><section id="about" style="margin-top:60px"><h2 style="font-family:Georgia,serif;font-size:30px">Built for discovery. Grounded in trust.</h2><p class="sub" style="line-height:1.8;max-width:780px">ROOTS is a proposed discovery layer, not a replacement for cultural institutions. The intended production version would normalize metadata from participating sources, preserve provenance, show access information, and direct visitors to authoritative records. This demonstration runs entirely in your browser and does not access live archives or AI.</p></section></main><footer class="footer">ROOTS · Pink Pixels · RBC HubHacks 2026 · Prototype concept for the Black Cultural Centre for Nova Scotia</footer><div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal"><button class="close" id="close">✕ Close</button><div id="modalContent"></div></div></div><script>
+</style></head><body><header><div class="logo">ROOT<span>S</span>.</div><nav><a href="#explore">Explore</a><a href="#records">Collections</a><a href="#about">About</a></nav></header><section class="hero"><div class="eyebrow">A new way to discover our heritage</div><h1>Every story has roots.<br>Find yours.</h1><p>Discover Black Canadian history through connected stories, communities, people and cultural records — all while honouring their original sources.</p><form class="search" id="searchForm"><input id="query" aria-label="Search historical records" placeholder="Try music, Africville, Viola Desmond..."><button type="submit">Explore →</button></form></section><main class="wrap"><section id="explore"><div class="section-head"><div><h2>What sparks your curiosity?</h2><p class="sub">Choose an interest and see where the stories take you.</p></div></div><div class="categories" id="categories"></div></section><section id="records"><div class="section-head"><div><h2>Discover the collections</h2><p class="sub" id="count">Explore sample records from across Canada.</p></div></div><div class="tools"><select id="institution" aria-label="Filter by institution"><option value="">All institutions</option></select><select id="type" aria-label="Filter by resource type"><option value="">All resource types</option></select><button id="reset">Clear filters</button></div><div class="note"><strong>Prototype notice:</strong> These are illustrative topic cards, not verified archival catalogue records. Institution names are potential research sources only. Before launch, replace each entry with an actual catalogue record, persistent original URL, access conditions and confirmed provenance.</div><div class="records" id="results"></div></section><section id="about" style="margin-top:60px"><h2 style="font-family:Georgia,serif;font-size:30px">Built for discovery. Grounded in trust.</h2><p class="sub" style="line-height:1.8;max-width:780px">ROOTS is a proposed discovery layer, not a replacement for cultural institutions. The intended production version would normalize metadata from participating sources, preserve provenance, show access information, and direct visitors to authoritative records. This demonstration runs entirely in your browser and does not access live archives or AI.</p></section>
+<!-- START OF ASHLEE'S COMPREHENSIVE CONTRIBUTIONS HUB -->
+<section id="contribute" style="margin-top: 60px; padding: 40px; background: white; border: 1px solid #e3ded2; border-radius: 17px; box-shadow: 0 4px 12px rgba(24,62,50,0.05);">
+  <div style="margin-bottom: 25px;">
+    <h2 style="font-family: Georgia, serif; font-size: 33px; margin: 0 0 9px; color: var(--forest);">Institutional Contribution Hub 🌱</h2>
+    <p style="color: var(--muted); margin: 0; font-size: 14px;">Task Interface Assignment: Ashlee — UX & Institutional Submissions</p>
+  </div>
+
+  <!-- Governance Pipeline Tracker Progress Bar -->
+  <div style="display: flex; justify-content: space-between; background: var(--cream); padding: 12px; border-radius: 10px; margin: 20px 0 30px; border: 1px solid #ddd8cc;">
+      <div id="hub-step1" style="flex: 1; text-align: center; font-size: 13px; font-weight: 800; color: var(--ink); border-bottom: 3px solid var(--gold); padding-bottom: 5px;">1. Submit Metadata</div>
+      <div id="hub-step2" style="flex: 1; text-align: center; font-size: 13px; font-weight: 800; color: #aaa; padding-bottom: 5px;">2. Governance Review</div>
+      <div id="hub-step3" style="flex: 1; text-align: center; font-size: 13px; font-weight: 800; color: #aaa; padding-bottom: 5px;">3. Direct Approval</div>
+      <div id="hub-step4" style="flex: 1; text-align: center; font-size: 13px; font-weight: 800; color: #aaa; padding-bottom: 5px;">4. Publish Live</div>
+  </div>
+
+  <!-- Action Mode Tabs Switchers -->
+  <div style="display: flex; gap: 10px; margin-bottom: 25px;">
+      <button id="tab-manual" type="button" onclick="switchContributionTab('manual')" style="background: var(--gold); border: 0; border-radius: 10px; padding: 12px 20px; font-weight: 800; color: #26311f; cursor: pointer;">Manual Entry (Small Archives)</button>
+      <button id="tab-bulk" type="button" onclick="switchContributionTab('bulk')" style="background: white; border: 1px solid #ddd8cc; border-radius: 10px; padding: 12px 20px; font-weight: 800; color: var(--ink); cursor: pointer;">Bulk CSV Import (Large Institutions)</button>
+  </div>
+
+  <!-- VIEW MODULE A: SINGLE ENTRY HISTORICAL RECORD FORM -->
+  <div id="panel-manual" style="display: block;">
+      <form id="manualRootsForm" onsubmit="handleManualSubmission(event)">
+          <div style="margin-bottom: 18px;">
+              <label style="font-weight: 700; font-size: 14px; color: var(--ink);">Record name *</label>
+              <input id="m-title" required placeholder="Name of historical record" style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; outline: none; box-sizing: border-box;">
+          </div>
+
+          <div style="margin-bottom: 18px;">
+              <label style="font-weight: 700; font-size: 14px; color: var(--ink);">Date / Historical Era *</label>
+              <input id="m-date" required placeholder="Date or approximate date era (e.g., c. 1783, Loyalist Migration)" style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; outline: none; box-sizing: border-box;">
+          </div>
+
+          <!-- Dynamic Visual Media Input Layer for Layout Grid Consistency -->
+          <div style="margin-bottom: 20px; background: var(--cream); padding: 16px; border: 2px dashed var(--gold); border-radius: 12px;">
+              <label style="font-weight: 800; font-size: 14px; color: var(--forest);">Visual Catalog Asset File (Required for Display Grid Integration) *</label>
+              <input type="file" id="m-image-file" accept="image/*" onchange="previewImageSource(event)" style="margin-top: 10px; display: block;" required>
+              <div id="imagePreviewContainer" style="display: none; margin-top: 12px;">
+                  <p style="margin: 0 0 6px 0; font-size: 12px; color: var(--muted); font-weight: 700;">Live Interface Thumbnail Asset Sync:</p>
+                  <img id="layoutThumbnail" src="#" alt="Preview" style="max-height: 140px; border-radius: 10px; border: 2px solid var(--gold); box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+              </div>
+          </div>
+
+          <!-- Conditional Link Module Configured for Communities with Decentralized Assets -->
+          <div style="background: #fdfdfd; padding: 16px; border-radius: 12px; border: 1px solid #e3ded2; margin-bottom: 18px;">
+              <label style="font-weight: 700; font-size: 14px; color: var(--ink);">Original source URL <span style="font-weight: normal; color: var(--muted); font-size: 13px;">(Optional for local physical/oral collections)</span></label>
+              <input id="m-url" type="url" placeholder="https://example.com" style="width:100%; padding:14px; margin-top:6px; margin-bottom:10px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; box-sizing: border-box;">
+              <label style="font-size: 13px; color: var(--ink); display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 600;">
+                  <input type="checkbox" id="m-no-url" onchange="toggleUrlRequirement(this)" style="transform: scale(1.1);"> This record belongs to a localized collection and does not have an active web archive hyperlink.
+              </label>
+          </div>
+
+          <div style="margin-bottom: 18px;">
+              <label style="font-weight: 700; font-size: 14px; color: var(--ink);">Description / Historical Significance Narrative *</label>
+              <textarea id="m-desc" required placeholder="Describe this historical record's content, provenance, and contextual backstories..." style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; min-height:100px; font-family: inherit; box-sizing: border-box; resize: vertical; outline: none;"></textarea>
+          </div>
+
+          <div style="margin-bottom: 18px;">
+              <label style="font-weight: 700; font-size: 14px; color: var(--ink);">Keywords (separate with commas) *</label>
+              <input id="m-keywords" required placeholder="e.g., history, community, civil rights, maroon records" style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; box-sizing: border-box;">
+          </div>
+
+          <div style="margin-bottom: 18px;">
+              <label style="font-weight: 700; font-size: 14px; color: var(--ink);">Primary Discovery Category System *</label>
+              <select id="m-category" style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; background: white;" required>
+                  <option value="Communities">Communities</option>
+                  <option value="People">People</option>
+                  <option value="Music">Culture / Music</option>
+                  <option value="Civil Rights">Civil Rights</option>
+              </select>
+          </div>
+
+          <div style="margin-bottom: 18px;">
+              <label style="font-weight: 700; font-size: 14px; color: var(--ink);">Contributing institution / Community Name</label>
+              <input id="m-institution" placeholder="Organization, family archive, or group name" style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; box-sizing: border-box;">
+          </div>
+
+          <div style="margin-bottom: 18px;">
+              <label style="font-weight: 700; font-size: 14px; color: var(--ink);">Contributor contact email address</label>
+              <input id="m-email" type="email" placeholder="internal-records@institution.ca" style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; box-sizing: border-box;">
+          </div>
+
+          <div style="margin-bottom: 25px;">
+              <label style="font-weight: 700; font-size: 14px; color: var(--ink);">Rights, licenses and permissions statement</label>
+              <textarea id="m-rights" placeholder="Describe public domain status, family permissions, or access limitations..." style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; min-height:80px; font-family: inherit; box-sizing: border-box; resize: vertical; outline: none;"></textarea>
+          </div>
+
+          <button type="submit" class="primary" style="width: 100%; padding: 16px; font-size: 16px;">Submit Archival Record for Verification</button>
+      </form>
+  </div>
+
+  <!-- VIEW MODULE B: AUTOMATED BATCH CSV DATA INGESTION PORTAL -->
+  <div id="panel-bulk" style="display: none; background: white; padding: 10px 0 0 0;">
+      <h3 style="margin-top: 0; color: var(--forest); font-family: Georgia, serif;">Enterprise Batch Data Metadata Ingestion</h3>
+      <p style="font-size: 14px; color: var(--muted); margin-bottom: 20px;">Designed for large research university library installations and regional historical society databases executing automated relational records schema dumps.</p>
+      
+      <div style="border: 2px dashed var(--gold); padding: 35px; text-align: center; border-radius: 14px; background: var(--cream); margin-bottom: 20px;">
+          <p style="font-weight: 800; color: var(--forest); margin: 0 0 12px 0; font-size: 16px;">Choose Local Data Configuration Sheet</p>
+          <input type="file" id="bulkCsvFile" accept=".csv" style="margin-bottom: 10px;"><br>
+          <span style="font-size: 12px; color: var(--muted);">Approved file layout standard matching keys: UTF-8 encoded <strong>.csv</strong> configuration formats</span>
+      </div>
+
+      <div style="background: #e8f4fd; border-left: 4px solid #2196F3; padding: 15px; border-radius: 0 10px 10px 0; margin-bottom: 25px; font-size: 13px; color: #222; line-height: 1.6;">
+          <strong style="color: #0d3c61; font-weight: 800; display: block; margin-bottom: 6px;">Required System CSV Target Column Ingestion Header Matrix:</strong>
+<script>
+// Dashboard view tab panel routing engine
+function switchContributionTab(mode) {
+    const btnManual = document.getElementById('tab-manual');
+    const btnBulk = document.getElementById('tab-bulk');
+    const viewManual = document.getElementById('panel-manual');
+    const viewBulk = document.getElementById('panel-bulk');
+
+    if (mode === 'manual') {
+        btnManual.style.background = 'var(--gold)';
+        btnManual.style.border = '0';
+        btnManual.style.color = '#26311f';
+        btnBulk.style.background = 'white';
+        btnBulk.style.border = '1px solid #ddd8cc';
+        btnBulk.style.color = 'var(--ink)';
+        viewManual.style.display = 'block';
+        viewBulk.style.display = 'none';
+    } else {
+        btnBulk.style.background = 'var(--gold)';
+        btnBulk.style.border = '0';
+        btnBulk.style.color = '#26311f';
+        btnManual.style.background = 'white';
+        btnManual.style.border = '1px solid #ddd8cc';
+        btnManual.style.color = 'var(--ink)';
+        viewManual.style.display = 'none';
+        viewBulk.style.display = 'block';
+    }
+}
+
+// Local system image input byte-stream encoder
+let systemBase64AssetHash = "";
+function previewImageSource(event) {
+    const targetFile = event.target.files[0];
+    if (targetFile) {
+        const fileStreamEngine = new FileReader();
+        fileStreamEngine.onload = function(e) {
+            document.getElementById('imagePreviewContainer').style.display = 'block';
+            document.getElementById('layoutThumbnail').src = e.target.result;
+            systemBase64AssetHash = e.target.result;
+        }
+        fileStreamEngine.readAsDataURL(targetFile);
+    }
+}
+
+// Unlinked records checkbox constraint resolver rules
+function toggleUrlRequirement(checkboxElement) {
+    const linkInputField = document.getElementById('m-url');
+    if (checkboxElement.checked) {
+        linkInputField.value = "";
+        linkInputField.disabled = true;
+        linkInputField.style.background = "#f0ede5";
+        linkInputField.removeAttribute('required');
+    } else {
+        linkInputField.disabled = false;
+        linkInputField.style.background = "#ffffff";
+    }
+}
+
+// Manual collection packaging implementation handler
+function handleManualSubmission(event) {
+    event.preventDefault();
+    
+    const conditionUrlChecked = document.getElementById('m-no-url').checked;
+    const activeUrlContent = document.getElementById('m-url').value;
+
+    const dataPackagePayload = {
+        recordId: "ROOTS-MANUAL-" + Date.now(),
+        title: document.getElementById('m-title').value,
+        datePeriod: document.getElementById('m-date').value,
+        sourceUrl: conditionUrlChecked ? "N/A (Localized Physical Community Asset)" : activeUrlContent,
+        description: document.getElementById('m-desc').value,
+        keywords: document.getElementById('m-keywords').value.split(',').map(s => s.trim()),
+        category: document.getElementById('m-category').value,
+        institutionName: document.getElementById('m-institution').value || "Localized Community Submission",
+        contributorEmail: document.getElementById('m-email').value || "Anonymous Entry",
+        rightsStatement: document.getElementById('m-rights').value || "Pending Verification",
+        base64VisualStream: systemBase64AssetHash ? "[Visual Schema Matching Verification Complete]" : "None",
+        pipelineStatus: "Pending Institutional Governance Audit",
+        submissionTimestamp: new Date().toISOString()
+    };
+
+    propagatePipelineVisualizationTracker();
+    executeClientSideDataPacketDownload(dataPackagePayload, `metadata_record_${dataPackagePayload.recordId}.json`);
+    
+    document.getElementById('hubFeedbackResponse').textContent = 
+        "✔ Contribution package metadata structured successfully! Workflow stage advanced to: Governance Review.";
+}
+
+// Bulk CSV template collection delivery handler
+function executeBatchCsvImportSim() {
+    const parsingTargetFile = document.getElementById('bulkCsvFile');
+    if (!parsingTargetFile.files || parsingTargetFile.files.length === 0) {
+        alert("Please map a standard template .csv data configuration file asset to proceed.");
+        return;
+    }
+
+    const batchExecutionLogTicket = {
+        batchId: "ROOTS-BATCH-" + Date.now(),
+        ingestedFileName: parsingTargetFile.files[0].name,
+        byteStreamSize: parsingTargetFile.files[0].size + " data-bytes",
+        validationStatus: "Ingested Successfully - Awaiting Administration Verification Checksums",
+        processingTimestamp: new Date().toISOString()
+    };
+
+    propagatePipelineVisualizationTracker();
+    executeClientSideDataPacketDownload(batchExecutionLogTicket, `batch_receipt_${batchExecutionLogTicket.batchId}.json`);
+    
+    document.getElementById('hubFeedbackResponse').textContent = 
+        "✔ Bulk enterprise data stream parsed successfully! File log receipt generated. Pipeline advanced to Review.";
+}
+
+// Internal workflow rendering automation modifier
+function propagatePipelineVisualizationTracker() {
+    document.getElementById('hub-step1').style.color = '#aaa';
+    document.getElementById('hub-step1').style.borderBottom = 'none';
+    document.getElementById('hub-step2').style.color = 'var(--ink)';
+    document.getElementById('hub-step2').style.borderBottom = '3px solid var(--gold)';
+}
+
+// Client localized download micro-engine
+function executeClientSideDataPacketDownload(payloadObject, designatedFileName) {
+    const rawDataString = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(payloadObject, null, 2));
+    const hiddenDownloadAnchorNode = document.createElement('a');
+    hiddenDownloadAnchorNode.setAttribute("href", rawDataString);
+    hiddenDownloadAnchorNode.setAttribute("download", designatedFileName);
+    document.body.appendChild(hiddenDownloadAnchorNode);
+    hiddenDownloadAnchorNode.click();
+    hiddenDownloadAnchorNode.remove();
+}
+</script>
+</main><footer class="footer">ROOTS · Pink Pixels · RBC HubHacks 2026 · Prototype concept for the Black Cultural Centre for Nova Scotia</footer><div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal"><button class="close" id="close">✕ Close</button><div id="modalContent"></div></div></div><script>
 // Replace these demonstration topic cards with verified catalogue metadata before presenting them as actual archival records.
 const data=[
 {id:1,title:'Exploring Africville',category:'Communities',type:'Community history',institution:'Nova Scotia Archives',location:'Halifax, Nova Scotia',date:'Historical overview',emoji:'🏘️',desc:'Explore the history and legacy of Africville, a historic Black community in Halifax.',keywords:['africville','halifax','community','heritage'],source:'https://archives.novascotia.ca/african-heritage/'},

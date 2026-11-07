@@ -59,22 +59,33 @@ files.download("item_records.json")
 with open("item_records.json", "r", encoding="utf-8") as file:
     records = json.load(file)
 
-keyword = input("Enter one keyword for research: ").strip().lower()
 
-found = False
+# loop asking for keyword
+while True:
+    keyword = input(
+        "Enter a keyword (or type 'done' to finish): "
+    ).strip().lower()
 
-if keyword:
+    if keyword == "done":
+        print("Search finished.")
+        break
+
+    if not keyword:
+        print("Please enter a keyword.")
+        continue
+
+    # Reset for each new search
+    found = False
+
     for record in records:
         description = record.get("description", "")
 
         if keyword in description.lower():
             print("Name:", record.get("name", "No name provided"))
-            print("source URL:", record.get("source", "No URL provided"))
+            print("URL:", record.get("source", "No URL provided"))
             print()
 
             found = True
 
     if not found:
-        print("No matching records found.")
-else:
-    print("Please enter a keyword.")
+        print("No matching records found.\n")

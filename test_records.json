@@ -1,0 +1,11 @@
+[
+  {
+    "title": "ROOTS Import Test",
+    "institution": "Test Institution",
+    "sourceURL": "https://example.org/",
+    "date": "1946",
+    "location": "Halifax, Nova Scotia",
+    "type": "Test record",
+    "description": "A test of cross-institution metadata search. This is synthetic test data, not a historical record."
+  }
+]

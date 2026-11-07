@@ -6,25 +6,36 @@ item_record_collection = []
 
 #metadata structure
 #loop to add elements to the list
+
 while True:
-  name = input("Please enter the name of the record or type 'stop' to finish: ").strip()
-  if name.lower() == "stop":
-    #exit the loop
-    break
+    # Collect all the information
+      name = input("Please enter the name of the record: ").strip()
+      date = input("Please enter the date: ")
+      source = input("Please enter the URL to the original page: ")
+      description = input("Please enter a short description of the item: ")
+     
 
-date = input("Please enter the date: ")
-source = input("Please enter the URL to the original page: ")
-description = input("Please enter a short description of the item: ")
-key_words = ("Please write keywords (seperated by a comma) for quick reseach: ")
+    # Create the record
+      item_record = {
+        "name": name,
+        "date": date,
+        "source": source,
+        "description": description,
+    }
 
-item_record = {
-"name" : name,
-"date": date,
-"source": source,
-"description": description,
-#put in array, and each elements are seperated by a comma
-"key_words" : [key.strip() for key in key_words.split(",") if key.strip()]
-}
+    # Add the completed record to the collection
+      item_record_collection.append(item_record)
+      print("Entry added! Thank you :)")
+
+    # loop condition
+      loop = input("Add another record? (yes/no): ").strip().lower()
+
+      while loop not in ["yes", "no"]:
+        loop = input("Please enter yes or no: ").strip().lower()
+
+      if loop == "no":
+        break
+
 
 #add the entries to the library
 item_record_collection.append(item_record)

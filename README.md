@@ -201,8 +201,10 @@ Features described as planned are not necessarily implemented in the current pro
 ## How to Run the Current Prototype
 
 1. Download or clone this GitHub repository.
-2. Locate `roots_prototype.html`.
-3. Open the file in a modern web browser.
+2. Open `index.html` in a modern web browser.
+3. On the Search page, expand **Import historical metadata (JSON)** to import a JSON array of records with `title`, `institution`, and `sourceURL`. The importer rejects incomplete or invalid-URL rows and reports skipped duplicates.
+4. Imported records can include `accessStatus` (`Public`, `Educational`, `By request`, `Online`, `Available by request`, `On-site only`, or `Unknown`) and `contactEmail`. Restricted record-detail pages hide previews and show an email request link when a contact address is provided.
+5. This is a browser-only prototype: imported records are not persisted or verified; access labels and preview hiding are **not server-enforced security**. Do not upload sensitive or restricted assets into the public dataset.
 
 Additional instructions will be provided as new components and backend functionality are integrated.
 

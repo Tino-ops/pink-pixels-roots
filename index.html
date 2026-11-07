@@ -96,7 +96,7 @@ window.ROOTS_UI = (() => {
       <div class="submission-top"><span class="submission-status">UNVERIFIED DRAFT</span><span>${escape(item.category)}</span></div>
       <h3>${escape(item.title)}</h3>
       <p>${escape(item.description)}</p>
-      <dl><div><dt>Location</dt><dd>${escape(item.location || 'Not provided')}</dd></div><div><dt>Period</dt><dd>${escape(item.period || 'Not provided')}</dd></div><div><dt>Suggested institution</dt><dd>${escape(item.institution || 'Not provided')}</dd></div></dl>
+      <dl><div><dt>Location</dt><dd>${escape(item.location || 'Not provided')}</dd></div><div><dt>Period</dt><dd>${escape(item.period || 'Not provided')}</dd></div><div><dt>Suggested institution</dt><dd>${escape(item.institution || 'Not provided')}</dd></div><div><dt>Keywords</dt><dd>${escape((item.keywords || []).join(', ') || 'Not provided')}</dd></div><div><dt>Rights / permissions</dt><dd>${escape(item.rights || 'Not provided')}</dd></div></dl>
       ${item.sourceURL ? `<a class="draft-source" href="${escape(item.sourceURL)}" target="_blank" rel="noopener noreferrer">View suggested source ↗</a>` : ''}
       <div class="submission-actions"><button type="button" data-export="${escape(item.id)}">Download JSON</button><button type="button" data-remove="${escape(item.id)}">Delete draft</button></div>
     </article>`).join('');
@@ -106,7 +106,7 @@ window.ROOTS_UI = (() => {
       <div class="contribute-guide"><span class="section-kicker">SHARE A STORY</span><h2>Help preserve a piece of history.</h2>
         <p>Know a person, community, event, or collection that deserves to be discovered? Add what you know and include the original source where possible.</p>
         <div class="notice"><strong>Prototype:</strong> Your entries are saved as drafts in this browser only. Nothing is uploaded, published, or sent to ROOTS. The team will need a secure submission API and a review process before accepting public contributions.</div>
-        <div class="contribute-steps"><strong>What happens next?</strong><p>1. Fill out the story details.</p><p>2. Save it and preview your draft below.</p><p>3. Download its JSON file to share with the team.</p></div>
+        <div class="contribute-steps"><strong>Contribution workflow</strong><p>1. Submit: fill out the record details and save a local draft.</p><p>2. Review: export JSON and share it with the ROOTS team for institutional verification.</p><p>3. Approve: an authorized institution would check sources, rights and permissions.</p><p>4. Publish: only approved records would be added to the public collection.</p><p><strong>Prototype limitation:</strong> review, approval and publication are proposed steps, not automated features.</p></div>
       </div>
       <form class="contribute-form" id="contribute-form">
         <div class="form-heading"><span class="section-kicker">COMMUNITY CONTRIBUTIONS</span><h2>Tell us your story</h2><p>Fields marked * are required.</p></div>
@@ -115,7 +115,10 @@ window.ROOTS_UI = (() => {
         <label>Location<input name="location" placeholder="City, province, or community" maxlength="120"></label>
         <label>What is the story? *<textarea name="description" rows="6" placeholder="Share the details, why this history matters, and what you know about it..." maxlength="3000" required></textarea></label>
         <label>Original institution or archive<input name="institution" placeholder="e.g. Nova Scotia Archives" maxlength="150"></label>
-        <label>Source link<input name="sourceURL" type="url" placeholder="https://..." maxlength="500"></label>
+        <label>Original source URL<input name="sourceURL" type="url" placeholder="https://..." maxlength="500"></label>
+        <label>Keywords (comma-separated)<input name="keywords" placeholder="e.g. community, culture, civil rights" maxlength="300"></label>
+        <label>Rights and permissions information<textarea name="rights" placeholder="Copyright, permissions, or access restrictions (if known)" maxlength="1500"></textarea></label>
+        <label>Contributor email <span>(optional, stored only on your device)</span><input name="email" type="email" placeholder="name@example.com" maxlength="200"></label>
         <label>Your name <span>(optional, stored only on your device)</span><input name="contributor" placeholder="Your name" maxlength="80"></label>
         <label class="contribution-consent"><input type="checkbox" required name="acknowledge"> <span>I understand this is an unverified draft stored in my browser, not a published historical record.</span></label>
         <button class="btn btn-dark" type="submit">Save my draft →</button>
@@ -144,7 +147,7 @@ window.ROOTS_UI = (() => {
       if (!title || !description) { feedback.textContent = 'Please enter a title and description.'; return; }
       const url = String(raw.sourceURL || '').trim();
       if (url) { try { const parsed = new URL(url); if (!['https:', 'http:'].includes(parsed.protocol)) throw new Error('invalid'); } catch { feedback.textContent = 'Please enter a valid http(s) source link.'; return; } }
-      const item = { id: 'draft-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7), status: 'unverified-draft', title, description, category: raw.category, period: raw.period?.trim() || '', location: raw.location?.trim() || '', institution: raw.institution?.trim() || '', sourceURL: url, contributor: raw.contributor?.trim() || '', createdAt: new Date().toISOString() };
+      const item = { id: 'draft-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7), status: 'unverified-draft', title, description, category: raw.category, period: raw.period?.trim() || '', location: raw.location?.trim() || '', institution: raw.institution?.trim() || '', sourceURL: url, keywords: String(raw.keywords || '').split(',').map(x => x.trim()).filter(Boolean), rights: raw.rights?.trim() || '', contributor: raw.contributor?.trim() || '', email: raw.email?.trim() || '', createdAt: new Date().toISOString() };
       const existing = load();
       if (existing.some(previous => isDuplicate(previous, item))) {
         feedback.textContent = 'This story is already in your drafts. You can edit the original instead of adding a duplicate.';

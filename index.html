@@ -292,7 +292,28 @@ let rootsMap=null;
 function initDiscoveryMap(){
   const container=document.getElementById('heritage-map');
   if(!container)return;
-  if(!window.L){container.textContent='Map could not load. Check your internet connection; location links remain available in the story list.';return;}
+  if(!window.L){
+    // Offline-safe map fallback when Leaflet CDN is blocked (common for file:// previews).
+    const places=mappedRecords();
+    container.innerHTML='<div role="img" aria-label="Approximate Canadian heritage locations" style="position:relative;min-height:360px;background:linear-gradient(145deg,#d8e8e0,#b8d4cf);border-radius:12px;overflow:hidden"><div style="position:absolute;top:14px;left:14px;font-weight:700;color:#183e32">Canada · approximate locations</div><div id="offline-map-markers"></div><p style="position:absolute;bottom:8px;left:12px;right:12px;font-size:12px;color:#183e32;background:#ffffffd9;padding:7px;border-radius:6px">Offline preview: markers show approximate positions. Connect to the internet for detailed map tiles.</p></div>';
+    const holder=container.querySelector('#offline-map-markers');
+    const dots=new Map();
+    places.forEach(r=>{
+      const lat=Number(r.coordinates[0]),lon=Number(r.coordinates[1]);
+      const dot=document.createElement('button');
+      dot.type='button';dot.title=r.title+' — '+r.location;
+      dot.setAttribute('aria-label','View '+r.title+' on the map');
+      dot.style.cssText='position:absolute;left:'+Math.max(4,Math.min(96,(lon+141)/89*100))+'%;top:'+Math.max(12,Math.min(82,(70-lat)/28*75+9))+'%;transform:translate(-50%,-50%);border:2px solid white;background:#b27b24;color:white;border-radius:50%;width:23px;height:23px;cursor:pointer;box-shadow:0 2px 6px #0005';
+      dot.textContent='•';
+      dot.addEventListener('click',()=>{document.getElementById('map-message').textContent=r.title+' — '+r.location+'. Open the story from the location list.';});
+      holder.appendChild(dot);dots.set(String(r.id),dot);
+    });
+    const filter=document.getElementById('province-filter');
+    if(filter)filter.addEventListener('change',()=>{const selected=filter.value;document.querySelectorAll('[data-discovery-place]').forEach(btn=>{const r=places.find(x=>String(x.id)===btn.dataset.discoveryPlace);btn.hidden=Boolean(selected&&r&&!r.location.endsWith(selected));});dots.forEach((dot,id)=>{const r=places.find(x=>String(x.id)===id);dot.hidden=Boolean(selected&&r&&!r.location.endsWith(selected));});});
+    document.querySelectorAll('[data-discovery-place]').forEach(btn=>btn.addEventListener('click',()=>{const r=places.find(x=>String(x.id)===btn.dataset.discoveryPlace);if(r)document.getElementById('map-message').textContent=r.title+' — '+r.location+'. Open the story from Explore.';}));
+    const nearby=document.getElementById('roots-nearme');if(nearby)nearby.addEventListener('click',()=>{document.getElementById('roots-geo-status').textContent='Detailed near-me mapping requires an internet connection. Choose a province or a location instead.';});
+    return;
+  }
   if(rootsMap){rootsMap.remove();rootsMap=null;}
   rootsMap=L.map(container,{scrollWheelZoom:false}).setView([55,-102],4);
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap contributors'}).addTo(rootsMap);

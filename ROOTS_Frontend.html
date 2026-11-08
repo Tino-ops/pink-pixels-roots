@@ -1,1945 +1,780 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ROOTS | Black Canadian History</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<!-- ROOTS DISCOVERY UPDATES -->
+<!-- Keep all existing HTML, CSS and JavaScript unchanged. -->
 
 <style>
-:root {
-  --forest: #102a23;
-  --gold: #ddb05f;
-  --cream: #faf7ef;
-  --paper: #fffefa;
-  --text: #1c2824;
-  --muted: #6e766f;
-  --line: #e5e2d9;
-}
-
-* { box-sizing: border-box; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  margin: 0;
-  background: var(--cream);
-  color: var(--text);
-  font-family: 'DM Sans', Arial, sans-serif;
-}
-
-h1, h2, h3, p { margin-top: 0; }
-
-a { color: inherit; text-decoration: none; }
-
-button, input, select, textarea { font: inherit; }
-
-button { cursor: pointer; }
-
-.content {
-  max-width: 1190px;
-  width: calc(100% - 60px);
-  margin: auto;
-}
-
-/* HEADER */
-
-header {
-  background: var(--paper);
-  padding: 20px 5%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--line);
-}
-
-.logo {
-  font-size: 32px;
-  font-weight: 800;
-  letter-spacing: -2px;
-  color: var(--forest);
-}
-
-.logo span { color: #bd8740; }
-
-nav {
-  display: flex;
-  gap: 25px;
-}
-
-nav a {
-  font-size: 13px;
-  font-weight: 700;
-  color: #4e5c55;
-}
-
-nav a:hover, nav a.active { color: #ac7a33; }
-
-.menu-button {
-  display: none;
-  border: none;
-  background: var(--forest);
-  color: white;
-  padding: 10px 15px;
-}
-
-/* HERO */
-
-.hero {
-  background: var(--forest);
-  color: white;
-  display: grid;
-  grid-template-columns: 54% 46%;
-  min-height: 540px;
-}
-
-.hero-content {
-  padding: 90px 8%;
-  align-self: center;
-}
-
-.eyebrow {
-  color: var(--gold);
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-.hero h1 {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: clamp(45px, 5.5vw, 75px);
-  line-height: 1.1;
-  margin: 25px 0;
-}
-
-.hero h1 em { color: var(--gold); }
-
-.hero p {
-  color: #d2ded7;
-  line-height: 1.8;
-  max-width: 520px;
-  margin-bottom: 30px;
-}
-
-.hero-image {
-  position: relative;
-  overflow: hidden;
-  background: #334c40;
-}
-
-.hero-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: sepia(.2) grayscale(.3);
-}
-
-.hero-caption {
-  position: absolute;
-  bottom: 35px;
-  left: 35px;
-  color: white;
-  background: #102a23b8;
-  padding: 15px 20px;
-}
-
-.hero-caption strong {
-  font-family: Georgia, serif;
-  font-size: 23px;
-}
-
-/* SEARCH */
-
-.search-form {
-  display: flex;
-  background: white;
-  padding: 6px;
-  border-radius: 5px;
-  max-width: 600px;
-}
-
-.search-form input {
-  flex: 1;
-  min-width: 0;
-  border: none;
-  outline: none;
-  padding: 15px;
-  font-size: 13px;
-}
-
-.search-form button {
-  background: var(--gold);
-  color: var(--forest);
-  border: none;
-  padding: 14px 22px;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-/* GENERAL */
-
-section.block { padding: 75px 0; }
-
-.section-heading {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 36px;
-  margin-bottom: 13px;
-}
-
-.subtitle {
-  color: var(--muted);
-  line-height: 1.8;
-}
-
-.page-heading {
-  background: var(--forest);
-  color: white;
-  padding: 75px 0;
-}
-
-.page-heading h1 {
-  font: 600 clamp(38px, 5vw, 60px) 'Playfair Display', Georgia, serif;
-  margin: 15px 0;
-}
-
-.page-heading p {
-  color: #cedcd1;
-  line-height: 1.8;
-  max-width: 680px;
-}
-
-/* CATEGORIES */
-
-.category-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-top: 30px;
-}
-
-.category-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 240px;
-  padding: 25px;
-  color: white;
-  background-color: var(--forest);
-  background-size: cover;
-  background-position: center;
-}
-
-.category-card h3 {
-  font: 600 29px 'Playfair Display', Georgia, serif;
-  margin: 0 0 8px;
-}
-
-.category-card p {
-  font-size: 12px;
-  color: #f0f0e9;
-}
-
-.category-card:hover { transform: translateY(-3px); }
-
-.community-image {
-  background-image:
-    linear-gradient(#122f23ad, #122f23dd),
-    url('https://archives-novascotia.shop/cdn/shop/files/200715051.jpg?v=1698925353&width=1946');
-}
-
-.people-image {
-  background-image:
-    linear-gradient(#122f23aa, #122f23dd),
-    url('https://www.bankofcanada.ca/wp-content/uploads/2016/04/Viola-Desmond.jpg');
-}
-
-.culture-image {
-  background-image:
-    linear-gradient(#122f23ad, #122f23dd),
-    url('https://archives.novascotia.ca/images/africville/200715098.jpg');
-}
-
-/* FILTERS */
-
-.filter-panel {
-  background: #efeee8;
-  border: 1px solid var(--line);
-  padding: 25px;
-  margin: 30px 0;
-}
-
-.filter-panel h3 {
-  font-family: Georgia, serif;
-  font-size: 23px;
-}
-
-.filter-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-}
-
-.filter-group label {
-  display: block;
-  font-size: 12px;
-  font-weight: 800;
-  margin-bottom: 8px;
-  color: var(--forest);
-}
-
-.filter-group select {
-  width: 100%;
-  min-width: 0;
-  padding: 12px;
-  background: white;
-  border: 1px solid #d6d7ce;
-  color: var(--text);
-}
-
-.clear-button, .dark-button {
-  background: var(--forest);
-  color: white;
-  border: none;
-  padding: 13px 20px;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.clear-button { margin-top: 20px; }
-
-.results-info {
-  display: flex;
-  justify-content: space-between;
-  border-top: 1px solid var(--line);
-  padding-top: 18px;
-  margin: 25px 0;
-  font-size: 13px;
-  color: var(--muted);
-}
-
-/* HISTORICAL RECORDS */
-
-.record-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 22px;
-}
-
-.record-card {
-  background: white;
-  border: 1px solid var(--line);
-  display: flex;
-  flex-direction: column;
-}
-
-.record-photo {
-  height: 210px;
-  background: #d4dccc;
-  overflow: hidden;
-}
-
-.record-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: grayscale(.35) sepia(.15);
-}
-
-.image-fallback {
-  width: 100%;
-  min-height: 100%;
-  background: linear-gradient(135deg, #cbd5c8, #91a996);
-  color: #294538;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font: 600 20px Georgia, serif;
-  text-align: center;
-  padding: 20px;
-}
-
-.record-content {
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.record-category {
-  font-size: 10px;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: #94703b;
-  font-weight: 800;
-}
-
-.record-content h3 {
-  font: 600 23px/1.3 'Playfair Display', Georgia, serif;
-  margin: 13px 0;
-}
-
-.record-description {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.8;
-  flex: 1;
-}
-
-.record-meta {
-  border-top: 1px solid var(--line);
-  padding-top: 15px;
-  font-size: 12px;
-  line-height: 1.8;
-  color: #566358;
-}
-
-.access-label {
-  display: inline-block;
-  background: #e5ede3;
-  color: #204a36;
-  padding: 7px 10px;
-  font-size: 11px;
-  font-weight: 800;
-  margin-top: 12px;
-}
-
-.record-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 18px;
-}
-
-.record-actions a {
-  font-size: 12px;
-  color: var(--forest);
-  font-weight: 800;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.record-actions .details-link {
-  background: var(--forest);
-  color: white;
-  padding: 13px;
-  text-decoration: none;
-  text-align: center;
-}
-
-.source-missing {
-  color: var(--muted);
-  font-size: 12px;
-}
-
-/* RECORD DETAILS */
-
-.details-layout {
-  display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  gap: 60px;
-}
-
-.detail-image {
-  width: 100%;
-  height: 400px;
-  object-fit: cover;
-}
-
-.details-main h2 {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 32px;
-  margin-top: 35px;
-}
-
-.details-main p {
-  color: #526057;
-  line-height: 2;
-}
-
-.details-panel {
-  background: #eaece3;
-  padding: 30px;
-}
-
-.details-panel h3 {
-  font-family: Georgia, serif;
-  font-size: 24px;
-}
-
-.details-panel dt {
-  font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
-  color: #798379;
-  letter-spacing: 1px;
-  margin-top: 20px;
-}
-
-.details-panel dd {
-  margin: 7px 0;
-  font-size: 14px;
-  line-height: 1.7;
-  overflow-wrap: anywhere;
-}
-
-.details-panel .dark-button {
-  display: block;
-  text-align: center;
-  margin-top: 25px;
-}
-
-.detail-notice {
-  background: #f0eadd;
-  padding: 18px;
-  font-size: 12px;
-  color: #706951;
-  line-height: 1.7;
-  margin-top: 25px;
-}
-
-.source-note {
-  font-size: 12px;
-  line-height: 1.7;
-  color: var(--muted);
-}
-
-/* TIMELINE */
-
-.timeline-item {
-  display: grid;
-  grid-template-columns: 110px 1fr;
-  gap: 30px;
-  border-bottom: 1px solid var(--line);
-  padding: 28px 0;
-}
-
-.timeline-year {
-  color: #98753e;
-  font: 600 29px Georgia, serif;
-}
-
-.timeline-item h3 {
-  font: 600 24px Georgia, serif;
-}
-
-.timeline-item p {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.8;
-}
-
-/* MAP */
-
-.map-layout {
-  display: grid;
-  grid-template-columns: 310px 1fr;
-  gap: 20px;
-}
-
-.map-list {
-  background: white;
-  border: 1px solid var(--line);
-  padding: 20px;
-}
-
-.map-list button {
-  display: block;
-  width: 100%;
-  padding: 15px 5px;
-  text-align: left;
-  border: 0;
-  border-bottom: 1px solid var(--line);
-  background: white;
-  color: var(--forest);
-}
-
-.map-list button:hover { background: #eff1e9; }
-
-.map-list small {
-  display: block;
-  color: var(--muted);
-  margin-top: 6px;
-}
-
-.map-frame {
-  width: 100%;
-  height: 480px;
-  border: 1px solid var(--line);
-}
-
-/* CONTRIBUTIONS */
-
-.contribution-form {
-  background: white;
-  padding: 35px;
-  border: 1px solid var(--line);
-  max-width: 800px;
-  margin: 30px auto;
-}
-
-.contribution-form label {
-  display: block;
-  font-size: 13px;
-  font-weight: 800;
-  margin-bottom: 20px;
-}
-
-.contribution-form input,
-.contribution-form select,
-.contribution-form textarea {
-  display: block;
-  width: 100%;
-  padding: 13px;
-  border: 1px solid #d6d8ce;
-  margin-top: 8px;
-  background: white;
-}
-
-.contribution-form textarea { resize: vertical; }
-
-.notice {
-  padding: 18px;
-  background: #ebe7da;
-  color: #726647;
-  font-size: 12px;
-  line-height: 1.8;
-  margin: 20px 0;
-}
-
-.empty-state {
-  grid-column: 1 / -1;
-  background: white;
-  padding: 50px;
-  text-align: center;
-  color: var(--muted);
-}
-
-/* FOOTER */
-
-footer {
-  background: var(--forest);
-  color: #d7e2d8;
-  text-align: center;
-  padding: 40px;
-  font-size: 13px;
-}
-
-footer .logo { color: white; }
-
-/* MOBILE */
-
-@media (max-width: 950px) {
-  .hero { grid-template-columns: 1fr; }
-  .hero-image { height: 350px; }
-
-  .record-grid,
-  .category-grid,
-  .filter-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .roots-import {
+    max-width: 800px;
+    margin: 24px auto 45px;
+    background: white;
+    padding: 26px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
   }
 
-  .details-layout { grid-template-columns: 1fr; }
-
-  .map-layout { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 650px) {
-  header { flex-wrap: wrap; }
-
-  .menu-button { display: block; }
-
-  nav {
-    display: none;
-    flex-direction: column;
-    width: 100%;
-    padding-top: 20px;
+  .roots-import h2 {
+    margin: 0 0 12px;
+    font-family: Georgia, serif;
   }
 
-  nav.open { display: flex; }
-
-  .content { width: calc(100% - 36px); }
-
-  .hero-content { padding: 65px 22px; }
-
-  .hero h1 { font-size: 53px; }
-
-  .record-grid,
-  .category-grid,
-  .filter-grid {
-    grid-template-columns: 1fr;
+  .roots-import p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
   }
 
-  .search-form button { padding: 12px; }
-
-  .page-heading { padding: 55px 0; }
-
-  .page-heading h1 { font-size: 36px; }
-
-  .timeline-item {
-    grid-template-columns: 75px 1fr;
-    gap: 15px;
+  .roots-import input {
+    max-width: 100%;
+    margin: 12px 0;
+    display: block;
   }
 
-  .timeline-year { font-size: 20px; }
+  .roots-import button {
+    background: var(--forest);
+    color: white;
+    border: 0;
+    border-radius: 6px;
+    padding: 12px 18px;
+    font-weight: 700;
+  }
 
-  .contribution-form { padding: 20px; }
-}
+  .roots-draft-export {
+    display: block;
+    align-self: flex-start;
+    margin: 12px 0;
+    border: 1px solid #cbd6cb;
+    border-radius: 6px;
+    padding: 9px 13px;
+    color: var(--forest);
+    background: #edf1eb;
+  }
+
+  @media (max-width: 600px) {
+    .roots-import {
+      padding: 18px;
+    }
+
+    .roots-import button {
+      width: 100%;
+    }
+  }
 </style>
-</head>
-
-<body>
-
-<header>
-  <a href="#/" class="logo">ROOT<span>S</span>.</a>
-
-  <button id="menuButton" class="menu-button"
-          aria-expanded="false"
-          aria-label="Toggle navigation">
-    Menu
-  </button>
-
-  <nav id="navigation">
-    <a href="#/">Home</a>
-    <a href="#/explore">Explore</a>
-    <a href="#/search">Search</a>
-    <a href="#/timeline">Timeline</a>
-    <a href="#/map">Map</a>
-    <a href="#/contribute">Contribute</a>
-  </nav>
-</header>
-
-<main id="app"></main>
-
-<footer>
-  <div class="logo">ROOT<span>S</span>.</div>
-  <p>Discovering Black Canadian history.</p>
-  <p>Pink Pixels · RBC HubHacks 2026</p>
-</footer>
 
 <script>
-// Sample data for the frontend.
-// Real data can be supplied through window.ROOTS_DATA.
+/*
+  ROOTS FRONTEND UPDATES
 
-const sampleRecords = [
-  {
-    id: "africville",
-    title: "Africville: A Community Remembered",
-    category: "Communities",
-    year: 1848,
-    period: "1840s–1960s",
-    location: "Halifax, Nova Scotia",
-    coordinates: [44.6711, -63.6190],
-    institution: "Nova Scotia Archives",
-    type: "Community History",
-    people: [],
-    subjects: ["Africville", "Heritage", "Community"],
-    access: "Unknown",
-    image: "https://archives.novascotia.ca/images/africville/200715066.jpg",
-    imageAlt: "Historical photograph of Africville",
-    imageCredit: "Nova Scotia Archives",
-    description: "Learn about Africville, a historic Black community in Halifax, and the people who lived there.",
-    body: "Africville was home to generations of African Nova Scotians. Residents built homes, businesses and a strong community despite unequal city services. Families were displaced when the neighbourhood was demolished in the 1960s. Former residents and their descendants continue preserving its history.",
-    sourceURL: "https://archives.novascotia.ca/africville/",
-    sourceNote: "This links to an archival collection, not an individual catalogue record."
-  },
-  {
-    id: "viola-desmond",
-    title: "Viola Desmond: A Stand for Justice",
-    category: "People",
-    year: 1946,
-    period: "1946",
-    location: "New Glasgow, Nova Scotia",
-    coordinates: [45.5874, -62.6443],
-    institution: "Bank of Canada",
-    type: "Biography",
-    people: ["Viola Desmond"],
-    subjects: ["Civil Rights", "Segregation", "Activism"],
-    access: "Unknown",
-    image: "https://www.bankofcanada.ca/wp-content/uploads/2016/04/Viola-Desmond.jpg",
-    imageAlt: "Portrait of Viola Desmond",
-    imageCredit: "Bank of Canada",
-    description: "Discover how Viola Desmond challenged racial segregation in Nova Scotia.",
-    body: "Viola Desmond was a businesswoman from Halifax. In 1946, she refused to leave a whites-only section of a New Glasgow movie theatre. She was arrested and convicted on a tax-related charge. Her story became an important symbol in Canada's civil rights history.",
-    sourceURL: "https://www.bankofcanada.ca/banknotes/bank-note-series/vertical-series/vertical10/banknoteable-woman/nominations/",
-    sourceNote: "This is an institutional biographical resource."
-  },
-  {
-    id: "seaview-church",
-    title: "Seaview Baptist Church",
-    category: "Communities",
-    year: 1965,
-    period: "1960s",
-    location: "Halifax, Nova Scotia",
-    coordinates: [44.6711, -63.6190],
-    institution: "Nova Scotia Archives",
-    type: "Photographic History",
-    people: [],
-    subjects: ["Religion", "Community", "Africville"],
-    access: "Unknown",
-    image: "https://archives-novascotia.shop/cdn/shop/files/200715051.jpg?v=1698925353&width=1946",
-    imageAlt: "Historical photograph of Seaview Baptist Church",
-    imageCredit: "Nova Scotia Archives",
-    description: "The Seaview African United Baptist Church was an important gathering place in Africville.",
-    body: "The church provided a space for worship, community gatherings and social connection. It became an important part of Africville's history and identity.",
-    sourceURL: "https://archives.novascotia.ca/africville/",
-    sourceNote: "This links to the Africville collection."
-  },
-  {
-    id: "black-culture",
-    title: "African Nova Scotian Cultural Heritage",
-    category: "Culture",
-    year: 1983,
-    period: "1980s–Present",
-    location: "Cherry Brook, Nova Scotia",
-    coordinates: [44.711, -63.4335],
-    institution: "Black Cultural Centre for Nova Scotia",
-    type: "Cultural History",
-    people: [],
-    subjects: ["Culture", "Heritage", "Education"],
-    access: "Unknown",
-    image: "",
-    imageCredit: "",
-    description: "Learn about the history, traditions and cultural contributions of African Nova Scotian communities.",
-    body: "African Nova Scotian communities have preserved their history through storytelling, education, music, community organizations and family traditions.",
-    sourceURL: "https://bccns.com/",
-    sourceNote: "This is the institution's website, not an individual archival record."
-  },
-  {
-    id: "community-gatherings",
-    title: "Everyday Life in Africville",
-    category: "Communities",
-    year: 1965,
-    period: "1960s",
-    location: "Halifax, Nova Scotia",
-    coordinates: [44.6711, -63.6190],
-    institution: "Nova Scotia Archives",
-    type: "Photographic History",
-    people: [],
-    subjects: ["Family", "Photography", "Africville"],
-    access: "Unknown",
-    image: "https://archives-novascotia.shop/cdn/shop/files/200715078.jpg?v=1687372629",
-    imageAlt: "Historical photograph of family life in Africville",
-    imageCredit: "Nova Scotia Archives",
-    description: "Family gatherings and everyday moments help us better understand the history of Africville.",
-    body: "Historical photographs show everyday experiences and the strong community connections shared by Africville residents. These images preserve moments that are important to the community's history.",
-    sourceURL: "https://archives.novascotia.ca/africville/",
-    sourceNote: "This links to the wider Africville collection."
-  },
-  {
-    id: "black-music",
-    title: "Black Canadian Music and Culture",
-    category: "Culture",
-    year: 1900,
-    period: "20th Century–Present",
-    location: "Across Canada",
-    coordinates: null,
-    institution: "Library and Archives Canada",
-    type: "Cultural Overview",
-    people: [],
-    subjects: ["Music", "Jazz", "Gospel"],
-    access: "Unknown",
-    image: "",
-    imageCredit: "",
-    description: "Explore music, artistic traditions and cultural expression in Black Canadian communities.",
-    body: "Black Canadian musicians have contributed to jazz, gospel and many other genres. Music has also been an important way for communities to preserve stories and cultural identity.",
-    sourceURL: "https://library-archives.canada.ca/",
-    sourceNote: "General research starting point, not a verified catalogue record."
-  }
-];
+  Existing website functionality is preserved.
 
-// Use externally provided records when available.
-// The original sourceURL and institution fields
-// should be preserved when integrating real data.
+  Changes:
+  1. Updated access options
+  2. Preserved original permissions and restrictions
+  3. Improved discovery filters
+  4. Added JSON metadata import to Contribute
+  5. Prevented duplicate imported drafts
 
-const incomingRecords = Array.isArray(window.ROOTS_DATA)
-  ? window.ROOTS_DATA
-  : sampleRecords;
+  No changes to the Python scripts or database.
+*/
 
-// Remove repeated IDs without removing different stories
-// that share the same archival collection URL.
+(() => {
 
-const seen = new Set();
+  // ACCESS METHODS
 
-const records = incomingRecords.filter(record => {
-  const id = String(record.id || "").trim().toLowerCase();
+  const accessMethods = [
+    "Digital/Online",
+    "In Person",
+    "Request Access",
+    "Rental/Borrowing",
+    "Not Specified"
+  ];
 
-  if (!id || seen.has(id)) return false;
+  const accessAliases = {
+    "online": "Digital/Online",
+    "digital": "Digital/Online",
+    "digital/online": "Digital/Online",
 
-  seen.add(id);
-  return true;
-});
+    "on-site only": "In Person",
+    "onsite": "In Person",
+    "in person": "In Person",
 
-const accessTypes = [
-  "Online",
-  "Available by Request",
-  "On-site Only",
-  "Unknown"
-];
+    "available by request": "Request Access",
+    "by request": "Request Access",
+    "request access": "Request Access",
 
-const state = {
-  query: "",
-  category: "",
-  institution: "",
-  person: "",
-  place: "",
-  subject: "",
-  type: "",
-  access: ""
-};
+    "loan": "Rental/Borrowing",
+    "borrowing": "Rental/Borrowing",
+    "rental": "Rental/Borrowing",
+    "rental/borrowing": "Rental/Borrowing"
+  };
 
-const app = document.getElementById("app");
+  const normal = value =>
+    String(value ?? "")
+      .trim()
+      .replace(/\s+/g, " ")
+      .toLowerCase();
 
-function esc(value) {
-  return String(value ?? "").replace(/[&<>"']/g, c => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  }[c]));
-}
+  const values = value =>
+    Array.isArray(value) ? value : value ? [value] : [];
 
-function safeURL(value) {
-  try {
-    const url = new URL(value);
-    return ["https:", "http:"].includes(url.protocol)
-      ? url.href
-      : "";
-  } catch {
-    return "";
-  }
-}
+  const url = value => {
+    try {
+      const parsed = new URL(value);
 
-function asArray(value) {
-  if (Array.isArray(value)) return value;
-  return value ? [value] : [];
-}
+      return ["http:", "https:"].includes(parsed.protocol)
+        ? parsed.href
+        : "";
+    } catch {
+      return "";
+    }
+  };
 
-function getAccess(record) {
-  return accessTypes.includes(record.access)
-    ? record.access
-    : "Unknown";
-}
+  const people = record =>
+    values(
+      record.people ||
+      record.persons ||
+      (record.category === "People" ? record.title : null)
+    );
 
-function getPeople(record) {
-  return asArray(record.people || record.persons);
-}
+  const subjects = record =>
+    values(
+      record.subjects ||
+      record.subject ||
+      record.keywords ||
+      record.key_words
+    );
 
-function getSubjects(record) {
-  return asArray(record.subjects || record.keywords);
-}
 
-function imageHTML(record) {
-  const url = safeURL(record.image);
+  // UPDATE ACCESS DROPDOWN
+  // Preserve original access information in each record.
 
-  if (!url) {
-    return `<div class="image-fallback">Historical Record</div>`;
-  }
-
-  return `
-    <img src="${esc(url)}"
-         alt="${esc(record.imageAlt || record.title)}"
-         loading="lazy">
-  `;
-}
-
-// Replace unavailable images with a simple fallback.
-
-document.addEventListener("error", event => {
-  const img = event.target;
-
-  if (!(img instanceof HTMLImageElement)) return;
-  if (img.dataset.failed) return;
-
-  img.dataset.failed = "true";
-
-  const fallback = document.createElement("div");
-  fallback.className = "image-fallback";
-  fallback.textContent = "Image unavailable";
-
-  img.replaceWith(fallback);
-}, true);
-
-// Source links
-
-function sourceLink(record) {
-  const url = safeURL(
-    record.sourceURL || record.originalURL || record.source
+  validAccess.splice(
+    0,
+    validAccess.length,
+    ...accessMethods
   );
 
-  if (!url) {
-    return `<span class="source-missing">
-      Original source link not provided
-    </span>`;
-  }
+  getAccess = record => {
+    const supplied =
+      record.accessMethod ||
+      record.access_method ||
+      record.accessMode ||
+      record.access;
 
-  return `
-    <a href="${esc(url)}"
-       target="_blank"
-       rel="noopener noreferrer">
-      View original institution / source
-    </a>
-  `;
-}
+    const label =
+      accessAliases[normal(supplied)] || supplied;
 
-// Reusable record cards
+    return accessMethods.includes(label)
+      ? label
+      : "Not Specified";
+  };
 
-function recordCard(record) {
-  return `
-    <article class="record-card">
-      <a class="record-photo"
-         href="#/record/${encodeURIComponent(record.id)}">
-        ${imageHTML(record)}
-      </a>
 
-      <div class="record-content">
-        <span class="record-category">
-          ${esc(record.category || "Historical Record")}
-          · ${esc(record.period || "Date unknown")}
-        </span>
+  // HOW TO ACCESS A RESOURCE
 
-        <h3>
-          <a href="#/record/${encodeURIComponent(record.id)}">
-            ${esc(record.title)}
-          </a>
-        </h3>
+  accessExplanation = record => {
 
-        <p class="record-description">
-          ${esc(record.description)}
-        </p>
+    if (record.accessInstructions || record.accessNote) {
+      return record.accessInstructions || record.accessNote;
+    }
 
-        <div class="record-meta">
-          <strong>Held by:</strong>
-          ${esc(record.institution || "Not confirmed")}
-          <br>
+    const explanations = {
+      "Digital/Online":
+        "Use the original source link to check the digital resource and its permissions.",
 
-          <strong>Location:</strong>
-          ${esc(record.location || "Not provided")}
-          <br>
+      "In Person":
+        "Contact the holding institution for visiting hours and on-site access conditions.",
 
-          <strong>Resource:</strong>
-          ${esc(record.type || "Not provided")}
-          <br>
+      "Request Access":
+        "Contact the holding institution to request access and confirm any fees or waiting periods.",
 
-          <span class="access-label">
-            ${esc(getAccess(record))}
-          </span>
-        </div>
+      "Rental/Borrowing":
+        "Ask the holding institution about borrowing eligibility, loan terms and fees.",
 
-        <div class="record-actions">
-          <a class="details-link"
-             href="#/record/${encodeURIComponent(record.id)}">
-            View record details
-          </a>
+      "Not Specified":
+        "The access method has not been confirmed. Ask the holding institution."
+    };
 
-          ${sourceLink(record)}
-        </div>
-      </div>
-    </article>
-  `;
-}
+    return explanations[getAccess(record)];
+  };
 
-function recordGrid(items) {
-  if (!items.length) {
-    return `<div class="empty-state">
-      No matching records found. Try another search or filter.
-    </div>`;
-  }
 
-  return `<div class="record-grid">
-    ${items.map(recordCard).join("")}
-  </div>`;
-}
+  // ORIGINAL SOURCE LINKS
 
-// Filter options
+  originalLink = record => {
+    const original = url(
+      record.sourceURL ||
+      record.originalURL ||
+      record.source
+    );
 
-function unique(values) {
-  return [...new Set(values.filter(Boolean).map(String))]
-    .sort((a, b) => a.localeCompare(b));
-}
+    return original
+      ? `<a class="source-link"
+           href="${escapeHTML(original)}"
+           target="_blank"
+           rel="noopener noreferrer">
+           View original institution source
+         </a>`
+      : `<span class="source-missing">
+           Original source link not supplied
+         </span>`;
+  };
 
-function getOptions(key) {
-  if (key === "person") {
-    return unique(records.flatMap(getPeople));
-  }
 
-  if (key === "subject") {
-    return unique(records.flatMap(getSubjects));
-  }
+  // DISCOVERY FILTERS
+  // Reuse existing records rather than creating another dataset.
 
-  if (key === "place") {
-    return unique(records.map(r => r.location));
-  }
+  filterOptions = key => {
 
-  if (key === "access") {
-    return accessTypes;
-  }
+    if (key === "access") {
+      return accessMethods;
+    }
 
-  return unique(records.map(r => r[key]));
-}
+    let options;
 
-function filterSelect(label, key) {
-  return `
-    <div class="filter-group">
-      <label for="filter-${key}">${label}</label>
+    if (key === "person") {
+      options = allRecords.flatMap(people);
+    }
 
-      <select id="filter-${key}"
-              data-filter="${key}">
-        <option value="">All ${label.toLowerCase()}</option>
+    else if (key === "subject") {
+      options = allRecords.flatMap(subjects);
+    }
 
-        ${getOptions(key).map(value => `
-          <option value="${esc(value)}"
-            ${state[key] === value ? "selected" : ""}>
-            ${esc(value)}
-          </option>
-        `).join("")}
-      </select>
-    </div>
-  `;
-}
+    else if (key === "place") {
+      options = allRecords.map(record => record.location);
+    }
 
-function filtersHTML() {
-  return `
-    <div class="filter-panel">
-      <h3>Filter Historical Records</h3>
+    else if (key === "institution") {
+      options = allRecords.map(record =>
+        record.institution || record.holdingInstitution
+      );
+    }
 
-      <div class="filter-grid">
-        ${filterSelect("Institutions", "institution")}
-        ${filterSelect("People", "person")}
-        ${filterSelect("Places", "place")}
-        ${filterSelect("Subjects", "subject")}
-        ${filterSelect("Resource Types", "type")}
-        ${filterSelect("Access", "access")}
-      </div>
+    else if (key === "type") {
+      options = allRecords.map(record =>
+        record.type || record.resourceType
+      );
+    }
 
-      <button class="clear-button" id="clearFilters">
-        Clear Filters
+    else {
+      options = [];
+    }
+
+    return [...new Set(
+      options.filter(Boolean).map(String)
+    )].sort((a, b) => a.localeCompare(b));
+  };
+
+
+  // FILTER MATCHING
+
+  state.category = "";
+
+  matchesFilters = record => {
+
+    if (
+      state.category &&
+      record.category !== state.category
+    ) {
+      return false;
+    }
+
+    const columns = {
+      institution:
+        record.institution || record.holdingInstitution,
+
+      place:
+        record.location,
+
+      type:
+        record.type || record.resourceType,
+
+      access:
+        getAccess(record)
+    };
+
+    for (const [key, value] of Object.entries(columns)) {
+
+      if (
+        state[key] &&
+        normal(state[key]) !== normal(value)
+      ) {
+        return false;
+      }
+    }
+
+    if (
+      state.person &&
+      !people(record).some(person =>
+        normal(person) === normal(state.person)
+      )
+    ) {
+      return false;
+    }
+
+    if (
+      state.subject &&
+      !subjects(record).some(subject =>
+        normal(subject) === normal(state.subject)
+      )
+    ) {
+      return false;
+    }
+
+    return true;
+  };
+
+
+  // PRESERVE ORIGINAL RESTRICTIONS AND PERMISSIONS
+  // Add information to the existing record details modal.
+
+  const originalOpenRecord = openRecord;
+
+  openRecord = id => {
+
+    originalOpenRecord(id);
+
+    const record = allRecords.find(
+      item => String(item.id) === String(id)
+    );
+
+    const definitionList =
+      document.querySelector("#modalContent dl");
+
+    if (!record || !definitionList) return;
+
+    const fields = [
+      [
+        "Original access label",
+        record.access || "Not supplied"
+      ],
+      [
+        "Original restrictions",
+        record.accessRestrictions ||
+        record.restrictions ||
+        "Not supplied"
+      ],
+      [
+        "Permissions and reproduction rights",
+        record.permissions ||
+        record.rights ||
+        "Not supplied"
+      ]
+    ];
+
+    for (const [heading, value] of fields) {
+
+      const dt = document.createElement("dt");
+      const dd = document.createElement("dd");
+
+      dt.textContent = heading;
+      dd.textContent = String(value);
+
+      definitionList.append(dt, dd);
+    }
+  };
+
+
+  // JSON IMPORT
+  // Only add the section to the Contribute page.
+
+  const originalContributePage = contributePage;
+
+  contributePage = () => originalContributePage() + `
+
+    <section class="roots-import"
+             id="rootsMetadataImport">
+
+      <h2>Import Historical Metadata (JSON)</h2>
+
+      <p>
+        Import metadata as private, unverified drafts.
+        This does not update the catalogue or run
+        the team's scripts.
+      </p>
+
+      <label for="rootsMetadataFile">
+        JSON metadata file
+      </label>
+
+      <input
+        type="file"
+        id="rootsMetadataFile"
+        accept=".json,application/json">
+
+      <button type="button"
+              id="rootsImportButton">
+        Import as drafts
       </button>
-    </div>
+
+      <p id="rootsImportStatus"
+         role="status"
+         aria-live="polite"></p>
+
+    </section>
   `;
-}
 
-function matchesFilters(record) {
-  if (state.category &&
-      record.category !== state.category) {
-    return false;
-  }
 
-  const fields = {
-    institution: record.institution,
-    place: record.location,
-    type: record.type,
-    access: getAccess(record)
+  // ALLOW DRAFTS TO BE EXPORTED
+
+  const originalRenderDrafts = renderDrafts;
+
+  renderDrafts = () => {
+
+    originalRenderDrafts();
+
+    const container =
+      document.getElementById("draftResults");
+
+    if (!container) return;
+
+    container
+      .querySelectorAll("[data-delete]")
+      .forEach(button => {
+
+        const exportButton =
+          document.createElement("button");
+
+        exportButton.type = "button";
+
+        exportButton.className =
+          "roots-draft-export";
+
+        exportButton.dataset.exportDraft =
+          button.dataset.delete;
+
+        exportButton.textContent =
+          "Download JSON";
+
+        button.before(exportButton);
+      });
   };
 
-  for (const key of Object.keys(fields)) {
-    if (state[key] &&
-        String(fields[key] || "").toLowerCase() !==
-        state[key].toLowerCase()) {
+
+  // DUPLICATE PREVENTION
+  // Shared institution URLs do not mean the stories are duplicates.
+
+  const importedDuplicate = (left, right) => {
+
+    const leftId = normal(
+      left.originalId ||
+      left.recordId ||
+      left.identifier
+    );
+
+    const rightId = normal(
+      right.originalId ||
+      right.recordId ||
+      right.identifier
+    );
+
+    if (
+      leftId &&
+      rightId &&
+      leftId === rightId
+    ) {
+      return true;
+    }
+
+    const firstTitle = normal(
+      left.title || left.name
+    );
+
+    const secondTitle = normal(
+      right.title || right.name
+    );
+
+    if (
+      !firstTitle ||
+      firstTitle !== secondTitle
+    ) {
       return false;
+    }
+
+    const sameDescription =
+      normal(left.description) &&
+      normal(left.description) ===
+      normal(right.description);
+
+    const sameDetails =
+      normal(left.period || left.date) &&
+      normal(left.period || left.date) ===
+      normal(right.period || right.date) &&
+      normal(left.location) &&
+      normal(left.location) ===
+      normal(right.location);
+
+    return Boolean(
+      sameDescription ||
+      sameDetails
+    );
+  };
+
+
+  // CONVERT IMPORTED METADATA INTO A DRAFT
+  // Supports name, date, source, description from add_items.
+
+  const toDraft = record => {
+
+    if (
+      !record ||
+      typeof record !== "object" ||
+      Array.isArray(record)
+    ) {
+      return null;
+    }
+
+    const title = String(
+      record.title || record.name || ""
+    ).trim();
+
+    const description = String(
+      record.description || ""
+    ).trim();
+
+    if (
+      !title ||
+      !description ||
+      title.length > 120 ||
+      description.length > 3000
+    ) {
+      return null;
+    }
+
+    const rawSource =
+      record.sourceURL ||
+      record.source ||
+      record.originalURL ||
+      "";
+
+    const sourceURL = rawSource
+      ? url(rawSource)
+      : "";
+
+    if (rawSource && !sourceURL) {
+      return null;
+    }
+
+    return {
+      id:
+        "draft-" +
+        Date.now() +
+        "-" +
+        Math.random().toString(36).slice(2, 10),
+
+      originalId: String(
+        record.id ||
+        record.recordId ||
+        record.identifier ||
+        ""
+      ),
+
+      title,
+      description,
+
+      category: String(
+        record.category || "Other"
+      ),
+
+      period: String(
+        record.period || record.date || ""
+      ),
+
+      location: String(
+        record.location || ""
+      ),
+
+      type: String(
+        record.type || "Historical metadata"
+      ),
+
+      institution: String(
+        record.institution || ""
+      ),
+
+      sourceURL,
+
+      access: String(
+        record.access || "Unknown"
+      ),
+
+      accessRestrictions: String(
+        record.accessRestrictions || ""
+      ),
+
+      permissions: String(
+        record.permissions || record.rights || ""
+      ),
+
+      status: "Unverified Draft"
+    };
+  };
+
+
+  // IMPORT JSON FILE
+
+  async function importJSON() {
+
+    const input =
+      document.getElementById("rootsMetadataFile");
+
+    const feedback =
+      document.getElementById("rootsImportStatus");
+
+    const file = input?.files?.[0];
+
+    if (!file) {
+      feedback.textContent =
+        "Choose a JSON file first.";
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      feedback.textContent =
+        "Maximum file size is 2 MB.";
+      return;
+    }
+
+    try {
+
+      const json =
+        JSON.parse(await file.text());
+
+      const candidates =
+        Array.isArray(json) ? json :
+        Array.isArray(json.records) ? json.records :
+        Array.isArray(json.items) ? json.items :
+        Array.isArray(json.data) ? json.data :
+        [json];
+
+      if (candidates.length > 3000) {
+        throw new Error(
+          "Import up to 3,000 records at once."
+        );
+      }
+
+      const drafts = loadDrafts();
+
+      let imported = 0;
+      let skipped = 0;
+
+      for (const raw of candidates) {
+
+        const draft = toDraft(raw);
+
+        const duplicate = draft &&
+          [...allRecords, ...drafts].some(other =>
+            importedDuplicate(
+              {
+                ...other,
+                originalId:
+                  other.originalId || other.id
+              },
+              draft
+            )
+          );
+
+        if (!draft || duplicate) {
+          skipped++;
+          continue;
+        }
+
+        drafts.push(draft);
+        imported++;
+      }
+
+      // Save only in browser storage.
+      // No database or crawler modifications.
+
+      saveDrafts(drafts);
+      renderDrafts();
+
+      input.value = "";
+
+      feedback.textContent =
+        `Imported ${imported} draft(s), ` +
+        `skipped ${skipped} duplicate/invalid record(s). ` +
+        `Nothing was added to the catalogue.`;
+
+    } catch (error) {
+
+      feedback.textContent =
+        "Import failed: " + error.message;
+
     }
   }
 
-  if (state.person &&
-      !getPeople(record).some(person =>
-        String(person).toLowerCase() === state.person.toLowerCase()
-      )) {
-    return false;
-  }
 
-  if (state.subject &&
-      !getSubjects(record).some(subject =>
-        String(subject).toLowerCase() === state.subject.toLowerCase()
-      )) {
-    return false;
-  }
+  // IMPORT AND DOWNLOAD BUTTONS
 
-  if (state.query) {
-    const text = [
-      record.title,
-      record.description,
-      record.category,
-      record.institution,
-      record.location,
-      record.period,
-      record.type,
-      getAccess(record),
-      ...getPeople(record),
-      ...getSubjects(record)
-    ].join(" ").toLowerCase();
+  document.addEventListener("click", event => {
 
-    if (!text.includes(state.query.toLowerCase().trim())) {
-      return false;
+    if (event.target.closest("#rootsImportButton")) {
+      importJSON();
     }
-  }
 
-  return true;
-}
-
-function getFilteredRecords() {
-  return records.filter(matchesFilters);
-}
-
-// Page components
-
-function pageHeading(title, description) {
-  return `
-    <section class="page-heading">
-      <div class="content">
-        <span class="eyebrow">Explore ROOTS</span>
-        <h1>${title}</h1>
-        <p>${description}</p>
-      </div>
-    </section>
-  `;
-}
-
-function homePage() {
-  const first = records[0];
-
-  return `
-    <section class="hero">
-      <div class="hero-content">
-        <span class="eyebrow">
-          The past is part of who we are
-        </span>
-
-        <h1>Every story<br>has <em>roots.</em></h1>
-
-        <p>
-          Discover the people, places and moments that shaped
-          Black Canadian history. Find historical information,
-          explore original sources and see where records are held.
-        </p>
-
-        <form class="search-form" id="homeSearch">
-          <input name="query"
-                 placeholder="Search people, places, stories..."
-                 aria-label="Search ROOTS"
-                 required>
-
-          <button type="submit">Explore Stories</button>
-        </form>
-      </div>
-
-      <div class="hero-image">
-        ${first ? imageHTML(first) : ""}
-
-        <div class="hero-caption">
-          <span class="eyebrow">Featured Story</span>
-          <br>
-          <strong>${esc(first?.title || "Discover ROOTS")}</strong>
-        </div>
-      </div>
-    </section>
-
-    <section class="block">
-      <div class="content">
-        <span class="eyebrow">Follow your curiosity</span>
-        <h2 class="section-heading">Where will you start?</h2>
-
-        <div class="category-grid">
-          <a href="#/explore?category=Communities"
-             class="category-card community-image">
-            <span class="eyebrow">Places and Heritage</span>
-            <div>
-              <h3>Communities</h3>
-              <p>Explore places that shaped our history.</p>
-            </div>
-          </a>
-
-          <a href="#/explore?category=People"
-             class="category-card people-image">
-            <span class="eyebrow">Leaders and Pioneers</span>
-            <div>
-              <h3>People</h3>
-              <p>Discover people behind the stories.</p>
-            </div>
-          </a>
-
-          <a href="#/explore?category=Culture"
-             class="category-card culture-image">
-            <span class="eyebrow">Music and Traditions</span>
-            <div>
-              <h3>Culture</h3>
-              <p>Learn about cultural history.</p>
-            </div>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section class="block" style="background:#f1eee6">
-      <div class="content">
-        <span class="eyebrow">The Collection</span>
-        <h2 class="section-heading">Featured Stories</h2>
-
-        <p class="subtitle">
-          Browse example topics and follow their original sources.
-        </p>
-
-        ${recordGrid(records.slice(0, 3))}
-      </div>
-    </section>
-
-    <section class="block">
-      <div class="content">
-        <h2 class="section-heading">Have a story to share?</h2>
-        <p class="subtitle">
-          Suggest a historical topic or an original source
-          for the ROOTS project.
-        </p>
-        <a class="dark-button" href="#/contribute">
-          Contribute a Story
-        </a>
-      </div>
-    </section>
-  `;
-}
-
-function explorePage() {
-  return `
-    ${pageHeading(
-      "Explore the Collection",
-      "Discover historical stories and find out where their original records are held."
-    )}
-
-    <section class="block">
-      <div class="content">
-        ${filtersHTML()}
-
-        <div class="results-info" id="resultsInfo"></div>
-        <div id="results"></div>
-      </div>
-    </section>
-  `;
-}
-
-function searchPage() {
-  return `
-    ${pageHeading(
-      "Search ROOTS",
-      "Search by keyword or filter by institution, people, places, subjects, resource types and access."
-    )}
-
-    <section class="block">
-      <div class="content">
-        <form class="search-form" id="resultsSearch"
-              style="border:1px solid #ddd">
-          <input id="searchInput"
-                 placeholder="Try Africville, Viola Desmond, music..."
-                 value="${esc(state.query)}"
-                 aria-label="Search historical records">
-
-          <button type="submit">Search</button>
-        </form>
-
-        ${filtersHTML()}
-
-        <div class="results-info" id="resultsInfo"></div>
-        <div id="results"></div>
-      </div>
-    </section>
-  `;
-}
-
-function accessExplanation(record) {
-  if (record.accessNote) {
-    return record.accessNote;
-  }
-
-  const explanations = {
-    "Online":
-      "The institution lists this record as available online. Use the original source link to view it and check any restrictions.",
-
-    "Available by Request":
-      "Contact the holding institution to request access. Registration, processing time or fees may apply.",
-
-    "On-site Only":
-      "This record requires an in-person visit to the holding institution. Check opening hours and visiting requirements.",
-
-    "Unknown":
-      "Access conditions have not been confirmed. Contact the holding institution to find out whether the record is available online, by request or on-site."
-  };
-
-  return explanations[getAccess(record)];
-}
-
-function recordPage(id) {
-  const record = records.find(r => String(r.id) === id);
-
-  if (!record) {
-    return pageHeading("Record Not Found",
-      "We couldn't find that historical record.");
-  }
-
-  return `
-    ${pageHeading(
-      esc(record.title),
-      esc(record.description)
-    )}
-
-    <section class="block">
-      <div class="content details-layout">
-        <article class="details-main">
-          <div class="record-photo"
-               style="height:400px">
-            ${imageHTML(record)}
-          </div>
-
-          <p class="subtitle" style="font-size:12px;margin-top:10px">
-            Image credit:
-            ${esc(record.imageCredit || "Not confirmed")}
-          </p>
-
-          <h2>Why This Story Matters</h2>
-
-          <p>
-            ${esc(record.body || record.description)}
-          </p>
-
-          <div class="detail-notice">
-            This is a prototype historical topic summary,
-            not a verified archival catalogue entry.
-            Confirm the original record and usage rights
-            with the holding institution.
-          </div>
-        </article>
-
-        <aside class="details-panel">
-          <h3>Record Information</h3>
-
-          <dl>
-            <dt>Holding Institution</dt>
-            <dd>
-              <strong>
-                ${esc(record.institution || "Not confirmed")}
-              </strong>
-            </dd>
-
-            <dt>Location</dt>
-            <dd>${esc(record.location || "Not provided")}</dd>
-
-            <dt>Historical Period</dt>
-            <dd>${esc(record.period || "Not provided")}</dd>
-
-            <dt>Resource Type</dt>
-            <dd>${esc(record.type || "Not provided")}</dd>
-
-            <dt>Access Status</dt>
-            <dd>
-              <span class="access-label">
-                ${esc(getAccess(record))}
-              </span>
-            </dd>
-
-            <dt>How to Access This Record</dt>
-            <dd>${esc(accessExplanation(record))}</dd>
-
-            <dt>People</dt>
-            <dd>
-              ${esc(getPeople(record).join(", ") || "Not listed")}
-            </dd>
-
-            <dt>Subjects</dt>
-            <dd>
-              ${esc(getSubjects(record).join(", ") || "Not listed")}
-            </dd>
-          </dl>
-
-          <div class="record-actions">
-            ${sourceLink(record)}
-          </div>
-
-          <p class="source-note">
-            ${esc(record.sourceNote ||
-              "Check the original institution for provenance and access information.")}
-          </p>
-        </aside>
-      </div>
-    </section>
-  `;
-}
-
-function timelinePage() {
-  const sorted = [...records].sort(
-    (a, b) => Number(a.year || 0) - Number(b.year || 0)
-  );
-
-  return `
-    ${pageHeading(
-      "Historical Timeline",
-      "Explore Black Canadian history across different years and periods."
-    )}
-
-    <section class="block">
-      <div class="content">
-        ${sorted.map(record => `
-          <article class="timeline-item">
-            <div class="timeline-year">
-              ${esc(record.year || "Unknown")}
-            </div>
-
-            <div>
-              <span class="record-category">
-                ${esc(record.category)}
-              </span>
-
-              <h3>${esc(record.title)}</h3>
-
-              <p>${esc(record.description)}</p>
-
-              <p>
-                <strong>Held by:</strong>
-                ${esc(record.institution || "Not confirmed")}
-                <br>
-                <strong>Access:</strong>
-                ${esc(getAccess(record))}
-              </p>
-
-              <a class="dark-button"
-                 href="#/record/${encodeURIComponent(record.id)}">
-                View Record
-              </a>
-            </div>
-          </article>
-        `).join("")}
-
-        <div class="detail-notice">
-          Timeline years are broad historical references
-          and may not represent the creation dates of
-          individual archival records.
-        </div>
-      </div>
-    </section>
-  `;
-}
-
-function mapURL(coords) {
-  const [lat, lon] = coords;
-  const size = 0.08;
-
-  return `https://www.openstreetmap.org/export/embed.html?bbox=${
-    lon - size
-  }%2C${lat - size / 2}%2C${
-    lon + size
-  }%2C${lat + size / 2}&layer=mapnik&marker=${lat}%2C${lon}`;
-}
-
-function mapPage() {
-  const mapped = records.filter(r =>
-    Array.isArray(r.coordinates) &&
-    r.coordinates.length === 2 &&
-    r.coordinates.every(Number.isFinite)
-  );
-
-  return `
-    ${pageHeading(
-      "Explore the Map",
-      "Discover the places connected to Black Canadian history."
-    )}
-
-    <section class="block">
-      <div class="content">
-        <div class="map-layout">
-          <div class="map-list">
-            <h3>Historical Locations</h3>
-
-            ${mapped.map(record => `
-              <button data-place="${esc(record.id)}">
-                <strong>${esc(record.title)}</strong>
-                <small>${esc(record.location)}</small>
-              </button>
-            `).join("")}
-          </div>
-
-          <div>
-            ${mapped.length ? `
-              <iframe class="map-frame"
-                      id="mapFrame"
-                      title="Map of historical locations"
-                      loading="lazy"
-                      src="${mapURL(mapped[0].coordinates)}">
-              </iframe>
-
-              <p class="subtitle" id="mapSelected">
-                ${esc(mapped[0].title)}
-              </p>
-            ` : `
-              <div class="empty-state">
-                No mapped locations available.
-              </div>
-            `}
-          </div>
-        </div>
-
-        <div class="notice">
-          Map locations are approximate and do not represent
-          exact historical property boundaries.
-          Map data © OpenStreetMap contributors.
-        </div>
-      </div>
-    </section>
-  `;
-}
-
-// Community contribution drafts
-
-const DRAFT_KEY = "roots-community-drafts-v1";
-
-function loadDrafts() {
-  try {
-    const saved = JSON.parse(
-      localStorage.getItem(DRAFT_KEY) || "[]"
+    const button = event.target.closest(
+      "[data-export-draft]"
     );
 
-    return Array.isArray(saved) ? saved : [];
-  } catch {
-    return [];
-  }
-}
+    if (button) {
 
-function saveDrafts(items) {
-  localStorage.setItem(DRAFT_KEY, JSON.stringify(items));
-}
+      const draft = loadDrafts().find(
+        item =>
+          String(item.id) ===
+          button.dataset.exportDraft
+      );
 
-function contributionPage() {
-  return `
-    ${pageHeading(
-      "Contribute to ROOTS",
-      "Share a historical topic or original source you think should be included."
-    )}
+      if (!draft) return;
 
-    <section class="block">
-      <div class="content">
-        <div class="notice">
-          This is a prototype. Submissions are saved as drafts
-          only in your browser. They are not uploaded,
-          published or sent to the ROOTS team.
-        </div>
+      const blob = new Blob(
+        [JSON.stringify(draft, null, 2)],
+        { type: "application/json" }
+      );
 
-        <form class="contribution-form" id="contributionForm">
-          <h2 class="section-heading">Tell Us Your Story</h2>
+      const temporaryURL =
+        URL.createObjectURL(blob);
 
-          <label>
-            Story Title *
-            <input name="title" required maxlength="120"
-                   placeholder="Enter a title">
-          </label>
+      const link =
+        document.createElement("a");
 
-          <label>
-            Category
-            <select name="category">
-              <option>Communities</option>
-              <option>People</option>
-              <option>Culture</option>
-              <option>Civil Rights</option>
-              <option>Other</option>
-            </select>
-          </label>
+      link.href = temporaryURL;
 
-          <label>
-            Historical Period
-            <input name="period" maxlength="80"
-                   placeholder="e.g. 1940s">
-          </label>
+      link.download =
+        "roots-community-draft.json";
 
-          <label>
-            Location
-            <input name="location" maxlength="120"
-                   placeholder="City or community">
-          </label>
+      link.click();
 
-          <label>
-            Story Description *
-            <textarea name="description" required
-                      maxlength="3000" rows="6"
-                      placeholder="Tell us about this story"></textarea>
-          </label>
-
-          <label>
-            Original Institution
-            <input name="institution" maxlength="150"
-                   placeholder="e.g. Nova Scotia Archives">
-          </label>
-
-          <label>
-            Original Source URL
-            <input name="sourceURL" type="url" maxlength="500"
-                   placeholder="https://...">
-          </label>
-
-          <label>
-            Contributor Name (Optional)
-            <input name="contributor" maxlength="80">
-          </label>
-
-          <button class="dark-button" type="submit">
-            Save Draft
-          </button>
-
-          <p id="formMessage" role="status"></p>
-        </form>
-
-        <h2 class="section-heading">My Saved Drafts</h2>
-        <div class="record-grid" id="draftResults"></div>
-      </div>
-    </section>
-  `;
-}
-
-function draftDuplicate(a, b) {
-  const normalize = text =>
-    String(text || "").trim().toLowerCase();
-
-  return normalize(a.title) === normalize(b.title) &&
-         normalize(a.location) === normalize(b.location) &&
-         normalize(a.period) === normalize(b.period);
-}
-
-function renderDrafts() {
-  const container = document.getElementById("draftResults");
-  if (!container) return;
-
-  const drafts = loadDrafts();
-
-  container.innerHTML = drafts.length
-    ? drafts.map(item => `
-      <article class="record-card">
-        <div class="record-content">
-          <span class="record-category">Unverified Draft</span>
-          <h3>${esc(item.title)}</h3>
-          <p class="record-description">
-            ${esc(item.description)}
-          </p>
-          <p class="record-meta">
-            ${esc(item.location || "Location not provided")}
-            <br>
-            ${esc(item.institution || "Institution not confirmed")}
-          </p>
-          <button class="clear-button"
-                  data-delete="${esc(item.id)}">
-            Delete Draft
-          </button>
-        </div>
-      </article>
-    `).join("")
-    : `<div class="empty-state">No saved drafts yet.</div>`;
-}
-
-function saveContribution(form) {
-  const values = Object.fromEntries(new FormData(form));
-  const message = document.getElementById("formMessage");
-
-  const draft = {
-    id: "draft-" + Date.now(),
-    title: String(values.title || "").trim(),
-    description: String(values.description || "").trim(),
-    category: values.category,
-    period: values.period || "",
-    location: values.location || "",
-    institution: values.institution || "",
-    sourceURL: values.sourceURL || "",
-    contributor: values.contributor || "",
-    status: "Unverified Draft"
-  };
-
-  const drafts = loadDrafts();
-
-  if (drafts.some(old => draftDuplicate(old, draft))) {
-    message.textContent =
-      "This story is already in your saved drafts.";
-    return;
-  }
-
-  try {
-    saveDrafts([draft, ...drafts]);
-    form.reset();
-    message.textContent = "Draft saved in this browser.";
-    renderDrafts();
-  } catch {
-    message.textContent = "Could not save this draft.";
-  }
-}
-
-// Router
-
-function renderPage() {
-  const route = location.hash.slice(1) || "/";
-  const [path, query] = route.split("?");
-
-  if (path === "/") {
-    app.innerHTML = homePage();
-  }
-
-  else if (path === "/explore") {
-    const requested = new URLSearchParams(query || "")
-      .get("category");
-
-    state.category = requested || "";
-    state.query = "";
-
-    app.innerHTML = explorePage();
-    updateResults();
-  }
-
-  else if (path === "/search") {
-    state.category = "";
-
-    const params = new URLSearchParams(query || "");
-    state.query = params.get("q") || state.query;
-
-    app.innerHTML = searchPage();
-    updateResults();
-  }
-
-  else if (path === "/timeline") {
-    app.innerHTML = timelinePage();
-  }
-
-  else if (path === "/map") {
-    app.innerHTML = mapPage();
-  }
-
-  else if (path === "/contribute") {
-    app.innerHTML = contributionPage();
-    renderDrafts();
-  }
-
-  else if (path.startsWith("/record/")) {
-    const id = decodeURIComponent(path.slice(8));
-    app.innerHTML = recordPage(id);
-  }
-
-  else {
-    location.hash = "#/";
-    return;
-  }
-
-  document.querySelectorAll("nav a").forEach(link => {
-    link.classList.toggle(
-      "active",
-      link.getAttribute("href") === "#" + path
-    );
+      setTimeout(
+        () => URL.revokeObjectURL(temporaryURL),
+        1000
+      );
+    }
   });
 
-  document.getElementById("navigation")
-    .classList.remove("open");
 
-  document.getElementById("menuButton")
-    .setAttribute("aria-expanded", "false");
+  // KEEP CATEGORY FILTERING WORKING
 
-  window.scrollTo(0, 0);
-}
+  const previousRenderPage = renderPage;
 
-function updateResults() {
-  const items = getFilteredRecords();
+  renderPage = () => {
 
-  const results = document.getElementById("results");
-  const info = document.getElementById("resultsInfo");
+    const route =
+      location.hash.slice(1) || "home";
 
-  if (results) results.innerHTML = recordGrid(items);
+    const [page, query] = route.split("?");
 
-  if (info) {
-    info.textContent =
-      `${items.length} record${items.length === 1 ? "" : "s"} found`;
-  }
-}
+    state.category =
+      page === "explore"
+        ? new URLSearchParams(query || "")
+            .get("category") || ""
+        : "";
 
-// Event handling
+    previousRenderPage();
+  };
 
-document.addEventListener("submit", event => {
-  if (event.target.id === "homeSearch") {
-    event.preventDefault();
 
-    const query = new FormData(event.target).get("query");
+  // Refresh existing page with updated functionality.
 
-    location.hash =
-      "#/search?q=" + encodeURIComponent(query);
-  }
+  renderPage();
 
-  if (event.target.id === "resultsSearch") {
-    event.preventDefault();
-
-    state.query =
-      document.getElementById("searchInput").value.trim();
-
-    updateResults();
-  }
-
-  if (event.target.id === "contributionForm") {
-    event.preventDefault();
-    saveContribution(event.target);
-  }
-});
-
-document.addEventListener("change", event => {
-  const key = event.target.dataset.filter;
-
-  if (key && Object.prototype.hasOwnProperty.call(state, key)) {
-    state[key] = event.target.value;
-    updateResults();
-  }
-});
-
-document.addEventListener("click", event => {
-  if (event.target.id === "clearFilters") {
-    for (const key of [
-      "institution", "person", "place",
-      "subject", "type", "access"
-    ]) {
-      state[key] = "";
-    }
-
-    document.querySelectorAll("[data-filter]").forEach(select => {
-      select.value = "";
-    });
-
-    updateResults();
-  }
-
-  const mapButton = event.target.closest("[data-place]");
-
-  if (mapButton) {
-    const record = records.find(r =>
-      String(r.id) === mapButton.dataset.place
-    );
-
-    if (record && Array.isArray(record.coordinates)) {
-      document.getElementById("mapFrame").src =
-        mapURL(record.coordinates);
-
-      document.getElementById("mapSelected").textContent =
-        record.title + " — " + record.location;
-    }
-  }
-
-  const deleteButton = event.target.closest("[data-delete]");
-
-  if (deleteButton) {
-    const drafts = loadDrafts().filter(item =>
-      item.id !== deleteButton.dataset.delete
-    );
-
-    saveDrafts(drafts);
-    renderDrafts();
-  }
-});
-
-document.getElementById("menuButton").addEventListener("click", () => {
-  const menu = document.getElementById("navigation");
-  const open = menu.classList.toggle("open");
-
-  document.getElementById("menuButton")
-    .setAttribute("aria-expanded", String(open));
-});
-
-window.addEventListener("hashchange", renderPage);
-
-renderPage();
+})();
 </script>
-</body>
-</html>

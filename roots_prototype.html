@@ -1,7 +1,964 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ROOTS | Discover Black Canadian History</title><style>
 :root{--ink:#192720;--cream:#fbf8f1;--gold:#e6b85c;--forest:#183e32;--muted:#6b756f}*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif}header{background:#fff;display:flex;justify-content:space-between;align-items:center;padding:17px max(5%,calc((100% - 1160px)/2));border-bottom:1px solid #e9e5dc}.logo{font-size:29px;font-weight:900;letter-spacing:-2px;color:var(--forest)}.logo span{color:#bf8b36}nav{color:#56635c;font-size:14px}nav a{margin-left:22px;color:inherit;text-decoration:none}.hero{background:var(--forest);color:white;padding:78px 6% 85px;text-align:center}.eyebrow{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#e7c77e;font-weight:700}.hero h1{font-family:Georgia,serif;font-size:clamp(39px,6vw,70px);max-width:850px;margin:18px auto;line-height:1.08}.hero p{max-width:630px;margin:0 auto 30px;color:#d5e1d9;line-height:1.7}.search{max-width:670px;display:flex;margin:auto;background:white;border-radius:14px;padding:7px;box-shadow:0 10px 30px #071b1555}.search input{flex:1;border:0;outline:0;padding:15px;font-size:16px;min-width:0}.search button,.primary{background:var(--gold);border:0;border-radius:10px;padding:14px 24px;font-weight:800;color:#26311f;cursor:pointer}.wrap{max-width:1160px;margin:auto;padding:50px 24px}.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px}.section-head h2{font-family:Georgia,serif;font-size:33px;margin:0 0 9px}.sub{color:var(--muted);margin:0}.categories{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:25px 0 46px}.category{border:1px solid #e3ded2;border-radius:17px;background:white;padding:26px 18px;text-align:left;cursor:pointer;transition:.2s}.category:hover,.category.active{border-color:#b58c44;transform:translateY(-2px);box-shadow:0 8px 22px #182f2112}.category .emoji{font-size:35px}.category h3{margin:12px 0 4px;font-size:18px}.category p{font-size:13px;color:var(--muted);margin:0}.tools{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}.tools select,.tools button{background:white;border:1px solid #ddd8cc;padding:11px 14px;border-radius:10px;font-size:14px;color:var(--ink)}.tools button{cursor:pointer}.records{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.record{border:1px solid #e6e0d4;background:white;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}.art{height:150px;display:flex;align-items:center;justify-content:center;font-size:62px;background:linear-gradient(135deg,#d9d0b5,#b8c9b8)}.record:nth-child(3n+2) .art{background:linear-gradient(135deg,#dfc7a5,#b6b5a4)}.record:nth-child(3n+3) .art{background:linear-gradient(135deg,#b8c9cb,#c7b5ae)}.record-content{padding:20px;display:flex;flex-direction:column;flex:1}.tag{font-size:11px;text-transform:uppercase;letter-spacing:1.3px;color:#906d2d;font-weight:800}.record h3{font-family:Georgia,serif;font-size:22px;margin:10px 0}.record p{color:#647067;font-size:14px;line-height:1.6;flex:1}.meta{font-size:12px;color:#69736b;border-top:1px solid #eee9df;padding-top:12px}.record button{margin-top:16px;border:0;background:#e9f0e9;color:var(--forest);font-weight:750;padding:12px;border-radius:9px;cursor:pointer;text-align:left}.note{font-size:13px;color:#6d756c;background:#f0ede5;border-radius:9px;padding:13px;margin:20px 0}.empty{grid-column:1/-1;padding:40px;background:white;border-radius:12px;text-align:center;color:#68746c}.overlay{position:fixed;inset:0;background:#102219b8;display:none;align-items:center;justify-content:center;padding:20px;z-index:5}.overlay.show{display:flex}.modal{background:white;max-width:620px;width:100%;border-radius:18px;padding:30px;max-height:90vh;overflow:auto}.modal h2{font-family:Georgia,serif;font-size:32px}.close{float:right;border:0;background:#eee;padding:8px 13px;border-radius:8px;cursor:pointer}.source{background:#f3f5ef;padding:16px;border-radius:10px;margin:16px 0}.source a{color:#17694e;overflow-wrap:anywhere}.footer{background:#183e32;color:#d7e2d8;text-align:center;padding:30px;font-size:13px}mark{background:#f6dfa5}@media(max-width:800px){.categories{grid-template-columns:repeat(2,1fr)}.records{grid-template-columns:repeat(2,1fr)}nav{display:none}}@media(max-width:530px){.records{grid-template-columns:1fr}.hero{padding:56px 20px}.search button{padding:12px}.wrap{padding:36px 18px}.section-head h2{font-size:27px}}
-</style></head><body><header><div class="logo">ROOT<span>S</span>.</div><nav><a href="#explore">Explore</a><a href="#records">Collections</a><a href="#about">About</a></nav></header><section class="hero"><div class="eyebrow">A new way to discover our heritage</div><h1>Every story has roots.<br>Find yours.</h1><p>Discover Black Canadian history through connected stories, communities, people and cultural records — all while honouring their original sources.</p><form class="search" id="searchForm"><input id="query" aria-label="Search historical records" placeholder="Try music, Africville, Viola Desmond..."><button type="submit">Explore →</button></form></section><main class="wrap"><section id="explore"><div class="section-head"><div><h2>What sparks your curiosity?</h2><p class="sub">Choose an interest and see where the stories take you.</p></div></div><div class="categories" id="categories"></div></section><section id="records"><div class="section-head"><div><h2>Discover the collections</h2><p class="sub" id="count">Explore sample records from across Canada.</p></div></div><div class="tools"><select id="institution" aria-label="Filter by institution"><option value="">All institutions</option></select><select id="type" aria-label="Filter by resource type"><option value="">All resource types</option></select><button id="reset">Clear filters</button></div><div class="note"><strong>Prototype notice:</strong> These are illustrative topic cards, not verified archival catalogue records. Institution names are potential research sources only. Before launch, replace each entry with an actual catalogue record, persistent original URL, access conditions and confirmed provenance.</div><div class="records" id="results"></div></section><section id="about" style="margin-top:60px"><h2 style="font-family:Georgia,serif;font-size:30px">Built for discovery. Grounded in trust.</h2><p class="sub" style="line-height:1.8;max-width:780px">ROOTS is a proposed discovery layer, not a replacement for cultural institutions. The intended production version would normalize metadata from participating sources, preserve provenance, show access information, and direct visitors to authoritative records. This demonstration runs entirely in your browser and does not access live archives or AI.</p></section></main><footer class="footer">ROOTS · Pink Pixels · RBC HubHacks 2026 · Prototype concept for the Black Cultural Centre for Nova Scotia</footer><div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal"><button class="close" id="close">✕ Close</button><div id="modalContent"></div></div></div><script>
+</style></head><body><header><div class="logo">ROOT<span>S</span>.</div><nav><a href="#explore">Explore</a><a href="#records">Collections</a><a href="#about">About</a></nav></header><section class="hero"><div class="eyebrow">A new way to discover our heritage</div><h1>Every story has roots.<br>Find yours.</h1><p>Discover Black Canadian history through connected stories, communities, people and cultural records — all while honouring their original sources.</p><form class="search" id="searchForm"><input id="query" aria-label="Search historical records" placeholder="Try music, Africville, Viola Desmond..."><button type="submit">Explore →</button></form></section><main class="wrap"><section id="explore"><div class="section-head"><div><h2>What sparks your curiosity?</h2><p class="sub">Choose an interest and see where the stories take you.</p></div></div><div class="categories" id="categories"></div></section><section id="records"><div class="section-head"><div><h2>Discover the collections</h2><p class="sub" id="count">Explore sample records from across Canada.</p></div></div><div class="tools"><select id="institution" aria-label="Filter by institution"><option value="">All institutions</option></select><select id="type" aria-label="Filter by resource type"><option value="">All resource types</option></select><button id="reset">Clear filters</button></div><div class="note"><strong>Prototype notice:</strong> These are illustrative topic cards, not verified archival catalogue records. Institution names are potential research sources only. Before launch, replace each entry with an actual catalogue record, persistent original URL, access conditions and confirmed provenance.</div><div class="records" id="results"></div></section><section id="about" style="margin-top:60px"><h2 style="font-family:Georgia,serif;font-size:30px">Built for discovery. Grounded in trust.</h2><p class="sub" style="line-height:1.8;max-width:780px">ROOTS is a proposed discovery layer, not a replacement for cultural institutions. The intended production version would normalize metadata from participating sources, preserve provenance, show access information, and direct visitors to authoritative records. This demonstration runs entirely in your browser and does not access live archives or AI.</p></section>
+<!-- START OF ASHLEE'S SCALABLE HUB (COMPLETELY FIXED) -->
+<section id="scalable-contribute-hub" style="margin-top: 60px; padding: 40px; background: white; border: 1px solid #e3ded2; border-radius: 17px; box-shadow: 0 4px 12px rgba(24,62,50,0.05); font-family: system-ui, -apple-system, sans-serif; display: block; position: relative; z-index: 10;">
+  <div style="margin-bottom: 25px;">
+    <h2 style="font-family: Georgia, serif; font-size: 33px; margin: 0 0 9px; color: #183e32;">Scalable Governance & Contribution Hub 🌱</h2>
+    <p style="color: #6b756f; margin: 0; font-size: 14px;"><strong>Workload Optimization Engine:</strong> Decentralized Verification & Automated Auditing</p>
+  </div>
+
+  <!-- Automated Health Shield Notification Banner -->
+  <div style="background:#e8f4fd; border-left:4px solid #2196F3; padding:15px; border-radius:0 10px 10px 0; margin-bottom:25px; font-size:13px; display:flex; gap:12px; align-items:center; color: #192720;">
+      <span style="font-size:22px;">🛡️</span>
+      <div>
+          <strong style="color:#0d3c61; display:block; margin-bottom:2px;">Automated Meta-Validation Shield Active:</strong>
+          System automatically scans parameters, tracks required arrays, and filters out problematic entries to minimize manual review workloads.
+      </div>
+  </div>
+
+  <!-- Mode Selector Buttons -->
+  <div style="display: flex; gap: 10px; margin-bottom: 25px;">
+      <button id="tab-manual" type="button" onclick="switchContributionTab('manual')" style="background: #e6b85c; border: 0; border-radius: 10px; padding: 12px 20px; font-weight: 800; color: #26311f; cursor: pointer;">Manual Entry (Small Archives)</button>
+      <button id="tab-bulk" type="button" onclick="switchContributionTab('bulk')" style="background: white; border: 1px solid #ddd8cc; border-radius: 10px; padding: 12px 20px; font-weight: 800; color: #192720; cursor: pointer;">Bulk Imports (Large Scale Ingestion)</button>
+  </div>
+
+  <!-- PANEL A: MANUAL SUBMISSION FORM -->
+  <div id="panel-manual" style="display: block;">
+      <form id="manualRootsForm" onsubmit="handleManualSubmission(event)">
+          <div style="margin-bottom: 18px;">
+              <label style="font-weight: 700; font-size: 14px; color: #192720;">Institutional Trust Authentication Profile</label>
+              <select id="m-tier" style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; background: white;">
+                  <option value="Tier 3">Tier 3: Community Contributor — Review Required</option>
+<option value="Tier 2">Tier 2: Regional Institution — Review Required</option>
+<option value="Tier 1">Tier 1: National Institution — Review Required</option>
+              </select>
+          </div>
+
+          <div style="margin-bottom: 18px;">
+              <label style="font-weight: 700; font-size: 14px; color: #192720;">Record name *</label>
+              <input id="m-title" required placeholder="Name of historical record" style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; box-sizing: border-box; outline: none;">
+          </div>
+
+          <div style="margin-bottom: 18px;">
+              <label style="font-weight: 700; font-size: 14px; color: #192720;">Date / Historical Era *</label>
+              <input id="m-date" required placeholder="Date or approximate era (e.g., c. 1783, Loyalist Migration)" style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; box-sizing: border-box; outline: none;">
+          </div>
+
+          <div style="margin-bottom: 20px; background: #fbf8f1; padding: 16px; border: 2px dashed #e6b85c; border-radius: 12px;">
+              <label style="font-weight: 800; font-size: 14px; color: #183e32;">Visual Display Reference Asset (Required for System Consistency) *</label>
+              <input type="file" id="m-image-file" accept="image/*" onchange="previewImageSource(event)" style="margin-top: 10px; display: block;">
+              <div id="imagePreviewContainer" style="display: none; margin-top: 12px;">
+                  <p style="margin: 0 0 6px 0; font-size: 12px; color: #6b756f; font-weight: 700;">Live Layout Preview Thumbnail:</p>
+                  <img id="layoutThumbnail" src="#" alt="Preview" style="max-height: 130px; border-radius: 10px; border: 2px solid #e6b85c;">
+              </div>
+          </div>
+
+          <div style="background: #fdfdfd; padding: 16px; border-radius: 12px; border: 1px solid #e3ded2; margin-bottom: 18px;">
+              <label style="font-weight: 700; font-size: 14px; color: #192720;">Original source Link URL <span style="font-weight: normal; color: #6b756f; font-size: 13px;">(Optional for local physical/oral collections)</span></label>
+              <input id="m-url" type="url" placeholder="https://example.com" style="width:100%; padding:14px; margin-top:6px; margin-bottom:10px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; box-sizing: border-box;">
+              <label style="font-size: 13px; color: #192720; display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 600;">
+                  <input type="checkbox" id="m-no-url" onchange="toggleUrlRequirement(this)" style="transform: scale(1.1);"> This record belongs to a localized collection and does not have an active web archive hyperlink.
+              </label>
+          </div>
+        <div style="margin-bottom: 18px;">
+  <label style="font-weight:700; font-size:14px;">
+    Original Source / Catalogue Reference *
+  </label>
+
+  <input id="m-original-source" required
+    placeholder="Archive name, collection title, catalogue number or reference"
+    style="width:100%; padding:14px; margin-top:6px;
+    border:1px solid #ddd8cc; border-radius:10px;
+    font-size:15px; box-sizing:border-box;">
+</div>
+<div style="margin-bottom: 18px; background: #fbf8f1;
+padding: 16px; border: 2px dashed #e6b85c; border-radius: 12px;">
+
+  <label style="font-weight: 800; font-size: 14px; color: #183e32;">
+    Upload Supporting Historical Document (PDF or Word)
+  </label>
+
+  <input
+    type="file"
+    id="m-document-file"
+    accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    style="display:block; margin-top:10px;"
+  >
+
+  <p id="documentReviewStatus"
+     style="font-size:13px; color:#6b756f;">
+    Select a PDF or DOCX document for automated assessment.
+  </p>
+
+</div>
+          <div style="background: #ffffff; padding: 16px; border-radius: 12px; border: 1px solid #ddd8cc; margin-bottom: 18px;">
+              <label style="font-weight:700; font-size:14px; display:block; margin-bottom:6px; color: #192720;">Public Discoverability & Rights Access Tier *</label>
+              <select id="m-access" style="width:100%; padding:14px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; background: white;" required>
+                  <option value="Open Public Access">Open Access (Fully viewable on platform with clear external source redirects)</option>
+                  <option value="Restricted Educational Use Only">Restricted Educational Use (Protected visual overlays; metadata visible for research accounts)</option>
+                  <option value="Institutional Permission Request Required">Access by Direct Request (Asset files hidden; automated form routes inquiries straight to repository admins)</option>
+              </select>
+          </div>
+
+          <div style="margin-bottom: 18px;">
+              <label style="font-weight: 700; font-size: 14px; color: #192720;">Description & Historical Context Significance *</label>
+              <textarea id="m-desc" required placeholder="Describe this historical record's content, provenance, and backstories..." style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; min-height:100px; font-family: inherit; box-sizing: border-box; resize: vertical; outline: none;"></textarea>
+          </div>
+
+          <div style="margin-bottom: 18px;">
+              <label style="font-weight: 700; font-size: 14px; color: #192720;">Keywords (separate with commas) *</label>
+              <input id="m-keywords" required placeholder="e.g., history, community, civil rights" style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; box-sizing: border-box;">
+          </div>
+
+          <div style="margin-bottom: 18px;">
+              <label style="font-weight: 700; font-size: 14px; color: #192720;">Primary System Discovery Category *</label>
+              <select id="m-category" style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; background: white;" required>
+                  <option value="Communities">Communities</option>
+                  <option value="People">People</option>
+                  <option value="Music">Culture / Music</option>
+                  <option value="Civil Rights">Civil Rights</option>
+              </select>
+          </div>
+<label style="font-weight: 700; font-size: 14px; color: #192720;">Contributing Institution Name *</label>
+
+<input id="m-institution" required placeholder="Organization or institution name" style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; box-sizing: border-box;">
+          <div style="margin-bottom: 18px;">
+              
+          </div>
+
+          <div style="margin-bottom: 18px;">
+              <label style="font-weight: 700; font-size: 14px; color: #192720;">Contributor contact email address</label>
+              <input id="m-email" type="email" placeholder="records@institution.ca" style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; box-sizing: border-box;">
+          </div>
+
+          <div style="margin-bottom: 25px;">
+              <label style="font-weight: 700; font-size: 14px; color: #192720;">Rights, licenses and permissions information</label>
+              <textarea id="m-rights" placeholder="Describe public domain status or access restrictions..." style="width:100%; padding:14px; margin-top:6px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; min-height:80px; font-family: inherit; box-sizing: border-box; resize: vertical; outline: none;"></textarea>
+          </div>
+
+          <button type="submit" style="background: #e6b85c; border: 0; border-radius: 10px; padding: 14px 24px; font-weight: 800; color: #26311f; cursor: pointer; width: 100%; font-size: 16px;">Submit Archival Record for Verification</button>
+      </form>
+  </div>
+
+  <!-- PANEL B: ENTERPRISE HIGH-VOLUME BULK INGESTION -->
+  <div id="panel-bulk" style="display: none; background: white; padding: 10px 0 0 0;">
+      <h3 style="margin-top: 0; color: #183e32; font-family: Georgia, serif;">Enterprise Bulk Metadata Ingestion Layer</h3>
+      <p style="font-size: 14px; color: #6b756f; margin-bottom: 20px;">Enables verified institutions to stream thousands of catalogue entries simultaneously via formatted spreadsheet uploads or direct data array parsing arrays.</p>
+      
+      <div style="border: 2px dashed #e6b85c; padding: 30px; text-align: center; border-radius: 14px; background: #fbf8f1; margin-bottom: 20px;">
+          <p style="font-weight: 800; color: #183e32; margin: 0 0 12px 0; font-size: 15px;">Option A: Map Local CSV Spreadsheet Document</p>
+          <input type="file" id="bulkCsvFile" accept=".csv" style="margin-bottom: 5px;"><br>
+          <span style="font-size: 12px; color: #6b756f;">Accepts standard UTF-8 encoded .csv arrays</span>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+          <label style="font-weight:700; font-size:14px; display:block; margin-bottom:6px; color: #192720;">Option B: Direct Input Bulk JSON Object Array</label>
+          <textarea id="bulkJsonInput" placeholder='[{"title": "Record 1", "date_period": "1783"}, {"title": "Record 2", "date_period": "1812"}]' style="width:100%; height:110px; padding:12px; box-sizing:border-box; border:1px solid #ddd8cc; border-radius:10px; font-family:monospace; font-size:12px; resize:vertical; outline:none;"></textarea>
+      </div>
+
+      <div style="background: #e8f4fd; border-left: 4px solid #2196F3; padding: 15px; border-radius: 0 10px 10px 0; margin-bottom: 25px; font-size: 13px; color: #222; line-height: 1.6;">
+          <strong style="color: #0d3c61; font-weight: 800; display: block; margin-bottom: 4px;">Required Matrix Header Mapping Index:</strong>
+          <code style="display: block; background: rgba(0,0,0,0.05); padding: 8px; border-radius: 6px; font-family: monospace; word-break: break-all; font-size: 13px; color: #192720;">
+              title,date_period,source_url,access_rights,description,keywords,category,institution,image_asset_url
+          </code>
+      </div>
+      <button type="button" onclick="executeBatchCsvImportSim()" class="primary" style="background: #e6b85c; border: 0; border-radius: 10px; padding: 14px 24px; font-weight: 800; color: #26311f; cursor: pointer; width: 100%; font-size: 16px;">Process Batch Import Stream Ingestion</button>
+  </div>
+<!-- AUTOMATED FLAGGED SUBMISSIONS -->
+<div id="flagged-submissions-section"
+     style="margin-top:35px; padding:22px;
+     background:#fff8ed; border:1px solid #e6b85c;
+     border-radius:12px;">
+
+  <h3 style="color:#183e32;">Flagged Submissions</h3>
+
+  <p style="font-size:13px; color:#6b756f;">
+    These submissions were flagged by the automated assessment system
+    because one or more checks could not be completed successfully.
+    They are stored separately and are not displayed in the public library.
+  </p>
+
+  <div id="flagged-submissions-list">
+    <p>No flagged submissions to display.</p>
+  </div>
+
+</div>
+  <div id="pending-review-section"
+     style="margin-top:35px; padding:22px;
+     background:#fbf8f1; border-radius:12px;">
+
+  <h3 style="color:#183e32;">Submission Review Queue</h3>
+
+  <p style="font-size:13px; color:#6b756f;">
+    New submissions remain private until a reviewer approves them.
+  </p>
+
+  <div id="pending-review-list"></div>
+
+</div>
+  <p id="hubFeedbackResponse" role="status" style="font-weight: 800; color: #183e32; margin-top: 20px; text-align: center; font-size: 15px;"></p>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mammoth@1.9.0/mammoth.browser.min.js"></script>
+<script>
+/* ROOTS CONTRIBUTION AND REVIEW SYSTEM
+   New records remain pending until approved.
+   Prototype storage uses browser localStorage.
+*/
+
+const ROOTS_PENDING_KEY = "roots_pending_submissions";
+const ROOTS_APPROVED_KEY = "roots_approved_submissions";
+
+let rootsPending = JSON.parse(
+  localStorage.getItem(ROOTS_PENDING_KEY) || "[]"
+);
+
+let rootsApproved = JSON.parse(
+  localStorage.getItem(ROOTS_APPROVED_KEY) || "[]"
+);
+
+function saveRootsSubmissions() {
+  localStorage.setItem(ROOTS_PENDING_KEY, JSON.stringify(rootsPending));
+  localStorage.setItem(ROOTS_APPROVED_KEY, JSON.stringify(rootsApproved));
+}
+
+function rootsEscape(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+/* Switch between manual and bulk contribution tabs. */
+function switchContributionTab(mode) {
+  document.getElementById("panel-manual").style.display =
+    mode === "manual" ? "block" : "none";
+
+  document.getElementById("panel-bulk").style.display =
+    mode === "bulk" ? "block" : "none";
+
+  document.getElementById("tab-manual").style.background =
+    mode === "manual" ? "#e6b85c" : "white";
+
+  document.getElementById("tab-bulk").style.background =
+    mode === "bulk" ? "#e6b85c" : "white";
+}
+
+/* Image preview. */
+let systemBase64AssetHash = "";
+
+function previewImageSource(event) {
+  const targetFile = event.target.files[0];
+
+  if (!targetFile) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    document.getElementById("imagePreviewContainer").style.display = "block";
+    document.getElementById("layoutThumbnail").src = e.target.result;
+    systemBase64AssetHash = e.target.result;
+  };
+
+  reader.readAsDataURL(targetFile);
+}
+
+/* Allow physical collections to be submitted without a URL. */
+function toggleUrlRequirement(checkboxElement) {
+  const urlField = document.getElementById("m-url");
+
+  urlField.disabled = checkboxElement.checked;
+
+  if (checkboxElement.checked) {
+    urlField.value = "";
+  }
+}
+
+/* Create a record using ROOTS metadata fields. */
+function createRootsRecord(values) {
+  return {
+    id: Date.now() + Math.floor(Math.random() * 1000),
+    title: values.title,
+    category: values.category,
+    type: values.source_type || "Historical record",
+    institution: values.institution,
+    location: values.location || "Not specified",
+    date: values.date_period,
+    emoji: values.emoji || "📚",
+    desc: values.description,
+    keywords: Array.isArray(values.keywords)
+      ? values.keywords
+      : String(values.keywords || "")
+          .split(",")
+          .map(word => word.trim())
+          .filter(Boolean),
+    source: values.source_url || "",
+    original_source: values.original_source,
+    access_rights: values.access_rights,
+    rights_statement: values.rights_statement,
+    trust_tier: values.trust_tier,
+    contributor_email: values.contributor_email,
+    image_asset: values.image_asset || "",
+    status: "pending_review",
+    submitted_at: new Date().toISOString()
+  };
+}
+
+/* Validate individual records. */
+function validateRootsRecord(record) {
+  const errors = [];
+
+  if (!record || typeof record !== "object" || Array.isArray(record)) {
+    return ["Record must be a JSON object."];
+  }
+
+  if (!String(record.title || "").trim()) {
+    errors.push("Missing title.");
+  }
+
+  if (!String(record.date_period || record.date || "").trim()) {
+    errors.push("Missing date_period.");
+  }
+
+  if (!String(record.description || record.desc || "").trim()) {
+    errors.push("Missing description.");
+  }
+
+  if (!String(record.institution || "").trim()) {
+    errors.push("Missing institution.");
+  }
+
+  if (!String(record.original_source || "").trim()) {
+    errors.push("Missing original_source.");
+  }
+
+  if (!String(record.category || "").trim()) {
+    errors.push("Missing category.");
+  }
+
+  if (
+    !String(record.keywords || "").trim() &&
+    !(Array.isArray(record.keywords) && record.keywords.length)
+  ) {
+    errors.push("Missing keywords.");
+  }
+
+  const offline = ["physical", "oral", "offline"].includes(
+    String(record.source_type || "").toLowerCase()
+  );
+
+  if (!offline && record.source_url &&
+      !/^https?:\/\//i.test(record.source_url)) {
+    errors.push("source_url must be a valid HTTP or HTTPS URL.");
+  }
+
+  if (!record.source_url && !offline && !record.source) {
+    errors.push("Provide a source URL or identify the record as physical/offline.");
+  }
+
+  return errors;
+}
+
+/* Add accepted submissions to the private review queue. */
+function addToRootsPending(record) {
+  record.status = "pending_review";
+  rootsPending.push(record);
+  saveRootsSubmissions();
+  renderRootsReviewQueue();
+}
+async function extractRootsDocumentText(file) {
+  if (!file) {
+    throw new Error("Please select a supporting document.");
+  }
+
+  const fileName = file.name.toLowerCase();
+
+  // Read PDF documents
+  if (fileName.endsWith(".pdf")) {
+    if (!window.pdfjsLib) {
+      throw new Error("PDF reader could not be loaded.");
+    }
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+    const pdf = await pdfjsLib.getDocument({
+      data: new Uint8Array(await file.arrayBuffer())
+    }).promise;
+
+    let extractedText = "";
+
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+      const page = await pdf.getPage(pageNumber);
+      const content = await page.getTextContent();
+
+      extractedText += content.items
+        .map(item => item.str || "")
+        .join(" ") + " ";
+    }
+
+    return extractedText.trim();
+  }
+
+  // Read Word DOCX documents
+  if (fileName.endsWith(".docx")) {
+    if (!window.mammoth) {
+      throw new Error("Word document reader could not be loaded.");
+    }
+
+    const result = await mammoth.extractRawText({
+      arrayBuffer: await file.arrayBuffer()
+    });
+
+    return result.value.trim();
+  }
+
+  throw new Error("Only PDF and DOCX documents are supported.");
+}
+function assessRootsSubmission(record, documentText) {
+  const reasons = [];
+  const text = String(documentText || "").toLowerCase();
+
+ // 1. COMPLETENESS
+// Required fields are checked separately by validateRootsRecord().
+
+  // 2. HISTORICAL RELEVANCE
+  const keywords = [
+    ...(Array.isArray(record.keywords) ? record.keywords : []),
+    record.title,
+    record.category
+  ];
+
+  const searchTerms = keywords
+    .join(" ")
+    .toLowerCase()
+    .split(/[\s,]+/)
+    .filter(word => word.length > 3);
+
+  const relevant = searchTerms.some(word => text.includes(word));
+
+if (record.assessment?.bulk_import) {
+  // Bulk imports use supplied descriptions and metadata,
+  // not extracted supporting-document text.
+  if (!relevant) {
+    reasons.push("Historical relevance needs further checking.");
+  }
+} else {
+  // Manual submissions use extracted document text.
+  if (!relevant) {
+    reasons.push("Document relevance could not be confirmed.");
+  }
+}
+
+  // 3. SOURCE INFORMATION
+// Original source completeness is checked by validateRootsRecord().
+
+  // 4. DOCUMENT QUALITY
+  if (!record.assessment?.bulk_import && text.trim().length < 150) {
+  reasons.push("Document contains insufficient readable text.");
+}
+
+  // 5. DUPLICATE DETECTION
+  const normalize = value =>
+    String(value || "").toLowerCase().trim().replace(/\s+/g, " ");
+
+  const existingRecords = [
+  ...rootsPending,
+  ...rootsApproved,
+  ...data
+];
+
+  const duplicate = existingRecords.some(existing =>
+    normalize(existing.title) === normalize(record.title) &&
+    normalize(existing.date) === normalize(record.date)
+  );
+
+  if (duplicate) {
+    reasons.push("Possible duplicate record detected.");
+  }
+
+  // RIGHTS INFORMATION
+  if (!record.rights_statement || !record.rights_statement.trim()) {
+    reasons.push("Rights information needs further checking.");
+  }
+
+  return {
+    status: reasons.length === 0 ? "accepted" : "flagged",
+    reasons: reasons,
+    assessed_at: new Date().toISOString()
+  };
+}
+  
+/* Handle manual submissions. */
+async function handleManualSubmission(event) {
+  event.preventDefault();
+
+  const offline = document.getElementById("m-no-url").checked;
+  const url = document.getElementById("m-url").value.trim();
+
+  if (!offline && !url) {
+    alert("Please enter a source URL or select the physical/offline collection option.");
+    return;
+  }
+
+  const values = {
+    title: document.getElementById("m-title").value.trim(),
+    date_period: document.getElementById("m-date").value.trim(),
+    description: document.getElementById("m-desc").value.trim(),
+    keywords: document.getElementById("m-keywords").value
+      .split(",").map(word => word.trim()).filter(Boolean),
+    category: document.getElementById("m-category").value,
+    institution: document.getElementById("m-institution").value.trim(),
+    original_source: document.getElementById("m-original-source").value.trim(),
+    source_url: offline ? "" : url,
+    source_type: offline ? "physical" : "online",
+    access_rights: document.getElementById("m-access").value,
+    trust_tier: document.getElementById("m-tier").value,
+    contributor_email: document.getElementById("m-email").value.trim(),
+    rights_statement: document.getElementById("m-rights").value.trim(),
+    image_asset: systemBase64AssetHash
+  };
+
+  const record = createRootsRecord(values);
+
+  const errors = validateRootsRecord({
+    ...record,
+    date_period: values.date_period,
+    description: values.description,
+    source_url: values.source_url,
+    source_type: values.source_type,
+    original_source: values.original_source
+  });
+
+  if (errors.length) {
+    alert("Please correct the following:\n\n" + errors.join("\n"));
+    return;
+  }
+
+  const documentFile = document.getElementById("m-document-file").files[0];
+  let documentText = "";
+  let documentError = "";
+
+  const statusMessage = document.getElementById("documentReviewStatus");
+  statusMessage.textContent = "Assessing your submission...";
+
+  if (documentFile) {
+    try {
+      documentText = await extractRootsDocumentText(documentFile);
+    } catch (error) {
+      documentError = error.message;
+    }
+  }
+
+  const assessment = assessRootsSubmission(record, documentText);
+
+  if (!documentFile) {
+    assessment.reasons.push("No supporting historical document was uploaded.");
+  }
+
+  if (documentError) {
+    assessment.reasons.push("Document could not be read: " + documentError);
+  }
+
+  assessment.status =
+    assessment.reasons.length === 0 ? "accepted" : "flagged";
+
+  record.assessment = assessment;
+
+  if (assessment.status === "accepted") {
+    record.status = "approved";
+
+    rootsApproved.push(record);
+    saveRootsSubmissions();
+
+    if (!data.some(existing => Number(existing.id) === Number(record.id))) {
+      data.push(record);
+    }
+
+    render();
+
+    document.getElementById("hubFeedbackResponse").textContent =
+      "Automatically accepted! Your record has been added to the ROOTS library.";
+
+    statusMessage.textContent = "Assessment complete: Accepted.";
+
+  } else {
+    record.status = "flagged";
+
+    const flaggedKey = "roots_flagged_submissions";
+    const flaggedRecords = JSON.parse(
+      localStorage.getItem(flaggedKey) || "[]"
+    );
+
+    flaggedRecords.push(record);
+
+    localStorage.setItem(flaggedKey, JSON.stringify(flaggedRecords));
+
+    renderFlaggedSubmissions();
+
+    document.getElementById("hubFeedbackResponse").textContent =
+      "Your submission has been flagged and saved separately. Reasons: " +
+      assessment.reasons.join("; ");
+
+    statusMessage.textContent =
+      "Assessment complete: Flagged for further attention.";
+  }
+
+  document.getElementById("manualRootsForm").reset();
+
+  systemBase64AssetHash = "";
+  document.getElementById("imagePreviewContainer").style.display = "none";
+  document.getElementById("layoutThumbnail").src = "#";
+
+  toggleUrlRequirement(document.getElementById("m-no-url"));
+}
+
+/* Read CSV files, including quoted values and commas. */
+function parseRootsCSV(text) {
+  const rows = [];
+  let row = [];
+  let value = "";
+  let insideQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    const next = text[i + 1];
+
+    if (char === '"' && insideQuotes && next === '"') {
+      value += '"';
+      i++;
+    } else if (char === '"') {
+      insideQuotes = !insideQuotes;
+    } else if (char === "," && !insideQuotes) {
+      row.push(value.trim());
+      value = "";
+    } else if ((char === "\n" || char === "\r") && !insideQuotes) {
+      if (char === "\r" && next === "\n") i++;
+      row.push(value.trim());
+
+      if (row.some(cell => cell !== "")) rows.push(row);
+
+      row = [];
+      value = "";
+    } else {
+      value += char;
+    }
+  }
+
+  row.push(value.trim());
+
+  if (row.some(cell => cell !== "")) rows.push(row);
+
+  if (insideQuotes) {
+    throw new Error("CSV contains an unclosed quotation mark.");
+  }
+
+  if (rows.length < 2) {
+    throw new Error("CSV must contain a header row and at least one record.");
+  }
+
+  const headers = rows[0].map(header => header.trim());
+
+  return rows.slice(1).map(cells => {
+    const record = {};
+
+    headers.forEach((header, index) => {
+      record[header] = cells[index] || "";
+    });
+
+    return record;
+  });
+}
+
+/* Standardize imported CSV and JSON records. */
+function normalizeImportedRecord(record) {
+  return {
+    title: record.title || "",
+    date_period: record.date_period || record.date || "",
+    description: record.description || record.desc || "",
+    keywords: record.keywords || "",
+    category: record.category || "",
+    institution: record.institution || "",
+    original_source: record.original_source || "",
+    source_url: record.source_url || record.source || "",
+    source_type: record.source_type ||
+      (record.source_url || record.source ? "online" : ""),
+    access_rights: record.access_rights || "",
+    trust_tier: record.trust_tier || "Tier 3",
+    rights_statement: record.rights_statement || "",
+    contributor_email: record.contributor_email || "",
+    location: record.location || "Not specified",
+    type: record.type || "Historical record",
+    emoji: record.emoji || "📚"
+  };
+}
+
+
+/* Process and automatically assess CSV or JSON imports. */
+async function executeBatchCsvImportSim() {
+  const fileInput = document.getElementById("bulkCsvFile");
+  const jsonText = document.getElementById("bulkJsonInput").value.trim();
+
+  let records = [];
+
+  try {
+    if (fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      records = parseRootsCSV(await file.text());
+
+    } else if (jsonText) {
+      const parsed = JSON.parse(jsonText);
+
+      if (!Array.isArray(parsed)) {
+        throw new Error("JSON input must be an array of record objects.");
+      }
+
+      records = parsed;
+
+    } else {
+      throw new Error("Please select a CSV file or enter a JSON array.");
+    }
+
+  } catch (error) {
+    document.getElementById("hubFeedbackResponse").textContent =
+      "Import could not be processed: " + error.message;
+    return;
+  }
+
+  let accepted = 0;
+  let flagged = 0;
+  const flaggedRecords = JSON.parse(
+    localStorage.getItem("roots_flagged_submissions") || "[]"
+  );
+
+  records.forEach((rawRecord, index) => {
+    const normalized = normalizeImportedRecord(rawRecord);
+
+    const validationErrors = validateRootsRecord({
+      ...normalized,
+      date_period: normalized.date_period,
+      description: normalized.description,
+      source_url: normalized.source_url,
+      source_type: normalized.source_type
+    });
+
+    const newRecord = createRootsRecord(normalized);
+newRecord.assessment = { bulk_import: true };
+    // Assess the available record information.
+    const assessment = assessRootsSubmission(
+      newRecord,
+      [
+        newRecord.title,
+        newRecord.desc,
+        newRecord.category,
+        newRecord.keywords,
+        newRecord.institution,
+        newRecord.original_source
+      ].join(" ")
+    );
+
+   // Include validation problems without repeating existing concerns.
+validationErrors.forEach(error => {
+  const message = error.toLowerCase();
+
+  const alreadyReported = assessment.reasons.some(reason => {
+    const existing = reason.toLowerCase();
+
+    return (
+      (message.includes("date") && existing.includes("date")) ||
+      (message.includes("institution") && existing.includes("institution")) ||
+      (message.includes("original source") && existing.includes("original source")) ||
+      (message.includes("keyword") && existing.includes("keyword"))
+    );
+  });
+
+  if (!alreadyReported) {
+    assessment.reasons.push(error);
+  }
+});
+
+    assessment.status =
+      assessment.reasons.length === 0 ? "accepted" : "flagged";
+
+    assessment.bulk_import = true;
+    assessment.import_row = index + 1;
+
+    newRecord.assessment = assessment;
+
+    if (assessment.status === "accepted") {
+      newRecord.status = "approved";
+
+      rootsApproved.push(newRecord);
+
+      if (!data.some(existing =>
+        Number(existing.id) === Number(newRecord.id)
+      )) {
+        data.push(newRecord);
+      }
+
+      accepted++;
+
+    } else {
+      newRecord.status = "flagged";
+      flaggedRecords.push(newRecord);
+      flagged++;
+    }
+  });
+
+  saveRootsSubmissions();
+
+  localStorage.setItem(
+    "roots_flagged_submissions",
+    JSON.stringify(flaggedRecords)
+  );
+
+  render();
+  renderFlaggedSubmissions();
+
+  document.getElementById("hubFeedbackResponse").textContent =
+    `Bulk import complete: ${accepted} accepted and added to the library; ${flagged} flagged and saved separately.`;
+}
+
+/* Display submissions awaiting review. */
+function renderRootsReviewQueue() {
+  const container = document.getElementById("pending-review-list");
+
+  if (!container) return;
+
+  if (!rootsPending.length) {
+    container.innerHTML =
+      "<p>No submissions are currently awaiting review.</p>";
+    return;
+  }
+
+  container.innerHTML = rootsPending.map(record => `
+    <div style="background:white; border:1px solid #e3ded2;
+      border-radius:10px; padding:16px; margin-bottom:12px;">
+
+      <strong>${rootsEscape(record.title)}</strong>
+
+      <p style="font-size:13px; color:#6b756f;">
+        ${rootsEscape(record.institution)} ·
+        ${rootsEscape(record.date)}
+      </p>
+
+      <p style="font-size:12px;">
+        Status: <strong>Pending Review</strong>
+      </p>
+
+      <button type="button"
+        onclick="approveRootsSubmission(${Number(record.id)})"
+        style="background:#183e32; color:white; border:0;
+        border-radius:7px; padding:9px 14px; cursor:pointer;">
+        Approve
+      </button>
+
+      <button type="button"
+        onclick="rejectRootsSubmission(${Number(record.id)})"
+        style="background:#eee; color:#192720; border:0;
+        border-radius:7px; padding:9px 14px; cursor:pointer;">
+        Reject
+      </button>
+    </div>
+  `).join("");
+}
+/* Display submissions flagged by the automated assessment. */
+function renderFlaggedSubmissions() {
+  const container = document.getElementById("flagged-submissions-list");
+
+  if (!container) return;
+
+  const flaggedRecords = JSON.parse(
+    localStorage.getItem("roots_flagged_submissions") || "[]"
+  );
+
+  if (!flaggedRecords.length) {
+    container.innerHTML = "<p>No flagged submissions to display.</p>";
+    return;
+  }
+
+  container.innerHTML = flaggedRecords.map(record => `
+    <div style="background:white; border:1px solid #e3ded2;
+      border-radius:10px; padding:16px; margin-bottom:12px;">
+
+      <strong>${rootsEscape(record.title)}</strong>
+
+      <p style="font-size:13px; color:#6b756f;">
+        ${rootsEscape(record.institution)} ·
+        ${rootsEscape(record.date)}
+      </p>
+
+      <strong style="font-size:13px; color:#9b5b20;">
+        Assessment concerns:
+      </strong>
+
+      <ul style="font-size:13px;">
+        ${(record.assessment?.reasons || [])
+          .map(reason => `<li>${rootsEscape(reason)}</li>`)
+          .join("")}
+      </ul>
+
+      <p style="font-size:12px; color:#9b5b20;">
+        Status: Flagged — Not added to public library
+      </p>
+
+    </div>
+  `).join("");
+}
+/* Approve a record and add it to ROOTS discovery. */
+function approveRootsSubmission(id) {
+  const index = rootsPending.findIndex(
+    record => Number(record.id) === id
+  );
+
+  if (index === -1) return;
+
+  const record = rootsPending.splice(index, 1)[0];
+
+  record.status = "approved";
+
+  data.push(record);
+  rootsApproved.push(record);
+
+  saveRootsSubmissions();
+  renderRootsReviewQueue();
+  render();
+
+  document.getElementById("hubFeedbackResponse").textContent =
+    "Record approved and added to the discovery section.";
+}
+
+/* Reject a submission. */
+function rejectRootsSubmission(id) {
+  const index = rootsPending.findIndex(
+    record => Number(record.id) === id
+  );
+
+  if (index === -1) return;
+
+  rootsPending.splice(index, 1);
+
+  saveRootsSubmissions();
+  renderRootsReviewQueue();
+
+  document.getElementById("hubFeedbackResponse").textContent =
+    "Submission rejected and removed from the pending queue.";
+}
+
+renderRootsReviewQueue();
+renderFlaggedSubmissions();
+</script>
+
+
+
+
+
+</main><footer class="footer">ROOTS · Pink Pixels · RBC HubHacks 2026 · Prototype concept for the Black Cultural Centre for Nova Scotia</footer><div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal"><button class="close" id="close">✕ Close</button><div id="modalContent"></div></div></div><script>
 // Replace these demonstration topic cards with verified catalogue metadata before presenting them as actual archival records.
 const data=[
 {id:1,title:'Exploring Africville',category:'Communities',type:'Community history',institution:'Nova Scotia Archives',location:'Halifax, Nova Scotia',date:'Historical overview',emoji:'🏘️',desc:'Explore the history and legacy of Africville, a historic Black community in Halifax.',keywords:['africville','halifax','community','heritage'],source:'https://archives.novascotia.ca/african-heritage/'},
@@ -12,5 +969,13 @@ const data=[
 {id:6,title:'People Who Shaped Black Canadian History',category:'People',type:'Biographical topic',institution:'Library and Archives Canada',location:'Canada',date:'Various periods',emoji:'👥',desc:'Begin exploring notable figures and the records that document their contributions.',keywords:['people','leaders','biography','history','activism'],source:'https://library-archives.canada.ca/'},
 {id:7,title:'Historic Communities and Migration',category:'Communities',type:'Community history',institution:'Nova Scotia Archives',location:'Nova Scotia',date:'Various periods',emoji:'🗺️',desc:'Explore settlement, migration and community connections across generations.',keywords:['migration','settlement','communities','history'],source:'https://archives.novascotia.ca/african-heritage/'},
 {id:8,title:'Civil Rights and Community Leadership',category:'Civil Rights',type:'Historical topic',institution:'Black Cultural Centre for Nova Scotia',location:'Nova Scotia',date:'20th century',emoji:'✊🏾',desc:'Explore stories of advocacy, resilience and leadership in Black communities.',keywords:['rights','activism','leaders','community'],source:'https://bccns.com/'}];
-const categories=[['Music','🎷','Jazz, gospel & artists'],['Communities','🏘️','Places & heritage'],['Civil Rights','✊🏾','Movements & milestones'],['People','👥','Leaders & pioneers']];let category='',search='';const $=id=>document.getElementById(id);function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function renderCategories(){$('categories').innerHTML=categories.map(([name,emoji,subtitle])=>`<button class="category ${category===name?'active':''}" data-cat="${esc(name)}"><div class="emoji">${emoji}</div><h3>${esc(name)}</h3><p>${esc(subtitle)}</p></button>`).join('');document.querySelectorAll('.category').forEach(b=>b.onclick=()=>{category=category===b.dataset.cat?'':b.dataset.cat;renderCategories();render();$('records').scrollIntoView({behavior:'smooth'})})}function render(){let matches=data.filter(r=>(!category||r.category===category)&&(!$('institution').value||r.institution===$('institution').value)&&(!$('type').value||r.type===$('type').value)&&(!search||[r.title,r.desc,r.category,r.institution,r.location,...r.keywords].join(' ').toLowerCase().includes(search)));$('count').textContent=`${matches.length} demonstration topic${matches.length===1?'':'s'} found${search?' for “'+search+'”':''}.`;$('results').innerHTML=matches.length?matches.map(r=>`<article class="record"><div class="art" aria-hidden="true">${r.emoji}</div><div class="record-content"><div class="tag">${esc(r.category)} · ${esc(r.type)}</div><h3>${esc(r.title)}</h3><p>${esc(r.desc)}</p><div class="meta">📍 ${esc(r.location)}<br>Potential source: ${esc(r.institution)}</div><button data-id="${r.id}">Explore topic →</button></div></article>`).join(''):'<div class="empty">No topics match these filters. Try another keyword or clear filters.</div>';document.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>openRecord(Number(b.dataset.id)))}function openRecord(id){let r=data.find(x=>x.id===id);$('modalContent').innerHTML=`<div class="tag">${esc(r.category)} · ${esc(r.type)}</div><h2 id="modalTitle">${esc(r.title)}</h2><p>${esc(r.desc)}</p><p><strong>Location:</strong> ${esc(r.location)}<br><strong>Period:</strong> ${esc(r.date)}</p><div class="source"><strong>Potential institution to explore:</strong><br>${esc(r.institution)}<p style="font-size:13px">This is an institutional starting point, not a verified source record for this topic.</p><a href="${esc(r.source)}" target="_blank" rel="noopener noreferrer">Visit institution website ↗</a></div><strong>Related topics</strong><p>${r.keywords.map(x=>`<span style="display:inline-block;background:#eee;padding:7px 10px;margin:4px;border-radius:20px;font-size:12px">${esc(x)}</span>`).join('')}</p>`;$('overlay').classList.add('show')};$('close').onclick=()=>$('overlay').classList.remove('show');$('overlay').onclick=e=>{if(e.target===$('overlay'))$('overlay').classList.remove('show')};document.addEventListener('keydown',e=>{if(e.key==='Escape')$('overlay').classList.remove('show')});$('searchForm').onsubmit=e=>{e.preventDefault();search=$('query').value.trim().toLowerCase();render();$('records').scrollIntoView({behavior:'smooth'})};$('institution').onchange=render;$('type').onchange=render;$('reset').onclick=()=>{category='';search='';$('query').value='';$('institution').value='';$('type').value='';renderCategories();render()};for(let key of ['institution','type']){let vals=[...new Set(data.map(r=>r[key]))].sort();$(key).innerHTML+=[...vals].map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}renderCategories();render();
+const categories=[['Music','🎷','Jazz, gospel & artists'],['Communities','🏘️','Places & heritage'],['Civil Rights','✊🏾','Movements & milestones'],['People','👥','Leaders & pioneers']];let category='',search='';const $=id=>document.getElementById(id);function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function renderCategories(){$('categories').innerHTML=categories.map(([name,emoji,subtitle])=>`<button class="category ${category===name?'active':''}" data-cat="${esc(name)}"><div class="emoji">${emoji}</div><h3>${esc(name)}</h3><p>${esc(subtitle)}</p></button>`).join('');document.querySelectorAll('.category').forEach(b=>b.onclick=()=>{category=category===b.dataset.cat?'':b.dataset.cat;renderCategories();render();$('records').scrollIntoView({behavior:'smooth'})})}function render(){let matches=data.filter(r=>(!category||r.category===category)&&(!$('institution').value||r.institution===$('institution').value)&&(!$('type').value||r.type===$('type').value)&&(!search||[r.title,r.desc,r.category,r.institution,r.location,...r.keywords].join(' ').toLowerCase().includes(search)));$('count').textContent=`${matches.length} demonstration topic${matches.length===1?'':'s'} found${search?' for “'+search+'”':''}.`;$('results').innerHTML=matches.length?matches.map(r=>`<article class="record"><div class="art" aria-hidden="true">${r.emoji}</div><div class="record-content"><div class="tag">${esc(r.category)} · ${esc(r.type)}</div><h3>${esc(r.title)}</h3><p>${esc(r.desc)}</p><div class="meta">📍 ${esc(r.location)}<br>Potential source: ${esc(r.institution)}</div><button data-id="${r.id}">Explore topic →</button></div></article>`).join(''):'<div class="empty">No topics match these filters. Try another keyword or clear filters.</div>';document.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>openRecord(Number(b.dataset.id)))}function openRecord(id){let r=data.find(x=>x.id===id);$('modalContent').innerHTML=`<div class="tag">${esc(r.category)} · ${esc(r.type)}</div><h2 id="modalTitle">${esc(r.title)}</h2><p>${esc(r.desc)}</p><p><strong>Location:</strong> ${esc(r.location)}<br><strong>Period:</strong> ${esc(r.date)}</p><div class="source"><strong>Potential institution to explore:</strong><br>${esc(r.institution)}<p style="font-size:13px">This is an institutional starting point, not a verified source record for this topic.</p><a href="${esc(r.source)}" target="_blank" rel="noopener noreferrer">Visit institution website ↗</a></div><strong>Related topics</strong><p>${r.keywords.map(x=>`<span style="display:inline-block;background:#eee;padding:7px 10px;margin:4px;border-radius:20px;font-size:12px">${esc(x)}</span>`).join('')}</p>`;$('overlay').classList.add('show')};$('close').onclick=()=>$('overlay').classList.remove('show');$('overlay').onclick=e=>{if(e.target===$('overlay'))$('overlay').classList.remove('show')};document.addEventListener('keydown',e=>{if(e.key==='Escape')$('overlay').classList.remove('show')});$('searchForm').onsubmit=e=>{e.preventDefault();search=$('query').value.trim().toLowerCase();render();$('records').scrollIntoView({behavior:'smooth'})};$('institution').onchange=render;$('type').onchange=render;$('reset').onclick=()=>{category='';search='';$('query').value='';$('institution').value='';$('type').value='';renderCategories();render()};for(let key of ['institution','type']){let vals=[...new Set(data.map(r=>r[key]))].sort();$(key).innerHTML+=[...vals].map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}rootsApproved.forEach(record => {
+  if (!data.some(existing => Number(existing.id) === Number(record.id))) {
+    data.push(record);
+  }
+});
+
+renderCategories();
+render();
+renderRootsReviewQueue();
 </script></body></html>

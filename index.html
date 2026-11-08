@@ -185,7 +185,11 @@ window.ROOTS_UI = (() => {
 /* Ashlee contribution hub integration: CSV/JSON ingestion, validation, duplicate
    checks and exception queue. Browser-only demo; no claims of source verification. */
 window.ROOTS_INGEST=(()=>{
- const KEY='roots_ingest_review_v1';
+ const KEY='roots_ingest_review_v1', PUB='roots_ingest_published_v1';
+ const published=()=>{try{const rows=JSON.parse(localStorage.getItem(PUB)||'[]');return Array.isArray(rows)?rows:[]}catch{return []}};
+ const savePublished=rows=>{try{localStorage.setItem(PUB,JSON.stringify(rows));return true}catch{return false}};
+ const recordKey=r=>[r.title,r.institution,r.period||r.date].map(norm).join('|');
+ const publish=(rows,override=false)=>{const existing=published(),keys=new Set(existing.map(recordKey)),added=[];for(const r of rows){if(!r.title||!r.institution||!http(r.sourceURL)||keys.has(recordKey(r)))continue;keys.add(recordKey(r));added.push({...r,reviewStatus:override?'Flagged — published with override':'Metadata checks passed',imported:true})}if(!savePublished([...existing,...added]))return {added:0,error:'Browser storage is full.'};window.dispatchEvent(new Event('roots:published'));return {added:added.length}};
  const read=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch{return []}};
  const save=rows=>{try{localStorage.setItem(KEY,JSON.stringify(rows));return true}catch{return false}};
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -237,14 +241,26 @@ window.ROOTS_INGEST=(()=>{
    return issues;
  }
  function panel(){
-   return '<section class="content contribute-section" id="roots-ingest" style="padding-top:30px;padding-bottom:50px"><div class="contribute-guide"><span class="section-kicker">HISTORICAL METADATA IMPORT</span><h2>Institutional metadata imports</h2><p>Upload a CSV or JSON array of records. ROOTS checks completeness, source URLs and possible duplicates, then separates ready-to-export records from exceptions.</p><div class="notice"><strong>Prototype trust policy:</strong> Passing automated checks does not verify historical accuracy. No imported records are automatically published. Only use approved institutional feeds for publication after a source agreement; community suggestions remain unverified.</div></div><div class="contribute-form"><label>Institutional CSV or JSON file (maximum 2 MB)<input type="file" id="roots-ingest-file" accept=".csv,.json,text/csv,application/json"></label><button type="button" class="btn btn-dark" id="roots-ingest-run">Validate import</button><p id="roots-ingest-feedback" role="status" aria-live="polite"></p><div id="roots-ingest-results"></div><div id="roots-ingest-queue"></div></div></section>';
+   return '<section class="content contribute-section" id="roots-ingest" style="padding-top:30px;padding-bottom:50px"><div class="contribute-guide"><span class="section-kicker">HISTORICAL METADATA IMPORT</span><h2>Institutional metadata imports</h2><p>Upload a CSV or JSON array of records. ROOTS checks completeness, source URLs and possible duplicates, then separates records that pass checks from exceptions.</p><div class="notice"><strong>Prototype trust policy:</strong> Passing automated checks does not verify historical accuracy. This browser-only demonstration adds passing imports to your local searchable collection. Use trusted institutional feeds; public community publishing requires staff authorization.</div></div><div class="contribute-form"><label>Institutional CSV or JSON file (maximum 2 MB)<input type="file" id="roots-ingest-file" accept=".csv,.json,text/csv,application/json"></label><button type="button" class="btn btn-dark" id="roots-ingest-run">Validate import</button><p id="roots-ingest-feedback" role="status" aria-live="polite"></p><div id="roots-ingest-results"></div><div id="roots-ingest-queue"></div></div></section>';
  }
  function download(data,name){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
  function bind(){
    const file=document.getElementById('roots-ingest-file'),run=document.getElementById('roots-ingest-run'),feedback=document.getElementById('roots-ingest-feedback'),results=document.getElementById('roots-ingest-results'),queue=document.getElementById('roots-ingest-queue');
    if(!file||!run)return;
    function draw(){
-     const rows=read();queue.innerHTML='<h3>Local exception queue ('+rows.length+')</h3><p>Flagged records stay in this browser and are not published.</p>'+rows.slice(-25).reverse().map(r=>'<p><strong>'+esc(r.record.title||'Untitled')+'</strong> · '+esc(r.record.institution)+' — '+esc(r.issues.join('; '))+'</p>').join('')+(rows.length?'<button type="button" class="btn btn-dark" id="roots-export-flags">Export flagged JSON</button>':'');
+     const rows=read();
+     queue.innerHTML='<h3>Flagged records ('+rows.length+')</h3><p>Each record shows why it was flagged. A staff member may override non-critical metadata warnings. Publishing is local to this browser.</p>'+rows.slice(-50).map((entry,i)=>({entry,i})).reverse().map(({entry,i})=>{
+       const r=entry.record,canPublish=!!r.title&&!!r.institution&&http(r.sourceURL)&&!entry.issues.includes('Possible duplicate');
+       return '<article style="border:1px solid #d6d6cf;border-radius:10px;padding:14px;margin:12px 0"><strong>'+esc(r.title||'Untitled')+'</strong> · '+esc(r.institution)+'<p><strong>Flagged because:</strong> '+esc(entry.issues.join('; '))+'</p>'+(canPublish?'<button type="button" class="btn btn-dark" data-publish-flag="'+i+'">Publish anyway</button>':'<p>Cannot publish: requires a title, institution, valid source URL, and no duplicate warning.</p>')+'</article>';
+     }).join('')+(rows.length?'<button type="button" class="btn btn-dark" id="roots-export-flags">Export flagged JSON</button>':'');
+     queue.querySelectorAll('[data-publish-flag]').forEach(btn=>btn.onclick=()=>{
+       const i=Number(btn.dataset.publishFlag),items=read(),item=items[i];if(!item)return;
+       if(!confirm('Publish this flagged record to the local ROOTS discovery collection despite: '+item.issues.join('; ')+'?'))return;
+       const result=publish([item.record],true);
+       if(result.added){items.splice(i,1);save(items);feedback.textContent='Published to local ROOTS discovery. The record is labeled as an override.'}
+       else feedback.textContent=result.error||'Not published: duplicate or invalid source.';
+       draw();
+     });
      const btn=document.getElementById('roots-export-flags');if(btn)btn.onclick=()=>download(read(),'roots-flagged-review.json');
    }
    draw();
@@ -255,7 +271,7 @@ window.ROOTS_INGEST=(()=>{
        const raw=f.name.toLowerCase().endsWith('.csv')?csv(await f.text()):JSON.parse(await f.text());
        if(!Array.isArray(raw))throw Error('JSON must contain an array of records.');
        if(raw.length>2000)throw Error('Import limit is 2,000 records.');
-       const accepted=[],flagged=[],seen=read().map(x=>x.record);
+       const accepted=[],flagged=[],seen=[...read().map(x=>x.record),...published()];
        const builtIn=Array.isArray(window.ROOTS_DATA)?window.ROOTS_DATA:[];
        for(const item of raw){
          if(!item||typeof item!=='object'||Array.isArray(item)){flagged.push({record:{title:'Invalid row'},issues:['Record is not an object']});continue}
@@ -263,9 +279,9 @@ window.ROOTS_INGEST=(()=>{
          if(issues.length)flagged.push({record:r,issues});else accepted.push(r);
          seen.push(r);
        }
-       const saved=save([...read(),...flagged].slice(-500));
-       feedback.textContent='Checked '+raw.length+' records: '+accepted.length+' passed metadata checks; '+flagged.length+' flagged.'+(saved?'':' Browser storage is full; export flagged records now.');
-       results.innerHTML='<p>Passed records are <strong>not independently verified or published</strong>. Export them for controlled institutional ingestion.</p>'+(accepted.length?'<button type="button" class="btn btn-dark" id="roots-export-passed">Export checked JSON</button>':'')+(flagged.length?'<button type="button" class="btn btn-dark" id="roots-export-current">Export current exceptions</button>':'');
+       const outcome=publish(accepted);const saved=save([...read(),...flagged].slice(-500));
+       feedback.textContent='Checked '+raw.length+' records: '+outcome.added+' added to local ROOTS discovery; '+flagged.length+' flagged.'+(outcome.error?' '+outcome.error:'')+(saved?'':' Browser storage is full; export flagged records now.');
+       results.innerHTML='<p>Passing records are now searchable in this browser under Search and Explore. They are labeled as imported metadata, not independently verified. This is not publication to a shared server.</p>'+(accepted.length?'<button type="button" class="btn btn-dark" id="roots-export-passed">Export checked JSON</button>':'')+(flagged.length?'<button type="button" class="btn btn-dark" id="roots-export-current">Export current exceptions</button>':'');
        const pass=document.getElementById('roots-export-passed'),fail=document.getElementById('roots-export-current');
        if(pass)pass.onclick=()=>download(accepted,'roots-metadata-checked.json');
        if(fail)fail.onclick=()=>download(flagged,'roots-import-exceptions.json');
@@ -273,7 +289,7 @@ window.ROOTS_INGEST=(()=>{
      }catch(e){feedback.textContent='Import failed: '+e.message}
    };
  }
- return {panel,bind};
+ return {panel,bind,published};
 })();
 </script>
 <script>
@@ -286,6 +302,20 @@ const records = (Array.isArray(window.ROOTS_DATA) ? window.ROOTS_DATA : []).filt
   seenRecordIds.add(id);
   return true;
 });
+// Load browser-local institutional imports into the existing discovery engine.
+const localImportedIds=new Set();
+function addLocalImports(){
+ for(const item of window.ROOTS_INGEST.published()){
+   if(!item.title||!item.institution||!item.sourceURL)continue;
+   const key=[item.title,item.institution,item.period].map(x=>String(x||'').trim().toLowerCase()).join('|');
+   if(localImportedIds.has(key))continue;
+   localImportedIds.add(key);
+   const id='local-import-'+localImportedIds.size;
+   records.push({id,title:item.title,institution:item.institution,sourceURL:item.sourceURL,category:item.category||'Other',period:item.period||'Not specified',year:Number.parseInt(item.period,10)||null,location:item.location||'Not specified',coordinates:null,type:item.type||'Historical resource',description:item.description||'No description supplied.',body:item.description||'No description supplied.',image:'',imageCredit:'No image provided',accessStatus:item.accessStatus||'Unknown',restricted:false,keywords:item.keywords||[],people:[],subjects:[],imported:true,sourceNote:item.reviewStatus||'Institution-supplied metadata; historical accuracy not independently verified.',accessNote:item.rights_statement||''});
+ }
+}
+addLocalImports();
+window.addEventListener('roots:published',()=>{addLocalImports();if(location.hash.startsWith('#/search')||location.hash.startsWith('#/explore'))location.hash=location.hash;});
 const UI = window.ROOTS_UI;
 const root = document.getElementById('app');
 const categories = ['All stories', ...new Set(records.map(r => r.category).filter(Boolean))];

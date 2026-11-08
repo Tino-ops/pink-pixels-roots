@@ -234,7 +234,7 @@ window.ROOTS_INGEST=(()=>{
    const lon=Number(raw.longitude??raw.lon??raw.lng??(Array.isArray(raw.coordinates)?raw.coordinates[1]:NaN));
    const coordinates=Number.isFinite(lat)&&Number.isFinite(lon)&&lat>=40&&lat<=85&&lon>=-142&&lon<=-50?[lat,lon]:null;
    const dateText=String(raw.year||raw.period||raw.date_period||raw.date||'').trim();
-   const yearMatch=dateText.match(/(?:^|\\D)(1[0-9]{3}|20[0-9]{2})(?=\\D|$)/);
+   const yearMatch=dateText.match(/(?:^|\D)(1[0-9]{3}|20[0-9]{2})(?=\D|$)/);
    const year=yearMatch?Number(yearMatch[1]):null;
    return {title:String(raw.title||raw.name||'').trim(),description:String(raw.description||raw.desc||'').trim(),
      institution:String(raw.institution||raw.sourceInstitution||'').trim(),

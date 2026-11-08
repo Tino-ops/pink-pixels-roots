@@ -405,7 +405,7 @@ async function searchSites(center,radius){
   const seen=new Set(known.map(r=>r.title.toLowerCase()));
   sites=[...known,...results.filter(r=>!seen.has(r.title.toLowerCase()))].sort((a,b)=>(a.coordinates?aleaDistance(center,a.coordinates):Infinity)-(b.coordinates?aleaDistance(center,b.coordinates):Infinity));
   draw(sites,center);status.textContent='Nearby museums and heritage places from OpenStreetMap. External listings are not verified ROOTS records.';
- }catch{if(ticket!==generation)return;sites=HERITAGE_SITES.filter(r=>!region.value||aleaRegion(r)===region.value);draw(sites,center);status.textContent='Live lookup unavailable. Showing saved places.';}
+ }catch{if(ticket!==generation)return;sites=HERITAGE_SITES.filter(r=>!region.value||aleaRegion(r)===region.value);draw(sites,center);status.textContent='Online map search is temporarily unavailable. Showing saved places. You can retry by selecting the region again.';}
 }
 function filter(){
  ++generation;
@@ -439,19 +439,24 @@ const HERITAGE_SITES=[
 ];
 async function discoverHeritage(center,radius){
  const [lat,lon]=center;
- const query=`[out:json][timeout:20];(nwr(around:${radius},${lat},${lon})["tourism"="museum"];nwr(around:${radius},${lat},${lon})["historic"];nwr(around:${radius},${lat},${lon})["tourism"="gallery"];);out center 100;`;
- const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),22000);
- try{
-  const res=await fetch('https://overpass.kumi.systems/api/interpreter',{method:'POST',body:new URLSearchParams({data:query}),signal:controller.signal});
-  if(!res.ok)throw Error('External map search unavailable');
-  const json=await res.json();
-  return (json.elements||[]).filter(x=>x.tags?.name).map(x=>{
-   const lat=Number(x.lat??x.center?.lat),lon=Number(x.lon??x.center?.lon),t=x.tags;
-   if(!Number.isFinite(lat)||!Number.isFinite(lon))return null;
-   let url='';try{const u=new URL(t.website||t['contact:website']);if(['https:','http:'].includes(u.protocol))url=u.href}catch{}
-   return {id:'osm-'+x.type+'-'+x.id,title:t.name,location:[t['addr:street'],t['addr:city']].filter(Boolean).join(', ')||t.name,province:'',coordinates:[lat,lon],url,external:true,osmURL:'https://www.openstreetmap.org/'+x.type+'/'+x.id};
-  }).filter(Boolean);
- }finally{clearTimeout(timer)}
+ const query=`[out:json][timeout:15];(nwr(around:${radius},${lat},${lon})["tourism"="museum"];nwr(around:${radius},${lat},${lon})["historic"];nwr(around:${radius},${lat},${lon})["tourism"="gallery"];);out center 80;`;
+ const servers=['https://overpass.private.coffee/api/interpreter','https://overpass.nchc.org.tw/api/interpreter','https://overpass-api.de/api/interpreter'];
+ let lastError;
+ for(const server of servers){
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),17000);
+  try{
+   const res=await fetch(server+'?data='+encodeURIComponent(query),{signal:controller.signal,headers:{Accept:'application/json'}});
+   if(!res.ok)throw Error('HTTP '+res.status);
+   const json=await res.json();
+   return (json.elements||[]).filter(x=>x.tags?.name).map(x=>{
+    const lat=Number(x.lat??x.center?.lat),lon=Number(x.lon??x.center?.lon),t=x.tags;
+    if(!Number.isFinite(lat)||!Number.isFinite(lon))return null;
+    let url='';try{const u=new URL(t.website||t['contact:website']);if(['https:','http:'].includes(u.protocol))url=u.href}catch{}
+    return {id:'osm-'+x.type+'-'+x.id,title:t.name,location:[t['addr:street'],t['addr:city']].filter(Boolean).join(', ')||t.name,province:'',coordinates:[lat,lon],url,external:true,osmURL:'https://www.openstreetmap.org/'+x.type+'/'+x.id};
+   }).filter(Boolean);
+  }catch(err){lastError=err;}finally{clearTimeout(timer)}
+ }
+ throw lastError||Error('All map directory servers unavailable');
 }
 const REGION_CENTERS={'Alberta':[53.5,-114.5],'British Columbia':[53.7,-125],'Manitoba':[54.7,-97.5],'New Brunswick':[46.6,-66.5],'Newfoundland and Labrador':[52,-56.5],'Northwest Territories':[64,-119],'Nova Scotia':[45,-63.5],'Nunavut':[70,-90],'Ontario':[50,-85],'Prince Edward Island':[46.4,-63.3],'Quebec':[52,-71.5],'Saskatchewan':[53.5,-106],'Yukon':[63.5,-135]};
 function regionMapURL(region){const c=REGION_CENTERS[region]||[56,-96],span=region?8:27;return 'https://www.openstreetmap.org/export/embed.html?bbox='+encodeURIComponent([c[1]-span,c[0]-span*.45,c[1]+span,c[0]+span*.45].join(','))+'&layer=mapnik';}

@@ -73,7 +73,26 @@
     border:1px solid #ddd8cc; border-radius:10px;
     font-size:15px; box-sizing:border-box;">
 </div>
+<div style="margin-bottom: 18px; background: #fbf8f1;
+padding: 16px; border: 2px dashed #e6b85c; border-radius: 12px;">
 
+  <label style="font-weight: 800; font-size: 14px; color: #183e32;">
+    Upload Supporting Historical Document (PDF or Word)
+  </label>
+
+  <input
+    type="file"
+    id="m-document-file"
+    accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    style="display:block; margin-top:10px;"
+  >
+
+  <p id="documentReviewStatus"
+     style="font-size:13px; color:#6b756f;">
+    Select a PDF or DOCX document for automated assessment.
+  </p>
+
+</div>
           <div style="background: #ffffff; padding: 16px; border-radius: 12px; border: 1px solid #ddd8cc; margin-bottom: 18px;">
               <label style="font-weight:700; font-size:14px; display:block; margin-bottom:6px; color: #192720;">Public Discoverability & Rights Access Tier *</label>
               <select id="m-access" style="width:100%; padding:14px; border:1px solid #ddd8cc; border-radius:10px; font-size:15px; background: white;" required>
@@ -147,7 +166,26 @@
       </div>
       <button type="button" onclick="executeBatchCsvImportSim()" class="primary" style="background: #e6b85c; border: 0; border-radius: 10px; padding: 14px 24px; font-weight: 800; color: #26311f; cursor: pointer; width: 100%; font-size: 16px;">Process Batch Import Stream Ingestion</button>
   </div>
-<div id="pending-review-section"
+<!-- AUTOMATED FLAGGED SUBMISSIONS -->
+<div id="flagged-submissions-section"
+     style="margin-top:35px; padding:22px;
+     background:#fff8ed; border:1px solid #e6b85c;
+     border-radius:12px;">
+
+  <h3 style="color:#183e32;">Flagged Submissions</h3>
+
+  <p style="font-size:13px; color:#6b756f;">
+    These submissions were flagged by the automated assessment system
+    because one or more checks could not be completed successfully.
+    They are stored separately and are not displayed in the public library.
+  </p>
+
+  <div id="flagged-submissions-list">
+    <p>No flagged submissions to display.</p>
+  </div>
+
+</div>
+  <div id="pending-review-section"
      style="margin-top:35px; padding:22px;
      background:#fbf8f1; border-radius:12px;">
 
@@ -162,7 +200,8 @@
 </div>
   <p id="hubFeedbackResponse" role="status" style="font-weight: 800; color: #183e32; margin-top: 20px; text-align: center; font-size: 15px;"></p>
 </section>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mammoth@1.9.0/mammoth.browser.min.js"></script>
 <script>
 /* ROOTS CONTRIBUTION AND REVIEW SYSTEM
    New records remain pending until approved.
@@ -332,9 +371,135 @@ function addToRootsPending(record) {
   saveRootsSubmissions();
   renderRootsReviewQueue();
 }
+async function extractRootsDocumentText(file) {
+  if (!file) {
+    throw new Error("Please select a supporting document.");
+  }
 
-/* Handle manual submissions. */
-function handleManualSubmission(event) {
+  const fileName = file.name.toLowerCase();
+
+  // Read PDF documents
+  if (fileName.endsWith(".pdf")) {
+    if (!window.pdfjsLib) {
+      throw new Error("PDF reader could not be loaded.");
+    }
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+    const pdf = await pdfjsLib.getDocument({
+      data: new Uint8Array(await file.arrayBuffer())
+    }).promise;
+
+    let extractedText = "";
+
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+      const page = await pdf.getPage(pageNumber);
+      const content = await page.getTextContent();
+
+      extractedText += content.items
+        .map(item => item.str || "")
+        .join(" ") + " ";
+    }
+
+    return extractedText.trim();
+  }
+
+  // Read Word DOCX documents
+  if (fileName.endsWith(".docx")) {
+    if (!window.mammoth) {
+      throw new Error("Word document reader could not be loaded.");
+    }
+
+    const result = await mammoth.extractRawText({
+      arrayBuffer: await file.arrayBuffer()
+    });
+
+    return result.value.trim();
+  }
+
+  throw new Error("Only PDF and DOCX documents are supported.");
+}
+function assessRootsSubmission(record, documentText) {
+  const reasons = [];
+  const text = String(documentText || "").toLowerCase();
+
+  // 1. COMPLETENESS
+  const requiredFields = [
+    ["Title", record.title],
+    ["Date or period", record.date],
+    ["Description", record.desc],
+    ["Category", record.category],
+    ["Institution", record.institution],
+    ["Source", record.original_source || record.source]
+  ];
+
+  requiredFields.forEach(([label, value]) => {
+    if (!value || !String(value).trim()) {
+      reasons.push("Missing required information: " + label);
+    }
+  });
+
+  // 2. HISTORICAL RELEVANCE
+  const keywords = [
+    ...(Array.isArray(record.keywords) ? record.keywords : []),
+    record.title,
+    record.category
+  ];
+
+  const searchTerms = keywords
+    .join(" ")
+    .toLowerCase()
+    .split(/[\s,]+/)
+    .filter(word => word.length > 3);
+
+  const relevant = searchTerms.some(word => text.includes(word));
+
+  if (!relevant) {
+    reasons.push("Document relevance could not be confirmed.");
+  }
+
+  // 3. SOURCE INFORMATION
+  if (!record.original_source && !record.source) {
+    reasons.push("Original source information is missing.");
+  }
+
+  // 4. DOCUMENT QUALITY
+  if (text.trim().length < 150) {
+    reasons.push("Document contains insufficient readable text.");
+  }
+
+  // 5. DUPLICATE DETECTION
+  const normalize = value =>
+    String(value || "").toLowerCase().trim().replace(/\s+/g, " ");
+
+  const existingRecords = [
+    ...rootsPending,
+    ...rootsApproved
+  ];
+
+  const duplicate = existingRecords.some(existing =>
+    normalize(existing.title) === normalize(record.title) &&
+    normalize(existing.date) === normalize(record.date)
+  );
+
+  if (duplicate) {
+    reasons.push("Possible duplicate record detected.");
+  }
+
+  // RIGHTS INFORMATION
+  if (!record.rights_statement || !record.rights_statement.trim()) {
+    reasons.push("Rights information needs further checking.");
+  }
+
+  return {
+    status: reasons.length === 0 ? "accepted" : "flagged",
+    reasons: reasons,
+    assessed_at: new Date().toISOString()
+  };
+}
+  /* Handle manual submissions. */
+async function handleManualSubmission(event) {
   event.preventDefault();
 
   const offline = document.getElementById("m-no-url").checked;
@@ -379,10 +544,73 @@ function handleManualSubmission(event) {
     return;
   }
 
-  addToRootsPending(record);
+  const documentFile = document.getElementById("m-document-file").files[0];
+  let documentText = "";
+  let documentError = "";
 
-  document.getElementById("hubFeedbackResponse").textContent =
-    "Submission received. Status: Pending Review. It has not been published.";
+  const statusMessage = document.getElementById("documentReviewStatus");
+  statusMessage.textContent = "Assessing your submission...";
+
+  if (documentFile) {
+    try {
+      documentText = await extractRootsDocumentText(documentFile);
+    } catch (error) {
+      documentError = error.message;
+    }
+  }
+
+  const assessment = assessRootsSubmission(record, documentText);
+
+  if (!documentFile) {
+    assessment.reasons.push("No supporting historical document was uploaded.");
+  }
+
+  if (documentError) {
+    assessment.reasons.push("Document could not be read: " + documentError);
+  }
+
+  record.assessment = assessment;
+
+  if (assessment.reasons.length === 0) {
+  assessment.status = "accepted";
+} else {
+  assessment.status = "flagged";
+}
+    record.status = "approved";
+
+    rootsApproved.push(record);
+    saveRootsSubmissions();
+
+    if (!data.some(existing => Number(existing.id) === Number(record.id))) {
+      data.push(record);
+    }
+
+    render();
+
+    document.getElementById("hubFeedbackResponse").textContent =
+      "Automatically accepted! Your record passed the assessment and has been added to the ROOTS library.";
+
+    statusMessage.textContent = "Assessment complete: Accepted.";
+
+  } else {
+    record.status = "flagged";
+
+    const flaggedKey = "roots_flagged_submissions";
+    const flaggedRecords = JSON.parse(
+      localStorage.getItem(flaggedKey) || "[]"
+    );
+
+    flaggedRecords.push(record);
+
+    localStorage.setItem(flaggedKey, JSON.stringify(flaggedRecords));
+
+    document.getElementById("hubFeedbackResponse").textContent =
+      "Your submission has been flagged and saved separately. Reasons: " +
+      assessment.reasons.join("; ");
+
+    statusMessage.textContent =
+      "Assessment complete: Flagged for further attention.";
+  }
 
   document.getElementById("manualRootsForm").reset();
 
@@ -391,6 +619,7 @@ function handleManualSubmission(event) {
   document.getElementById("layoutThumbnail").src = "#";
 
   toggleUrlRequirement(document.getElementById("m-no-url"));
+}
 }
 
 /* Read CSV files, including quoted values and commas. */
@@ -580,7 +809,49 @@ function renderRootsReviewQueue() {
     </div>
   `).join("");
 }
+/* Display submissions flagged by the automated assessment. */
+function renderFlaggedSubmissions() {
+  const container = document.getElementById("flagged-submissions-list");
 
+  if (!container) return;
+
+  const flaggedRecords = JSON.parse(
+    localStorage.getItem("roots_flagged_submissions") || "[]"
+  );
+
+  if (!flaggedRecords.length) {
+    container.innerHTML = "<p>No flagged submissions to display.</p>";
+    return;
+  }
+
+  container.innerHTML = flaggedRecords.map(record => `
+    <div style="background:white; border:1px solid #e3ded2;
+      border-radius:10px; padding:16px; margin-bottom:12px;">
+
+      <strong>${rootsEscape(record.title)}</strong>
+
+      <p style="font-size:13px; color:#6b756f;">
+        ${rootsEscape(record.institution)} ·
+        ${rootsEscape(record.date)}
+      </p>
+
+      <strong style="font-size:13px; color:#9b5b20;">
+        Assessment concerns:
+      </strong>
+
+      <ul style="font-size:13px;">
+        ${(record.assessment?.reasons || [])
+          .map(reason => `<li>${rootsEscape(reason)}</li>`)
+          .join("")}
+      </ul>
+
+      <p style="font-size:12px; color:#9b5b20;">
+        Status: Flagged — Not added to public library
+      </p>
+
+    </div>
+  `).join("");
+}
 /* Approve a record and add it to ROOTS discovery. */
 function approveRootsSubmission(id) {
   const index = rootsPending.findIndex(
@@ -622,6 +893,7 @@ function rejectRootsSubmission(id) {
 }
 
 renderRootsReviewQueue();
+renderFlaggedSubmissions();
 </script>
 
 

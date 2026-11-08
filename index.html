@@ -332,6 +332,8 @@ const records = (Array.isArray(window.ROOTS_DATA) ? window.ROOTS_DATA : []).filt
 });
 // Load browser-local institutional imports into the existing discovery engine.
 const localImportedIds=new Set();
+const categories=['All stories'];
+function refreshCategories(){categories.splice(1,categories.length-1,...new Set(records.map(r=>r.category).filter(Boolean)));}
 function addLocalImports(){
  for(const item of window.ROOTS_INGEST.published()){
    if(!item.title||!item.institution||!item.sourceURL)continue;
@@ -347,8 +349,6 @@ addLocalImports();
 window.addEventListener('roots:published',()=>{addLocalImports();if(location.hash.startsWith('#/search')||location.hash.startsWith('#/explore')||location.hash.startsWith('#/timeline')||location.hash.startsWith('#/map'))render();});
 const UI = window.ROOTS_UI;
 const root = document.getElementById('app');
-const categories = ['All stories'];
-function refreshCategories(){categories.splice(1,categories.length-1,...new Set(records.map(r=>r.category).filter(Boolean)));}
 refreshCategories();
 records.forEach(r=>{r.province=window.ROOTS_GEO.resolve(r.province||'',r.location||'')});
 const state = { query:'', category:'All stories', sort:'featured', institution:'', person:'', place:'', province:'', subject:'', type:'', access:'' };

@@ -455,9 +455,18 @@ function assessRootsSubmission(record, documentText) {
 
   const relevant = searchTerms.some(word => text.includes(word));
 
+if (record.assessment?.bulk_import) {
+  // Bulk imports use supplied descriptions and metadata,
+  // not extracted supporting-document text.
+  if (!relevant) {
+    reasons.push("Historical relevance needs further checking.");
+  }
+} else {
+  // Manual submissions use extracted document text.
   if (!relevant) {
     reasons.push("Document relevance could not be confirmed.");
   }
+}
 
   // 3. SOURCE INFORMATION
   if (!record.original_source && !record.source) {
@@ -474,9 +483,10 @@ function assessRootsSubmission(record, documentText) {
     String(value || "").toLowerCase().trim().replace(/\s+/g, " ");
 
   const existingRecords = [
-    ...rootsPending,
-    ...rootsApproved
-  ];
+  ...rootsPending,
+  ...rootsApproved,
+  ...data
+];
 
   const duplicate = existingRecords.some(existing =>
     normalize(existing.title) === normalize(record.title) &&
@@ -703,6 +713,8 @@ function normalizeImportedRecord(record) {
 }
 
 /* Process and validate CSV or JSON imports. */
+
+/* Process and automatically assess CSV or JSON imports. */
 async function executeBatchCsvImportSim() {
   const fileInput = document.getElementById("bulkCsvFile");
   const jsonText = document.getElementById("bulkJsonInput").value.trim();
@@ -712,8 +724,7 @@ async function executeBatchCsvImportSim() {
   try {
     if (fileInput.files.length > 0) {
       const file = fileInput.files[0];
-      const csvText = await file.text();
-      records = parseRootsCSV(csvText);
+      records = parseRootsCSV(await file.text());
 
     } else if (jsonText) {
       const parsed = JSON.parse(jsonText);
@@ -734,36 +745,85 @@ async function executeBatchCsvImportSim() {
     return;
   }
 
-  let successful = 0;
-  const failures = [];
+  let accepted = 0;
+  let flagged = 0;
+  const flaggedRecords = JSON.parse(
+    localStorage.getItem("roots_flagged_submissions") || "[]"
+  );
 
   records.forEach((rawRecord, index) => {
     const normalized = normalizeImportedRecord(rawRecord);
-    const errors = validateRootsRecord(normalized);
 
-    if (errors.length) {
-      failures.push({
-        row: index + 1,
-        errors: errors
-      });
-      return;
-    }
+    const validationErrors = validateRootsRecord({
+      ...normalized,
+      date_period: normalized.date_period,
+      description: normalized.description,
+      source_url: normalized.source_url,
+      source_type: normalized.source_type
+    });
 
     const newRecord = createRootsRecord(normalized);
-    addToRootsPending(newRecord);
-    successful++;
+newRecord.assessment = { bulk_import: true };
+    // Assess the available record information.
+    const assessment = assessRootsSubmission(
+      newRecord,
+      [
+        newRecord.title,
+        newRecord.desc,
+        newRecord.category,
+        newRecord.keywords,
+        newRecord.institution,
+        newRecord.original_source
+      ].join(" ")
+    );
+
+    // Include any validation problems.
+    validationErrors.forEach(error => {
+      assessment.reasons.push(error);
+    });
+
+    assessment.status =
+      assessment.reasons.length === 0 ? "accepted" : "flagged";
+
+    assessment.bulk_import = true;
+    assessment.import_row = index + 1;
+
+    newRecord.assessment = assessment;
+
+    if (assessment.status === "accepted") {
+      newRecord.status = "approved";
+
+      rootsApproved.push(newRecord);
+
+      if (!data.some(existing =>
+        Number(existing.id) === Number(newRecord.id)
+      )) {
+        data.push(newRecord);
+      }
+
+      accepted++;
+
+    } else {
+      newRecord.status = "flagged";
+      flaggedRecords.push(newRecord);
+      flagged++;
+    }
   });
 
-  let report =
-    `Import complete: ${successful} accepted; ${failures.length} rejected.`;
+  saveRootsSubmissions();
 
-  if (failures.length) {
-    report += "\n\nErrors:\n" + failures.map(item =>
-      "Record " + item.row + ": " + item.errors.join(", ")
-    ).join("\n");
-  }
+  localStorage.setItem(
+    "roots_flagged_submissions",
+    JSON.stringify(flaggedRecords)
+  );
 
-  document.getElementById("hubFeedbackResponse").textContent = report;
+  render();
+  renderFlaggedSubmissions();
+
+  document.getElementById("hubFeedbackResponse").textContent =
+    `Bulk import complete: ${accepted} accepted and added to the library; ${flagged} flagged and saved separately.`;
+}
+
 }
 
 /* Display submissions awaiting review. */

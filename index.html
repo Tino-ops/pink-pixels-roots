@@ -315,7 +315,7 @@ function addLocalImports(){
  }
 }
 addLocalImports();
-window.addEventListener('roots:published',()=>{addLocalImports();if(location.hash.startsWith('#/search')||location.hash.startsWith('#/explore'))location.hash=location.hash;});
+window.addEventListener('roots:published',()=>{addLocalImports();if(location.hash.startsWith('#/search')||location.hash.startsWith('#/explore'))render();});
 const UI = window.ROOTS_UI;
 const root = document.getElementById('app');
 const categories = ['All stories', ...new Set(records.map(r => r.category).filter(Boolean))];

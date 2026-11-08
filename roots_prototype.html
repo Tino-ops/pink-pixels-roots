@@ -424,21 +424,8 @@ function assessRootsSubmission(record, documentText) {
   const reasons = [];
   const text = String(documentText || "").toLowerCase();
 
-  // 1. COMPLETENESS
-  const requiredFields = [
-    ["Title", record.title],
-    ["Date or period", record.date],
-    ["Description", record.desc],
-    ["Category", record.category],
-    ["Institution", record.institution],
-    ["Source", record.original_source || record.source]
-  ];
-
-  requiredFields.forEach(([label, value]) => {
-    if (!value || !String(value).trim()) {
-      reasons.push("Missing required information: " + label);
-    }
-  });
+ // 1. COMPLETENESS
+// Required fields are checked separately by validateRootsRecord().
 
   // 2. HISTORICAL RELEVANCE
   const keywords = [
@@ -474,9 +461,9 @@ if (record.assessment?.bulk_import) {
   }
 
   // 4. DOCUMENT QUALITY
-  if (text.trim().length < 150) {
-    reasons.push("Document contains insufficient readable text.");
-  }
+  if (!record.assessment?.bulk_import && text.trim().length < 150) {
+  reasons.push("Document contains insufficient readable text.");
+}
 
   // 5. DUPLICATE DETECTION
   const normalize = value =>

@@ -223,7 +223,7 @@ window.ROOTS_INGEST=(()=>{
    if(quoted)throw Error('CSV has an unclosed quotation mark.');
    row.push(cell.trim());if(row.some(Boolean))rows.push(row);
    if(rows.length<2)throw Error('CSV needs a header and at least one record.');
-   const headers=rows.shift().map(x=>x.trim());
+   const headers=rows.shift().map(x=>x.replace(/^\uFEFF/,'').trim());
    return rows.map(row=>Object.fromEntries(headers.map((h,i)=>[h,row[i]||''])));
  }
  function normalize(raw){
@@ -308,7 +308,7 @@ window.ROOTS_INGEST=(()=>{
          seen.push(r);
        }
        const outcome=publish(accepted);const saved=save([...read(),...flagged].slice(-500));
-       feedback.innerHTML='Checked '+raw.length+' records: <strong>'+outcome.added+' published to Explore and Search</strong>; '+flagged.length+' require review. '+(outcome.added?'<a href="#/explore" class="text-link">View published records in Explore ↗</a>':'Check the flagged records below, or upload a file with title, institution and valid source URL.')+(outcome.error?' '+outcome.error:'')+(saved?'':' Browser storage is full; export flagged records now.');
+       feedback.innerHTML='Checked '+raw.length+' records: <strong>'+outcome.added+' published to Explore and Search</strong>; '+flagged.length+' require review. '+(outcome.added?'<a href="#/explore" class="text-link">View published records in Explore ↗</a> · <a href="#/search?q='+encodeURIComponent(accepted[0]?.title||'')+'" class="text-link">Search first imported title ↗</a>':'Check the flagged records below, or upload a file with title, institution and valid source URL.')+(outcome.error?' '+outcome.error:'')+(saved?'':' Browser storage is full; export flagged records now.');
        results.innerHTML='<p>Passing records are now searchable in this browser under Search and Explore. They are labeled as imported metadata, not independently verified. This is not publication to a shared server.</p>'+(accepted.length?'<button type="button" class="btn btn-dark" id="roots-export-passed">Export checked JSON</button>':'')+(flagged.length?'<button type="button" class="btn btn-dark" id="roots-export-current">Export current exceptions</button>':'');
        const pass=document.getElementById('roots-export-passed'),fail=document.getElementById('roots-export-current');
        if(pass)pass.onclick=()=>download(accepted,'roots-metadata-checked.json');
@@ -346,7 +346,7 @@ function addLocalImports(){
  refreshCategories();
 }
 addLocalImports();
-window.addEventListener('roots:published',()=>{addLocalImports();if(location.hash.startsWith('#/search')||location.hash.startsWith('#/explore')||location.hash.startsWith('#/timeline')||location.hash.startsWith('#/map'))render();});
+window.addEventListener('roots:published',()=>{addLocalImports();state.category='All stories';state.query='';aleaInterest='';facetDefs.forEach(([key])=>state[key]='');if(location.hash.startsWith('#/search')||location.hash.startsWith('#/explore')||location.hash.startsWith('#/timeline')||location.hash.startsWith('#/map'))render();});
 const UI = window.ROOTS_UI;
 const root = document.getElementById('app');
 refreshCategories();

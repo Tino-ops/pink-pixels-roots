@@ -277,7 +277,7 @@ window.ROOTS_INGEST=(()=>{
    if(!file||!run)return;
    function draw(){
      const rows=read();
-     queue.innerHTML='<h3>Flagged records ('+rows.length+')</h3><p>Each record shows why it was flagged. A staff member may override non-critical metadata warnings. Publishing is local to this browser.</p>'+rows.slice(-50).map((entry,i)=>({entry,i})).reverse().map(({entry,i})=>{
+     queue.innerHTML='<h3>Flagged records ('+rows.length+')</h3><p>Each record shows why it was flagged. Use Publish anyway to include eligible records in Explore and Search despite non-critical metadata warnings. Publishing is local to this browser.</p>'+rows.slice(-50).map((entry,i)=>({entry,i})).reverse().map(({entry,i})=>{
        const r=entry.record,canPublish=!!r.title&&!!r.institution&&http(r.sourceURL)&&!entry.issues.includes('Possible duplicate');
        return '<article style="border:1px solid #d6d6cf;border-radius:10px;padding:14px;margin:12px 0"><strong>'+esc(r.title||'Untitled')+'</strong> · '+esc(r.institution)+'<p><strong>Flagged because:</strong> '+esc(entry.issues.join('; '))+'</p>'+(canPublish?'<button type="button" class="btn btn-dark" data-publish-flag="'+i+'">Publish anyway</button>':'<p>Cannot publish: requires a title, institution, valid source URL, and no duplicate warning.</p>')+'</article>';
      }).join('')+(rows.length?'<button type="button" class="btn btn-dark" id="roots-export-flags">Export flagged JSON</button>':'');
@@ -285,7 +285,7 @@ window.ROOTS_INGEST=(()=>{
        const i=Number(btn.dataset.publishFlag),items=read(),item=items[i];if(!item)return;
        if(!confirm('Publish this flagged record to the local ROOTS discovery collection despite: '+item.issues.join('; ')+'?'))return;
        const result=publish([item.record],true);
-       if(result.added){items.splice(i,1);save(items);feedback.textContent='Published to local ROOTS discovery. The record is labeled as an override.'}
+       if(result.added){items.splice(i,1);save(items);feedback.innerHTML='Published to local ROOTS discovery. <a href="#/explore">View in Explore ↗</a> · <a href="#/search?q='+encodeURIComponent(item.record.title)+'">Find this record in Search ↗</a>'}
        else feedback.textContent=result.error||'Not published: duplicate or invalid source.';
        draw();
      });
@@ -304,11 +304,11 @@ window.ROOTS_INGEST=(()=>{
        for(const item of raw){
          if(!item||typeof item!=='object'||Array.isArray(item)){flagged.push({record:{title:'Invalid row'},issues:['Record is not an object']});continue}
          const r=normalize(item),issues=check(r,[...builtIn,...seen,...accepted]);
-         if(issues.some(issue=>['Missing title','Missing institution','Missing authoritative source URL','Invalid source URL','Possible duplicate','Offline collection: institution access needs confirmation'].includes(issue)))flagged.push({record:r,issues});else accepted.push(r);
+         if(issues.length)flagged.push({record:r,issues});else accepted.push(r);
          seen.push(r);
        }
        const outcome=publish(accepted);const saved=save([...read(),...flagged].slice(-500));
-       feedback.innerHTML='Checked '+raw.length+' records: <strong>'+outcome.added+' published to Explore and Search</strong>; '+flagged.length+' require review. '+(outcome.added?'<a href="#/explore" class="text-link">View published records in Explore ↗</a> · <a href="#/search?q='+encodeURIComponent(accepted[0]?.title||'')+'" class="text-link">Search first imported title ↗</a>':'Check the flagged records below, or upload a file with title, institution and valid source URL.')+(outcome.error?' '+outcome.error:'')+(saved?'':' Browser storage is full; export flagged records now.');
+       feedback.innerHTML='Checked '+raw.length+' records: <strong>'+outcome.added+' published to Explore and Search</strong>; '+flagged.length+' require review. '+(outcome.added?'<a href="#/explore" class="text-link">View published records in Explore ↗</a> · <a href="#/search?q='+encodeURIComponent(accepted[0]?.title||'')+'" class="text-link">Search first imported title ↗</a>':'Review the flagged records below and use Publish anyway when eligible.')+(outcome.error?' '+outcome.error:'')+(saved?'':' Browser storage is full; export flagged records now.');
        results.innerHTML='<p>Passing records are now searchable in this browser under Search and Explore. They are labeled as imported metadata, not independently verified. This is not publication to a shared server.</p>'+(accepted.length?'<button type="button" class="btn btn-dark" id="roots-export-passed">Export checked JSON</button>':'')+(flagged.length?'<button type="button" class="btn btn-dark" id="roots-export-current">Export current exceptions</button>':'');
        const pass=document.getElementById('roots-export-passed'),fail=document.getElementById('roots-export-current');
        if(pass)pass.onclick=()=>download(accepted,'roots-metadata-checked.json');

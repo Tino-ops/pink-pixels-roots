@@ -456,9 +456,7 @@ if (record.assessment?.bulk_import) {
 }
 
   // 3. SOURCE INFORMATION
-  if (!record.original_source && !record.source) {
-    reasons.push("Original source information is missing.");
-  }
+// Original source completeness is checked by validateRootsRecord().
 
   // 4. DOCUMENT QUALITY
   if (!record.assessment?.bulk_import && text.trim().length < 150) {

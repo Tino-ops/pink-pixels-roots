@@ -275,13 +275,109 @@ function timeline(){const sorted=[...records].filter(r=>Number.isFinite(Number(r
 function map(){const places=aleaMapped(),regions=['Alberta','British Columbia','Manitoba','New Brunswick','Newfoundland and Labrador','Northwest Territories','Nova Scotia','Nunavut','Ontario','Prince Edward Island','Quebec','Saskatchewan','Yukon'],first=places[0];return `${UI.pageIntro('PLACES & COMMUNITIES','Stories have <em>a place.</em>','Explore where some of these stories happened. Select a location to see it on the map.')}<section class="content map-section"><div class="map-layout"><div class="map-list"><h2>Explore locations</h2><p>Select a place, filter by region, or optionally explore near you.</p><label for="alea-region">Province, territory or region</label><select id="alea-region"><option value="">All Regions</option>${regions.map(x=>`<option value="${e(x)}">${e(x)}</option>`).join('')}</select><button type="button" id="alea-near">📍 Explore near me</button><p id="alea-location-status" role="status">Location is optional and is not saved.</p><div id="alea-places"></div></div><div class="map-wrap">${first?`<iframe id="location-map" title="OpenStreetMap showing location associated with a ROOTS story" loading="lazy" referrerpolicy="no-referrer" src="${mapURL(first.coordinates)}"></iframe><div class="map-caption" id="map-caption"><strong>${e(first.title)}</strong><span>${e(first.location)}</span><a href="#/record/${encodeURIComponent(first.id)}">View story ↗</a><a href="${streetViewURL(first.coordinates)}" target="_blank" rel="noopener noreferrer" aria-label="Explore present-day Street View near ${e(first.title)}">👁 Street View ↗</a></div>`:'<div class="empty-state"><h3>No mapped stories yet</h3><p>Locations appear when coordinates are available.</p></div>'}</div></div><p class="map-disclaimer">Markers represent approximate locations, not precise historic property boundaries. Map data © OpenStreetMap contributors.</p></section>`;}
 function streetViewURL(c){return 'https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+encodeURIComponent(c[0]+','+c[1]);}
 function mapURL(c){const [lat,lon]=c;let d=.08;return `https://www.openstreetmap.org/export/embed.html?bbox=${lon-d}%2C${lat-d/2}%2C${lon+d}%2C${lat+d/2}&layer=mapnik&marker=${lat}%2C${lon}`;}
-function contribute(){return `${UI.pageIntro('CONTRIBUTE','Help us tell <em>more stories.</em>','Add a person, place, community, or piece of history you think more people should know about.')}${window.ROOTS_CONTRIBUTIONS.render()}`;}
+function contribute(){return `${UI.pageIntro('CONTRIBUTE','Help us tell <em>more stories.</em>','Add a person, place, community, or piece of history you think more people should know about.')}${window.ROOTS_CONTRIBUTIONS.render()}${window.ROOTS_INGEST.panel()}`;}
 function about(){return `${UI.pageIntro('ABOUT THE PROJECT','Made to make history <em>easier to find.</em>','ROOTS is a concept from Pink Pixels for RBC HubHacks 2026.')}<section class="content about-content"><h2>What we're building</h2><p>Black Canadian history lives across archives, museums, and community organizations. We want ROOTS to make those starting points easier to discover without taking credit away from the institutions who preserve the records.</p><h2>Where we are now</h2><p>This frontend uses a small set of demonstration topics, not a live archival catalogue. Search, category filtering, a timeline, a map, and record pages work in the browser. Next steps include data integration, verification, provenance, accessibility testing, and source permissions.</p></section>`;}
 function notFound(){return `${UI.pageIntro('404','This story isn’t here.','We couldn’t find that page.')}<section class="content section"><a class="btn btn-dark" href="#/">Go home</a></section>`;}
-function bind(){window.ROOTS_CONTRIBUTIONS.bind();bindMetadataImport();document.querySelectorAll('[data-facet]').forEach(select=>select.addEventListener('change',()=>{state[select.dataset.facet]=select.value;const target=document.getElementById('search-results')||document.getElementById('browse-results');if(target)target.innerHTML=document.getElementById('search-results')?renderSearchResults():renderBrowseResults();}));const clear=document.getElementById('clear-facets');if(clear)clear.addEventListener('click',()=>{facetDefs.forEach(([key])=>state[key]='');document.querySelectorAll('[data-facet]').forEach(select=>select.value='');const target=document.getElementById('search-results')||document.getElementById('browse-results');if(target)target.innerHTML=document.getElementById('search-results')?renderSearchResults():renderBrowseResults();});const hero=document.getElementById('hero-search');if(hero)hero.addEventListener('submit',ev=>{ev.preventDefault();location.hash='#/search?q='+encodeURIComponent(new FormData(hero).get('search').trim());state.category='All stories';});document.querySelectorAll('[data-category]').forEach(btn=>btn.addEventListener('click',()=>{state.category=btn.dataset.category;document.querySelectorAll('[data-category]').forEach(b=>{b.classList.toggle('selected',b.dataset.category===state.category);b.setAttribute('aria-pressed',String(b.dataset.category===state.category));});const target=document.getElementById('search-results')||document.getElementById('browse-results');if(target)target.innerHTML=document.getElementById('search-results')?renderSearchResults():renderBrowseResults();}));const search=document.getElementById('results-search');if(search)search.addEventListener('submit',ev=>{ev.preventDefault();state.query=document.getElementById('search-input').value;history.replaceState(null,'','#/search?q='+encodeURIComponent(state.query));document.getElementById('search-results').innerHTML=renderSearchResults();});const sort=document.getElementById('sort-order');if(sort)sort.addEventListener('change',()=>{state.sort=sort.value;document.getElementById('search-results').innerHTML=renderSearchResults();});aleaBind();}
+function bind(){window.ROOTS_CONTRIBUTIONS.bind();window.ROOTS_INGEST.bind();bindMetadataImport();document.querySelectorAll('[data-facet]').forEach(select=>select.addEventListener('change',()=>{state[select.dataset.facet]=select.value;const target=document.getElementById('search-results')||document.getElementById('browse-results');if(target)target.innerHTML=document.getElementById('search-results')?renderSearchResults():renderBrowseResults();}));const clear=document.getElementById('clear-facets');if(clear)clear.addEventListener('click',()=>{facetDefs.forEach(([key])=>state[key]='');document.querySelectorAll('[data-facet]').forEach(select=>select.value='');const target=document.getElementById('search-results')||document.getElementById('browse-results');if(target)target.innerHTML=document.getElementById('search-results')?renderSearchResults():renderBrowseResults();});const hero=document.getElementById('hero-search');if(hero)hero.addEventListener('submit',ev=>{ev.preventDefault();location.hash='#/search?q='+encodeURIComponent(new FormData(hero).get('search').trim());state.category='All stories';});document.querySelectorAll('[data-category]').forEach(btn=>btn.addEventListener('click',()=>{state.category=btn.dataset.category;document.querySelectorAll('[data-category]').forEach(b=>{b.classList.toggle('selected',b.dataset.category===state.category);b.setAttribute('aria-pressed',String(b.dataset.category===state.category));});const target=document.getElementById('search-results')||document.getElementById('browse-results');if(target)target.innerHTML=document.getElementById('search-results')?renderSearchResults():renderBrowseResults();}));const search=document.getElementById('results-search');if(search)search.addEventListener('submit',ev=>{ev.preventDefault();state.query=document.getElementById('search-input').value;history.replaceState(null,'','#/search?q='+encodeURIComponent(state.query));document.getElementById('search-results').innerHTML=renderSearchResults();});const sort=document.getElementById('sort-order');if(sort)sort.addEventListener('change',()=>{state.sort=sort.value;document.getElementById('search-results').innerHTML=renderSearchResults();});aleaBind();}
 function render(){const raw=location.hash.slice(1)||'/';const path=raw.split('?')[0];let html;if(path==='/')html=home();else if(path==='/explore')html=explore();else if(path==='/search')html=searchPage();else if(path==='/timeline')html=timeline();else if(path==='/map')html=map();else if(path==='/contribute')html=contribute();else if(path==='/about')html=about();else if(path.startsWith('/record/'))html=recordPage(decodeURIComponent(path.slice(8)));else html=notFound();root.innerHTML=html;document.querySelectorAll('[data-nav]').forEach(a=>{const active=a.getAttribute('href').slice(1)===(path==='/record/'?'explore':path);a.classList.toggle('is-active',active);if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});document.getElementById('mobile-nav').hidden=true;document.getElementById('menu-toggle').setAttribute('aria-expanded','false');bind();window.scrollTo({top:0,behavior:'instant'});}
 document.getElementById('menu-toggle').addEventListener('click',()=>{const nav=document.getElementById('mobile-nav');nav.hidden=!nav.hidden;document.getElementById('menu-toggle').setAttribute('aria-expanded',String(!nav.hidden));});window.addEventListener('hashchange',render);render();
 
+</script>
+
+<script>
+/* Ashlee contribution hub integration: CSV/JSON ingestion, validation, duplicate
+   checks and exception queue. Browser-only demo; no claims of source verification. */
+window.ROOTS_INGEST=(()=>{
+ const KEY='roots_ingest_review_v1';
+ const read=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch{return []}};
+ const save=rows=>{try{localStorage.setItem(KEY,JSON.stringify(rows));return true}catch{return false}};
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const norm=s=>String(s||'').trim().toLowerCase().replace(/\s+/g,' ');
+ const http=s=>{try{const u=new URL(s);return ['https:','http:'].includes(u.protocol)&&!!u.hostname}catch{return false}};
+ function csv(text){
+   const rows=[];let row=[],cell='',quoted=false;
+   for(let i=0;i<text.length;i++){const c=text[i],next=text[i+1];
+     if(c==='"'&&quoted&&next==='"'){cell+='"';i++}
+     else if(c==='"')quoted=!quoted;
+     else if(c===','&&!quoted){row.push(cell.trim());cell=''}
+     else if((c==='\n'||c==='\r')&&!quoted){if(c==='\r'&&next==='\n')i++;row.push(cell.trim());if(row.some(Boolean))rows.push(row);row=[];cell=''}
+     else cell+=c;
+   }
+   if(quoted)throw Error('CSV has an unclosed quotation mark.');
+   row.push(cell.trim());if(row.some(Boolean))rows.push(row);
+   if(rows.length<2)throw Error('CSV needs a header and at least one record.');
+   const headers=rows.shift().map(x=>x.trim());
+   return rows.map(row=>Object.fromEntries(headers.map((h,i)=>[h,row[i]||''])));
+ }
+ function normalize(raw){
+   const keywords=Array.isArray(raw.keywords)?raw.keywords:String(raw.keywords||'').split(',').map(x=>x.trim()).filter(Boolean);
+   return {title:String(raw.title||raw.name||'').trim(),description:String(raw.description||raw.desc||'').trim(),
+     institution:String(raw.institution||raw.sourceInstitution||'').trim(),
+     sourceURL:String(raw.sourceURL||raw.source_url||raw.source||raw.url||'').trim(),
+     original_source:String(raw.original_source||'').trim(),
+     period:String(raw.period||raw.date_period||raw.date||'').trim(),
+     location:String(raw.location||raw.place||'Not specified').trim(),
+     category:String(raw.category||'Other').trim(),type:String(raw.type||raw.resourceType||raw.source_type||'Historical resource').trim(),
+     accessStatus:String(raw.accessStatus||raw.access_rights||'Unknown').trim(),
+     rights_statement:String(raw.rights_statement||'').trim(),keywords,
+     source_type:String(raw.source_type||'online').trim().toLowerCase()};
+ }
+ function check(r,existing){
+   const issues=[];
+   if(!r.title)issues.push('Missing title');
+   if(!r.description)issues.push('Missing description');
+   if(!r.institution)issues.push('Missing institution');
+   if(!r.period)issues.push('Missing date or period');
+   if(!r.original_source)issues.push('Missing catalogue or original-source reference');
+   if(!r.keywords.length)issues.push('Missing keywords');
+   if(!r.rights_statement)issues.push('Rights information needs checking');
+   if(!r.sourceURL){
+     if(!['physical','oral','offline'].includes(r.source_type))issues.push('Missing authoritative source URL');
+     else issues.push('Offline collection: institution access needs confirmation');
+   }else if(!http(r.sourceURL))issues.push('Invalid source URL');
+   const match=x=>norm(x.title)===norm(r.title)&&norm(x.institution)===norm(r.institution)&&norm(x.period||x.date)===norm(r.period);
+   if(existing.some(match))issues.push('Possible duplicate');
+   return issues;
+ }
+ function panel(){
+   return '<section class="content contribute-section" id="roots-ingest" style="padding-top:30px;padding-bottom:50px"><div class="contribute-guide"><span class="section-kicker">ASHLEE · CONTRIBUTIONS & INGESTION</span><h2>Institutional metadata imports</h2><p>Upload a CSV or JSON array of records. ROOTS checks completeness, source URLs and possible duplicates, then separates ready-to-export records from exceptions.</p><div class="notice"><strong>Prototype trust policy:</strong> Passing automated checks does not verify historical accuracy. No imported records are automatically published. Only use approved institutional feeds for publication after a source agreement; community suggestions remain unverified.</div></div><div class="contribute-form"><label>Institutional CSV or JSON file (maximum 2 MB)<input type="file" id="roots-ingest-file" accept=".csv,.json,text/csv,application/json"></label><button type="button" class="btn btn-dark" id="roots-ingest-run">Validate import</button><p id="roots-ingest-feedback" role="status" aria-live="polite"></p><div id="roots-ingest-results"></div><div id="roots-ingest-queue"></div></div></section>';
+ }
+ function download(data,name){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+ function bind(){
+   const file=document.getElementById('roots-ingest-file'),run=document.getElementById('roots-ingest-run'),feedback=document.getElementById('roots-ingest-feedback'),results=document.getElementById('roots-ingest-results'),queue=document.getElementById('roots-ingest-queue');
+   if(!file||!run)return;
+   function draw(){
+     const rows=read();queue.innerHTML='<h3>Local exception queue ('+rows.length+')</h3><p>Flagged records stay in this browser and are not published.</p>'+rows.slice(-25).reverse().map(r=>'<p><strong>'+esc(r.record.title||'Untitled')+'</strong> · '+esc(r.record.institution)+' — '+esc(r.issues.join('; '))+'</p>').join('')+(rows.length?'<button type="button" class="btn btn-dark" id="roots-export-flags">Export flagged JSON</button>':'');
+     const btn=document.getElementById('roots-export-flags');if(btn)btn.onclick=()=>download(read(),'roots-flagged-review.json');
+   }
+   draw();
+   run.onclick=async()=>{
+     const f=file.files&&file.files[0];if(!f){feedback.textContent='Choose a CSV or JSON file.';return}
+     if(f.size>2000000){feedback.textContent='File exceeds 2 MB.';return}
+     try{
+       const raw=f.name.toLowerCase().endsWith('.csv')?csv(await f.text()):JSON.parse(await f.text());
+       if(!Array.isArray(raw))throw Error('JSON must contain an array of records.');
+       if(raw.length>2000)throw Error('Import limit is 2,000 records.');
+       const accepted=[],flagged=[],seen=read().map(x=>x.record);
+       const builtIn=Array.isArray(window.ROOTS_DATA)?window.ROOTS_DATA:[];
+       for(const item of raw){
+         if(!item||typeof item!=='object'||Array.isArray(item)){flagged.push({record:{title:'Invalid row'},issues:['Record is not an object']});continue}
+         const r=normalize(item),issues=check(r,[...builtIn,...seen,...accepted]);
+         if(issues.length)flagged.push({record:r,issues});else accepted.push(r);
+         seen.push(r);
+       }
+       const saved=save([...read(),...flagged].slice(-500));
+       feedback.textContent='Checked '+raw.length+' records: '+accepted.length+' passed metadata checks; '+flagged.length+' flagged.'+(saved?'':' Browser storage is full; export flagged records now.');
+       results.innerHTML='<p>Passed records are <strong>not independently verified or published</strong>. Export them for controlled institutional ingestion.</p>'+(accepted.length?'<button type="button" class="btn btn-dark" id="roots-export-passed">Export checked JSON</button>':'')+(flagged.length?'<button type="button" class="btn btn-dark" id="roots-export-current">Export current exceptions</button>':'');
+       const pass=document.getElementById('roots-export-passed'),fail=document.getElementById('roots-export-current');
+       if(pass)pass.onclick=()=>download(accepted,'roots-metadata-checked.json');
+       if(fail)fail.onclick=()=>download(flagged,'roots-import-exceptions.json');
+       draw();
+     }catch(e){feedback.textContent='Import failed: '+e.message}
+   };
+ }
+ return {panel,bind};
+})();
 </script>
 </body>
 </html>

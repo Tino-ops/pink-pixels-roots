@@ -277,10 +277,10 @@ window.ROOTS_INGEST=(()=>{
    if(!file||!run)return;
    function draw(){
      const rows=read();
-     queue.innerHTML='<h3>Flagged records ('+rows.length+')</h3><p>Each record shows why it was flagged. Use Publish anyway to include eligible records in Explore and Search despite non-critical metadata warnings. Publishing is local to this browser.</p>'+rows.slice(-50).map((entry,i)=>({entry,i})).reverse().map(({entry,i})=>{
+     queue.innerHTML='<h3>Flagged records ('+rows.length+')</h3><p>Each record shows why it was flagged. Use Publish anyway to include eligible records in Explore and Search despite non-critical metadata warnings. Publishing is local to this browser.</p>'+rows.map((entry,i)=>({entry,i})).slice(-50).reverse().map(({entry,i})=>{
        const r=entry.record,canPublish=!!r.title&&!!r.institution&&http(r.sourceURL)&&!entry.issues.includes('Possible duplicate');
-       return '<article style="border:1px solid #d6d6cf;border-radius:10px;padding:14px;margin:12px 0"><strong>'+esc(r.title||'Untitled')+'</strong> · '+esc(r.institution)+'<p><strong>Flagged because:</strong> '+esc(entry.issues.join('; '))+'</p>'+(canPublish?'<button type="button" class="btn btn-dark" data-publish-flag="'+i+'">Publish anyway</button>':'<p>Cannot publish: requires a title, institution, valid source URL, and no duplicate warning.</p>')+'</article>';
-     }).join('')+(rows.length?'<button type="button" class="btn btn-dark" id="roots-export-flags">Export flagged JSON</button>':'');
+       return '<article style="border:1px solid #d6d6cf;border-radius:10px;padding:14px;margin:12px 0"><strong>'+esc(r.title||'Untitled')+'</strong> · '+esc(r.institution)+'<p><strong>Flagged because:</strong> '+esc(entry.issues.join('; '))+'</p>'+(canPublish?'<button type="button" class="btn btn-dark" data-publish-flag="'+i+'">Publish anyway</button>':'<p>Cannot publish: requires a title, institution, valid source URL, and no duplicate warning.</p>')+' <button type="button" class="btn" data-remove-flag="'+i+'">Remove from queue</button></article>';
+     }).join('')+(rows.length?'<button type="button" class="btn btn-dark" id="roots-export-flags">Export flagged JSON</button> <button type="button" class="btn" id="roots-clear-flags">Clear all flagged records</button>':'');
      queue.querySelectorAll('[data-publish-flag]').forEach(btn=>btn.onclick=()=>{
        const i=Number(btn.dataset.publishFlag),items=read(),item=items[i];if(!item)return;
        if(!confirm('Publish this flagged record to the local ROOTS discovery collection despite: '+item.issues.join('; ')+'?'))return;
@@ -289,6 +289,8 @@ window.ROOTS_INGEST=(()=>{
        else feedback.textContent=result.error||'Not published: duplicate or invalid source.';
        draw();
      });
+     queue.querySelectorAll('[data-remove-flag]').forEach(btn=>btn.onclick=()=>{const items=read(),i=Number(btn.dataset.removeFlag);if(!items[i])return;if(!confirm('Remove this flagged record from the review queue? This will not remove published records.'))return;items.splice(i,1);if(save(items)){feedback.textContent='Flagged record removed from review queue.';draw();}else feedback.textContent='Unable to update browser storage.';});
+     const clear=document.getElementById('roots-clear-flags');if(clear)clear.onclick=()=>{const items=read();if(!items.length)return;if(!confirm('Clear all '+items.length+' flagged records? This cannot be undone. Published records will stay in Explore and Search.'))return;if(save([])){feedback.textContent='Cleared '+items.length+' flagged records. Published records were not changed.';draw();}else feedback.textContent='Unable to clear browser storage.';};
      const btn=document.getElementById('roots-export-flags');if(btn)btn.onclick=()=>download(read(),'roots-flagged-review.json');
    }
    draw();

@@ -268,3 +268,13 @@ By combining intuitive discovery, engaging exploration, standardized metadata, a
 **Every story has roots. Find yours. 🌱**
 
 Developed by **Team Pink Pixels** for **RBC HubHacks 2026**.
+
+## Live demo and repository structure
+
+**Live demo:** https://tino-ops.github.io/pink-pixels-roots/ (GitHub Pages; if the link is not live yet, open `index.html` locally).index.html the whole app (HTML, CSS and JavaScript, no build step)
+data/sources/*.raw.json records as each source describes them (its own field names)
+data/sources.json per-source mapping to the common ROOTS schema
+data/roots-records.js generated index the app loads (data/roots-records.json is a copy)
+scripts/build_records.py maps, validates and builds the index (Python 3, no packages)
+add_items.py helper for creating records for the browser import
+test_records.json small sample file for the import feature

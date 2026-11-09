@@ -1,0 +1,63 @@
+[
+ {
+  "title": "The Provincial Freeman",
+  "summary": "A digitized issue of The Provincial Freeman, the newspaper founded by Mary Ann Shadd Cary. The LAC guide cites this Canadiana copy.",
+  "view_url": "https://www.canadiana.ca/view/oocihm.N_00107_185303/1",
+  "date": "1853?",
+  "reel_ref": "oocihm.N_00107_185303",
+  "medium": "Newspaper",
+  "curated": {
+   "category": "Culture",
+   "people": [
+    "Mary Ann Shadd Cary"
+   ],
+   "subjects": [
+    "Black newspapers",
+    "Abolition",
+    "Journalism"
+   ],
+   "access": "Online",
+   "access_note": "Digitized and viewable online on Canadiana.",
+   "source_note": "Year 1853 is inferred from the viewer identifier, so it is marked approximate."
+  }
+ },
+ {
+  "title": "Canadian Pacific Railway requests admission of coloured porters (Blacks), 1931-1949",
+  "summary": "Digitized microfilm of an LAC file on Canadian Pacific Railway requests to admit Black porters. A second reel continues the file.",
+  "view_url": "https://heritage.canadiana.ca/view/oocihm.lac_reel_c10652/1661",
+  "date": "1931-1949",
+  "reel_ref": "LAC volume 577, file 816222; microfilm C-10652 and C-10653",
+  "medium": "Digitized microfilm",
+  "curated": {
+   "category": "Work & Labour",
+   "people": [],
+   "subjects": [
+    "Railway porters",
+    "Immigration"
+   ],
+   "access": "Online",
+   "access_note": "Digitized and viewable online on Canadiana.",
+   "source_note": "Held by Library and Archives Canada; viewable on Canadiana. Contains historical terminology in the record title. ROOTS repeats the source's title unchanged."
+  }
+ },
+ {
+  "title": "Coloured domestics from Guadeloupe, 1910-1928",
+  "summary": "Digitized microfilm of an LAC immigration file about domestic workers from Guadeloupe.",
+  "view_url": "https://heritage.canadiana.ca/view/oocihm.lac_reel_c10411/1053",
+  "date": "1910-1928",
+  "reel_ref": "LAC volume 475, file 731832; microfilm C-10411",
+  "medium": "Digitized microfilm",
+  "curated": {
+   "category": "Migration & Settlement",
+   "people": [],
+   "subjects": [
+    "Domestic workers",
+    "Immigration",
+    "Guadeloupe"
+   ],
+   "access": "Online",
+   "access_note": "Digitized and viewable online on Canadiana.",
+   "source_note": "Held by Library and Archives Canada; viewable on Canadiana. Contains historical terminology in the record title. ROOTS repeats the source's title unchanged."
+  }
+ }
+]

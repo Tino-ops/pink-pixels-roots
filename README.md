@@ -110,7 +110,7 @@ We want visitors of different ages, backgrounds, and technical abilities to navi
 - Discover heritage locations through an interactive map.
 
 **5. Trustworthy Historical Information**
-- Verified historical resources.
+- Clear labelling of what has and has not been checked: every record is marked as institution-supplied metadata until a reviewer confirms it against the original source.
 - Clear institutional attribution.
 - Original source links.
 - Preservation of available rights and access information.
@@ -133,7 +133,7 @@ Visitors can begin with a broad interest and discover related historical topics 
 
 ### Interactive Historical Timeline
 
-Users can explore Black Canadian history chronologically through verified historical events and connected resources.
+Users can explore Black Canadian history chronologically through historical events and connected resources, each linked to its source institution.
 
 ### Explore Near Me — Heritage Map
 
@@ -160,23 +160,32 @@ ROOTS aims to support two contribution pathways:
 
 Submitted metadata would follow a common structure and be reviewed before publication.
 
-## Initial Data Sources and Proof of Concept
+## Data Sources and Proof of Concept
 
-For the hackathon proof of concept, we are investigating publicly accessible historical resources from:
+ROOTS indexes metadata from **7 institutions** and links every record back to the holder. No collection is copied.
 
-**Black Cultural Centre for Nova Scotia (BCCNS)**  
-https://bccns.com/
+| Institution | Records | How it was collected |
+|---|---|---|
+| Nova Scotia Archives | 17 | Public item and collection pages (the pages publish Dublin Core meta tags) |
+| Archives of Ontario | 12 | A PDF research guide (finding aid), extracted by hand |
+| Library and Archives Canada | 11 | Public genealogy guide and blog pages |
+| Canadiana | 3 | Viewer links cited by the LAC guide |
+| Black Cultural Centre for Nova Scotia | 1 | Public "Visit Us" page |
+| University of Calgary Libraries | 1 | Public digital-collection record |
+| The Canadian Encyclopedia | 1 | Public article |
 
-**CollectiveAccess Projects Directory**  
-https://www.collectiveaccess.org/projects/
+**What is real and what is not.** These 46 records are a **hand-collected snapshot taken on 2026-11-08**, not a live harvest. Descriptions are short summaries written for the index; they are not the institutions' own descriptions. Live harvesting through APIs or OAI-PMH is the next step wherever an institution offers it, and has not been built. Where a source states no date, ROOTS shows "Date not stated"; where a date is uncertain it is marked approximate.
 
-CollectiveAccess is a collections-management platform used by cultural heritage organizations. Its projects directory helps identify potential institutional collections; it is not itself a shared historical-record database.
+### How the data pipeline works
 
-Our initial implementation will prioritize a small, verified metadata dataset rather than relying on unconfirmed live API connections.
+```
+data/sources/<source>.raw.json   each source in its OWN field names
+data/sources.json                per-source mapping: source field -> ROOTS (Dublin Core based) field
+scripts/build_records.py         maps, parses dates, normalizes resource types, validates, adds provenance
+data/roots-records.js            the generated index the app loads (data/roots-records.json is a copy)
+```
 
-Where permitted, ROOTS will reference publicly accessible metadata while preserving original source links and attribution.
-
-These are prospective sources, not confirmed live integrations.
+To add a source, add a raw file and an entry in `data/sources.json`, then run `python3 scripts/build_records.py`. The build fails on a missing title, an invalid source URL, an unknown access value or a duplicate. Every record carries provenance: the source system, how and when it was collected, which source fields were mapped, and which fields a ROOTS curator added (category, people, subjects, access notes). The mapping is shown in the app on the **Data model** page.
 
 ## Team Responsibilities
 
@@ -192,17 +201,27 @@ These are prospective sources, not confirmed live integrations.
 
 ROOTS is currently in active development for RBC HubHacks 2026.
 
-Our initial ChatGPT-generated landing page serves as the visual foundation of the project.
+### Working in the prototype today
 
-The team is developing the functional search, verified historical dataset, interactive discovery experiences, and institutional contribution features.
+- **Search and filters:** free text plus filters for province, institution, people, places, subjects, resource type, access and a year range.
+- **Ask ROOTS (grounded search):** plain-language questions answered only from indexed records. Each answer names the holding institution, date and access for every record, shows how the question was interpreted, and says so when nothing matches. It uses no outside knowledge and no language model, so it cannot invent information.
+- **Institutions view:** who holds what, the access mix, how each source was collected, and co-holders named by the sources.
+- **Record pages:** held by, reference number, access instructions, link to the authoritative record, provenance, and cross-institution connections (shared people, subjects, places).
+- **Data model page:** Dublin Core mapping and the per-source field mapping.
+- **Timeline and map:** records with a stated year or valid coordinates only.
 
-Features described as planned are not necessarily implemented in the current prototype.
+### Not built yet
+
+Live API or OAI-PMH harvesting, thumbnails (they need permission from each holder), review by the institutions, French-language search, and a server-side API. Browser imports on the Contribute page are stored only in that browser.
 
 ## How to Run the Current Prototype
 
 1. Download or clone this GitHub repository.
-2. Locate `roots_prototype.html`.
-3. Open the file in a modern web browser.
+2. Open `index.html` in a modern web browser.
+3. To rebuild the index after editing a source file, run `python3 scripts/build_records.py` (Python 3, no extra packages). The app reads `data/roots-records.js`, so it works offline from a file.
+4. On the Search page, expand **Import historical metadata (JSON)** to import a JSON array of records with `title`, `institution`, and `sourceURL`. The importer rejects incomplete or invalid-URL rows and reports skipped duplicates.
+5. Imported records can include `accessStatus` (`Public`, `Educational`, `By request`, `Online`, `Available by request`, `On-site only`, or `Unknown`) and `contactEmail`. Restricted record-detail pages hide previews and show an email request link when a contact address is provided.
+6. This is a browser-only prototype: imported records are not persisted or verified; access labels and preview hiding are **not server-enforced security**. Do not upload sensitive or restricted assets into the public dataset.
 
 Additional instructions will be provided as new components and backend functionality are integrated.
 
@@ -221,6 +240,10 @@ The team uses separate branches to develop features collaboratively.
 Developers work on their assigned branches and submit pull requests.
 
 Changes are reviewed and tested before being merged into `main`.
+
+## Helper script
+
+`add_items.py` is a dependency-free command-line tool for creating ROOTS-compatible JSON records for the browser import (title, institution, source URL, date, location, type, access status). Import its `item_records.json` output from **Search > Import historical metadata (JSON)**.
 
 ## Future Scalability
 

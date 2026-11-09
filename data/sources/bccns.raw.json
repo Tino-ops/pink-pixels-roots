@@ -1,0 +1,26 @@
+[
+ {
+  "name": "Black Cultural Centre for Nova Scotia: visit and collections",
+  "summary": "A museum and library resource centre in Cherry Brook, Nova Scotia. The Centre invites people to contact it about submitting images, stories and artifacts to its collection.",
+  "page": "https://bccns.com/?p=2336",
+  "year": "1983",
+  "address": "Cherry Brook, Nova Scotia",
+  "kind": "Museum / visitor centre",
+  "curated": {
+   "category": "Culture",
+   "people": [],
+   "subjects": [
+    "Museum",
+    "African Nova Scotian heritage",
+    "Cherry Brook"
+   ],
+   "access": "On-site only",
+   "access_note": "Visit during the weekday hours posted on the Visit Us page, or contact the Centre to submit materials.",
+   "coordinates": [
+    44.711,
+    -63.4335
+   ],
+   "source_note": "The 1983 opening date comes from a Nova Scotia government release and The Canadian Encyclopedia, not from this page."
+  }
+ }
+]

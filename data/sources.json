@@ -1,0 +1,149 @@
+{
+ "snapshot_date": "2026-11-08",
+ "sources": [
+  {
+   "id": "nsa",
+   "institution": "Nova Scotia Archives",
+   "kind": "Provincial archives",
+   "website": "https://archives.novascotia.ca/",
+   "home": "Halifax, Nova Scotia",
+   "collected_from": "Public web pages: Looking Back, Moving Forward (Archival Holdings and item pages)",
+   "source_format": "HTML listing and item pages (the pages publish Dublin Core meta tags)",
+   "method": "Manual snapshot of public pages",
+   "raw_file": "nsa.raw.json",
+   "rights_notice": "Site footer states Crown copyright, Province of Nova Scotia. Individual images may carry separate permissions.",
+   "field_map": {
+    "heading": "title",
+    "blurb": "description",
+    "url": "sourceURL",
+    "coverage": "date_text",
+    "place": "location",
+    "format": "type",
+    "ref": "original_source"
+   }
+  },
+  {
+   "id": "lac",
+   "institution": "Library and Archives Canada",
+   "kind": "National archives and library",
+   "website": "https://www.canada.ca/en/library-archives.html",
+   "home": "Ottawa, Ontario",
+   "collected_from": "LAC genealogy guide 'Black Canadians' and LAC Black History Month page on Canada.ca",
+   "source_format": "HTML guide pages that list fonds, series and linked records",
+   "method": "Manual snapshot of public pages",
+   "raw_file": "lac.raw.json",
+   "rights_notice": "See the LAC terms and conditions page. ROOTS does not assert rights.",
+   "field_map": {
+    "label": "title",
+    "context": "description",
+    "href": "sourceURL",
+    "dates": "date_text",
+    "place": "location",
+    "kind": "type",
+    "ref": "original_source"
+   }
+  },
+  {
+   "id": "canadiana",
+   "institution": "Canadiana",
+   "kind": "Digital library",
+   "website": "https://www.canadiana.ca/",
+   "home": "Online",
+   "collected_from": "Canadiana viewer links cited by the LAC 'Black Canadians' guide",
+   "source_format": "Digitized microfilm and newspaper viewer pages",
+   "method": "Manual snapshot of links cited on a partner page",
+   "raw_file": "canadiana.raw.json",
+   "rights_notice": "Check Canadiana's terms of use. ROOTS does not assert rights.",
+   "field_map": {
+    "title": "title",
+    "summary": "description",
+    "view_url": "sourceURL",
+    "date": "date_text",
+    "reel_ref": "original_source",
+    "medium": "type"
+   }
+  },
+  {
+   "id": "ao",
+   "institution": "Archives of Ontario",
+   "kind": "Provincial archives",
+   "website": "https://www.archives.gov.on.ca/",
+   "home": "Toronto, Ontario",
+   "collected_from": "Research Guide 300: Records Related to Black Communities in Ontario (PDF finding aid, updated Feb 2024)",
+   "source_format": "PDF research guide with fonds and series entries",
+   "method": "Manual extraction from a PDF finding aid",
+   "raw_file": "ao.raw.json",
+   "rights_notice": "Guide carries a King's Printer for Ontario copyright notice.",
+   "field_map": {
+    "fonds_title": "title",
+    "scope_note": "description",
+    "guide_url": "sourceURL",
+    "dates": "date_text",
+    "place": "location",
+    "level": "type",
+    "ref_code": "original_source"
+   }
+  },
+  {
+   "id": "bccns",
+   "institution": "Black Cultural Centre for Nova Scotia",
+   "kind": "Museum and cultural centre",
+   "website": "https://bccns.com/",
+   "home": "Cherry Brook, Nova Scotia",
+   "collected_from": "BCCNS 'Visit Us' page",
+   "source_format": "HTML page",
+   "method": "Manual snapshot of public page",
+   "raw_file": "bccns.raw.json",
+   "rights_notice": "Check the BCCNS website. ROOTS does not assert rights.",
+   "field_map": {
+    "name": "title",
+    "summary": "description",
+    "page": "sourceURL",
+    "year": "date_text",
+    "address": "location",
+    "kind": "type"
+   }
+  },
+  {
+   "id": "ucalgary",
+   "institution": "University of Calgary Libraries and Cultural Resources",
+   "kind": "University library digital collection",
+   "website": "https://digitalcollections.ucalgary.ca/",
+   "home": "Calgary, Alberta",
+   "collected_from": "University of Calgary Digital Collections, Local Histories collection",
+   "source_format": "Digital collection record with Dublin Core style fields",
+   "method": "Manual snapshot of a public record",
+   "raw_file": "ucalgary.raw.json",
+   "rights_notice": "Record states: courtesy of Local Histories Collection, University of Calgary.",
+   "field_map": {
+    "Title": "title",
+    "Abstract": "description",
+    "Record URL": "sourceURL",
+    "Date": "date_text",
+    "Place": "location",
+    "Genre": "type",
+    "Unique identifier": "original_source"
+   }
+  },
+  {
+   "id": "historica",
+   "institution": "The Canadian Encyclopedia (Historica Canada)",
+   "kind": "Reference publisher",
+   "website": "https://www.thecanadianencyclopedia.ca/",
+   "home": "Online",
+   "collected_from": "Encyclopedia article page",
+   "source_format": "HTML article",
+   "method": "Manual snapshot of public page",
+   "raw_file": "historica.raw.json",
+   "rights_notice": "Check The Canadian Encyclopedia terms. ROOTS does not assert rights.",
+   "field_map": {
+    "headline": "title",
+    "summary": "description",
+    "article_url": "sourceURL",
+    "year": "date_text",
+    "place": "location",
+    "kind": "type"
+   }
+  }
+ ]
+}

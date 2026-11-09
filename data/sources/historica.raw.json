@@ -1,0 +1,25 @@
+[
+ {
+  "headline": "Black Cultural Centre for Nova Scotia",
+  "summary": "An encyclopedia article on the Centre near Dartmouth, covering its 1983 opening and the Black Cultural Society founded in 1977.",
+  "article_url": "https://www.thecanadianencyclopedia.ca/en/article/black-cultural-centre-for-nova-scotia",
+  "year": "1983",
+  "place": "Cherry Brook, Nova Scotia",
+  "kind": "Reference article",
+  "curated": {
+   "category": "Reference & Guides",
+   "people": [],
+   "subjects": [
+    "Museum",
+    "African Nova Scotian heritage",
+    "Cherry Brook"
+   ],
+   "access": "Online",
+   "access_note": "Article is free to read online.",
+   "coordinates": [
+    44.711,
+    -63.4335
+   ]
+  }
+ }
+]
